@@ -1,0 +1,156 @@
+#pragma once
+
+#include <assert.h>
+
+#define IL2CPP_TARGET_ARM64 0
+#define IL2CPP_TARGET_ARMV7 0
+
+#define IL2CPP_BINARY_SECTION_NAME "il2cpp"
+
+#define IL2CPP_TARGET_WINDOWS 1
+#define IL2CPP_PLATFORM_SUPPORTS_CUSTOM_SECTIONS 1
+#define IL2CPP_PLATFORM_SUPPORTS_DEBUGGER_PRESENT 1
+#define IL2CPP_METHOD_ATTR  __declspec(code_seg (IL2CPP_BINARY_SECTION_NAME))
+
+
+#define IL2CPP_TARGET_WINDOWS_DESKTOP 1
+#define IL2CPP_PLATFORM_SUPPORTS_SYSTEM_CERTIFICATES 1
+#define IL2CPP_PLATFORM_SUPPORTS_CPU_INFO 1
+// Windows 7 is the min OS we support, so we cannot link newer APIs
+#define NTDDI_VERSION    0x06010000
+#define _WIN32_WINNT     0x0601
+#define WINVER           0x0601
+
+#define _UNICODE 1
+#define UNICODE 1
+#define STRICT 1
+
+
+#ifndef IL2CPP_TARGET_WINDOWS
+#define IL2CPP_TARGET_WINDOWS 0
+#endif
+
+#ifndef IL2CPP_TARGET_WINDOWS_DESKTOP
+#define IL2CPP_TARGET_WINDOWS_DESKTOP 0
+#endif
+
+#ifndef IL2CPP_TARGET_WINRT
+#define IL2CPP_TARGET_WINRT 0
+#endif
+
+#ifndef IL2CPP_TARGET_XBOXONE
+#define IL2CPP_TARGET_XBOXONE 0
+#endif
+
+#ifndef IL2CPP_TARGET_DARWIN
+#define IL2CPP_TARGET_DARWIN 0
+#endif
+
+#ifndef IL2CPP_TARGET_IOS
+#define IL2CPP_TARGET_IOS 0
+#endif
+
+#ifndef IL2CPP_TARGET_OSX
+#define IL2CPP_TARGET_OSX 0
+#endif
+
+#ifndef IL2CPP_TARGET_ANDROID
+#define IL2CPP_TARGET_ANDROID 0
+#endif
+
+#ifndef IL2CPP_TARGET_JAVASCRIPT
+#define IL2CPP_TARGET_JAVASCRIPT 0
+#endif
+
+#ifndef IL2CPP_TARGET_LINUX
+#define IL2CPP_TARGET_LINUX 0
+#endif
+
+#ifndef IL2CPP_TARGET_N3DS
+#define IL2CPP_TARGET_N3DS 0
+#endif
+
+#ifndef IL2CPP_TARGET_PS4
+#define IL2CPP_TARGET_PS4 0
+#endif
+
+#ifndef IL2CPP_TARGET_PSP2
+#define IL2CPP_TARGET_PSP2 0
+#endif
+
+#ifndef IL2CPP_TARGET_SWITCH
+#define IL2CPP_TARGET_SWITCH 0
+#endif
+
+#define IL2CPP_TARGET_POSIX (IL2CPP_TARGET_DARWIN || IL2CPP_TARGET_JAVASCRIPT || IL2CPP_TARGET_LINUX || IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_PS4 || IL2CPP_TARGET_PSP2 || IL2CPP_TARGET_NOVA)
+
+#define IL2CPP_SUPPORT_THREADS !IL2CPP_TARGET_JAVASCRIPT
+
+#ifndef IL2CPP_PLATFORM_SUPPORTS_SYSTEM_CERTIFICATES
+#define IL2CPP_PLATFORM_SUPPORTS_SYSTEM_CERTIFICATES 0
+#endif
+
+#ifndef IL2CPP_PLATFORM_SUPPORTS_TIMEZONEINFO
+#define IL2CPP_PLATFORM_SUPPORTS_TIMEZONEINFO 0
+#endif
+
+#ifndef IL2CPP_PLATFORM_SUPPORTS_CUSTOM_SECTIONS
+#define IL2CPP_PLATFORM_SUPPORTS_CUSTOM_SECTIONS 0
+#endif
+
+#if IL2CPP_TARGET_WINDOWS || IL2CPP_TARGET_XBOXONE || IL2CPP_TARGET_WINRT
+#include <crtdbg.h>
+#define IL2CPP_ASSERT(expr) \
+    _ASSERTE(expr)
+#else
+#define IL2CPP_ASSERT(expr) \
+    assert(expr)
+#endif
+
+#ifndef IL2CPP_PLATFORM_SUPPORTS_CPU_INFO
+#define IL2CPP_PLATFORM_SUPPORTS_CPU_INFO 0
+#endif
+
+#ifndef IL2CPP_PLATFORM_SUPPORTS_DEBUGGER_PRESENT
+#define IL2CPP_PLATFORM_SUPPORTS_DEBUGGER_PRESENT 0
+#endif
+
+#define IL2CPP_USE_STD_THREAD 0
+
+#define IL2CPP_THREADS_STD IL2CPP_USE_STD_THREAD
+#define IL2CPP_THREADS_PTHREAD (!IL2CPP_THREADS_STD && IL2CPP_TARGET_POSIX)
+#define IL2CPP_THREADS_WIN32 (!IL2CPP_THREADS_STD && IL2CPP_TARGET_WINDOWS)
+#define IL2CPP_THREADS_N3DS (!IL2CPP_THREADS_STD && IL2CPP_TARGET_N3DS)
+#define IL2CPP_THREADS_PS4 (!IL2CPP_THREADS_STD && IL2CPP_TARGET_PS4)
+#define IL2CPP_THREADS_PSP2 (!IL2CPP_THREADS_STD && IL2CPP_TARGET_PSP2)
+#define IL2CPP_THREADS_SWITCH (!IL2CPP_THREADS_STD && IL2CPP_TARGET_SWITCH)
+
+/* Trigger assert if 'ptr' is not aligned to 'alignment'. */
+#define ASSERT_ALIGNMENT(ptr, alignment) \
+    IL2CPP_ASSERT((((ptrdiff_t) ptr) & (alignment - 1)) == 0 && "Unaligned pointer!")
+
+#if defined(_MSC_VER)
+#if defined(_M_X64)
+#define IL2CPP_SIZEOF_VOID_P 8
+#elif defined(_M_IX86) || defined(_M_ARM)
+#define IL2CPP_SIZEOF_VOID_P 4
+#else
+#error invalid windows architecture
+#endif
+#elif defined(__GNUC__) || defined(__SNC__)
+#if defined(__x86_64__)
+#define IL2CPP_SIZEOF_VOID_P 8
+#elif defined(__i386__)
+#define IL2CPP_SIZEOF_VOID_P 4
+#elif defined(EMSCRIPTEN)
+#define IL2CPP_SIZEOF_VOID_P 4
+#elif defined(__arm__)
+#define IL2CPP_SIZEOF_VOID_P 4
+#elif defined(__arm64__) || defined(__aarch64__)
+#define IL2CPP_SIZEOF_VOID_P 8
+#else
+#error invalid windows architecture
+#endif
+#else
+#error please define your target architecture size
+#endif
