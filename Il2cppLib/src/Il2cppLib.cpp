@@ -6,22 +6,28 @@
 #include "../Include/Il2cppLib.h"
 #include "api/2021.3.21f1.h"
 
-// TODO: This is an example of a library function
-
-
-
 namespace Il2cppLib
 {
 	Il2CppClass* class_from_signature(std::string signature);
-	void* method_from_signature(std::string signature);
 	std::string api::get_type_mapping(std::string real);
 
-	void initialize()
+	bool initialize()
 	{
 		api::create_type_mappings();
 
+		return true;
 	}
 
+	void* type_object(std::string class_signature)
+	{
+		const Il2CppType* type = il2cpp_class_get_type(class_from_signature(class_signature));
+		return il2cpp_type_get_object(type);
+	}
+
+	void* resolve_icall(const char* name)
+	{
+		return (void*)il2cpp_resolve_icall(name);
+	}
 
 	Il2CppClass* class_from_signature(std::string signature)
 	{
@@ -52,7 +58,7 @@ namespace Il2cppLib
 		return 0;
 	}
 
-	void* method_from_signature(std::string signature)
+	void* method_from_signature(std::string signature, bool _virtual)
 	{
 		std::string klass_signature, method_name;
 		size_t pos = 0;
@@ -83,26 +89,23 @@ namespace Il2cppLib
 		
 		void* iterator{ 0 };
 		while (const MethodInfo* method = il2cpp_class_get_methods(klass, &iterator)) {
-			//if (method_name.compare(method->name)) continue;
-			if (strcmp(method_name.c_str(), method->name)) continue;
-			if (arg_count > 0 && method->parameters_count != arg_count) continue;
+			if (method_name.compare(method->name)) continue;
+			
 			
 			int param_idx = 0;
 			std::string parameters = signature;
 			
-			while (parameters.find(',') != std::string::npos) {
+			while (parameters.find(',') != std::string::npos && arg_count > 0) {
 				param_idx += 1;
 				if (param_idx > method->parameters_count) break;
-				std::string sig_type = [&]() -> std::string { int pos = parameters.find(' '); auto chunk = parameters.substr(0, pos); parameters.erase(0, pos + 1); return chunk; }();
-				std::string sig_name = [&]() -> std::string { int pos = parameters.find(','); auto chunk = parameters.substr(0, pos); parameters.erase(0, pos + 1); return chunk; }();
+				std::string sig_typename = [&]() -> std::string { size_t pos = parameters.find(','); auto chunk = parameters.substr(0, pos); parameters.erase(0, pos + 1); return chunk; }();
+				
+				if (api::get_type_mapping(sig_typename) != "none")
+					sig_typename = api::get_type_mapping(sig_typename);
 
-				if (api::get_type_mapping(sig_type) != "none")
-					sig_type = api::get_type_mapping(sig_type);
+				auto param_typename = il2cpp_type_get_name(method->parameters[param_idx - 1]);
 
-				auto param_type = il2cpp_type_get_name(method->parameters[param_idx].parameter_type);
-				auto param_name = method->parameters[param_idx].name;
-
-				if (!sig_type.compare(param_type) || !sig_name.compare(param_name)) {
+				if (sig_typename.compare(param_typename)) {
 					param_idx = -1; //if not set, could result in method returned with same param count but incorrect last param
 					break;
 				}
@@ -111,10 +114,18 @@ namespace Il2cppLib
 				else
 					break;
 			}
-			if (param_idx == method->parameters_count)
-				return method->methodPointer;
+			if (param_idx == method->parameters_count) {
+				if (_virtual)
+					return method->virtualMethodPointer;
+				else
+					return method->methodPointer;
+			}
 		}
 		return 0;
+	}
+	void* virtual_method_from_signature(std::string signature)
+	{
+		return method_from_signature(signature, true);
 	}
 
 	namespace api

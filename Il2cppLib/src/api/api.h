@@ -35,12 +35,14 @@ namespace Il2cppLib::api
 		TYPE_MAPPING("Bounds", "UnityEngine.Bounds");
 		TYPE_MAPPING("Quaternion", "UnityEngine.Quaternion");
 		TYPE_MAPPING("AssetBundle", "UnityEngine.AssetBundle");
+		TYPE_MAPPING("Object", "UnityEngine.Object");
 
 		TYPE_MAPPING("float", "System.Single");
 		TYPE_MAPPING("bool", "System.Boolean");
 		TYPE_MAPPING("string", "System.String");
 		TYPE_MAPPING("int", "System.Int32");
 		TYPE_MAPPING("object", "System.Object");
+		TYPE_MAPPING("Type", "System.Type");
 
 	#undef TYPE_MAPPING
 	}

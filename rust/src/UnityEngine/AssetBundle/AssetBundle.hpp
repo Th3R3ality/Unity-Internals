@@ -1,6 +1,6 @@
 #pragma once
-#include "../UnityEngine.hpp"
-#include "../../mscorlib/mscorlib.hpp"
+#include "UnityEngine/Object/Object.hpp"
+#include "mscorlib/mscorlib.hpp"
 using namespace mscorlib;
 
 namespace UnityEngine
@@ -9,5 +9,9 @@ namespace UnityEngine
 	{
 	public:
 		static AssetBundle* LoadFromFile(System::String* path);
+
+		System::Array<System::String*>* GetAllAssetNames();
+
+		UnityEngine::Object* LoadAsset(std::string name, System::Type* type);
 	};
 }
