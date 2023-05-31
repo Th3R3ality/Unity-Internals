@@ -33,7 +33,7 @@ namespace hooking
 	HK_STATUS status(std::string name);
 
 	void restore_all();
-	void** original(std::string name);
+	void* original(std::string name);
 }
 
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "UnityEngine/Object/Object.hpp"
 
-//#include "UnityEngine/Transform/Transform.hpp"
+#include "UnityEngine/Transform/Transform_proxy.hpp"
 
 #include "mscorlib/System/Type/Type.hpp"
 //using namespace mscorlib;
@@ -14,7 +14,7 @@ namespace UnityEngine
 	{
 	public:
 
-		//Transform* transform();
+		Transform_proxy* transform();
 
 		__forceinline operator mscorlib::System::Type* ()
 		{

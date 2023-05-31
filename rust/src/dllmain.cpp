@@ -72,9 +72,6 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 
 void mainThread(HMODULE hModule)
 {
-    
-
-
     bool loaded = false;
     while (!GetAsyncKeyState(VK_DELETE)) {
         /*

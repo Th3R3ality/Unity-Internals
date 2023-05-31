@@ -11,7 +11,7 @@ namespace UnityEngine
 		float x, y, z;
 
 		Vector3() : x(0), y(0), z(0) {}
-
+		Vector3(float x) : x(x), y(x), z(x) {}
 		Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 
 		friend std::ostream& operator<<(std::ostream& os, const Vector3& v3)
@@ -72,6 +72,14 @@ namespace UnityEngine
 			v1.y -= v2.y;
 			v1.z -= v2.z;
 			return v1;
+		}
+
+		static Vector3 zero()
+		{
+			static auto fn = (Vector3(*)())Il2cppLib::virtual_method_from_signature("UnityEngine::Vector3.get_zero()");
+			if (fn)
+				return fn();
+			return { 0 };
 		}
 
 		std::string toString()

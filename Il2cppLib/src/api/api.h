@@ -44,6 +44,8 @@ namespace Il2cppLib::api
 		TYPE_MAPPING("object", "System.Object");
 		TYPE_MAPPING("Type", "System.Type");
 
+		TYPE_MAPPING("LoadInfo", "BaseNetworkable.LoadInfo");
+
 	#undef TYPE_MAPPING
 	}
 }

@@ -114,12 +114,6 @@
     <ClInclude Include="src\UnityEngine\Vector3\Vector3.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\hooks\BasePlayer\hk_load.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\hooks\PerformanceUI\hk_update.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\rust\classes\Facepunch\PerformanceUI\PerformanceUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,6 +121,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\UnityEngine\Transform\Transform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\Transform\Transform_proxy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hooks\hooking2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\BaseMovement\BaseMovement.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\ModelState\ModelState.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\HeldEntity\HeldEntity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,7 +182,7 @@
     <ClCompile Include="src\cheat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\hooks\BasePlayer\hk_load.cpp">
+    <ClCompile Include="src\hooks\BP_Load.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\ConsoleSystem\ConsoleSystem.cpp">
@@ -215,13 +227,34 @@
     <ClCompile Include="src\hooks\hooking.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\hooks\PerformanceUI\hk_update.cpp">
+    <ClCompile Include="src\hooks\FP_PU_Update.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\Facepunch\PerformanceUI\PerformanceUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UnityEngine\Transform\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hooks\hooking2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hooks\PWM_HandleJumping.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\BaseMovement\BaseMovement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\ModelState\ModelState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\HeldEntity\HeldEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hooks\HE_AddPunch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

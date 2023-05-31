@@ -1,5 +1,4 @@
-#include "hk_load.hpp"
-#include "hooks/hooking.hpp"
+#include "hooks.hpp"
 
 #include <iostream>
 
@@ -10,16 +9,32 @@
 //#include "caching.hpp"
 //#include <vector>
 
-void hk__BasePlayer_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
+void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
-	static auto orig = hooking::original(hk__BasePlayer_Load_sig);
+	ORIG(hk__BP_Load);
+
 	if (!orig) return;
-	((decltype(&hk__BasePlayer_Load))*orig)(instance, info);
+
+	orig(instance, info);
 
 	//UnityEngine::GameObject* go = instance->gameObject();
 
-
 	std::cout << "bp_load hook!" << std::endl;
+
+	auto go = instance->gameObject();
+	if (!go) {
+		std::cout << "fail - go" << std::endl;
+		return;
+	}
+
+	auto name = go->name();
+	if (!name) {
+		std::cout << "fail - name" << std::endl;
+		return;
+	}
+
+	std::wcout << go->name() << std::endl;
+
 	/*
 	auto iter = std::find(caching::players::begin(), caching::players::end(), instance);
 	if (iter == caching::players::end()) {

@@ -6,6 +6,8 @@
 #include "minhook/include/MinHook.h"
 
 #include "Il2cppLib.h"
+#include <iostream>
+
 
 namespace hooking
 {
@@ -154,12 +156,21 @@ namespace hooking
 	{
 		_hooks.clear();
 	}
-	void** original(std::string name)
-	{
-		if (_il2cpp_mappings.find(name) != _il2cpp_mappings.end())
-			return _hooks[_il2cpp_mappings[name]].get()->original();
 
-		return _hooks[name].get()->original();
+	void* original(std::string name)
+	{
+		void** a = 0;
+		void** b = 0;
+		if (_il2cpp_mappings.find(name) != _il2cpp_mappings.end())
+			a = _hooks[_il2cpp_mappings[name]].get()->original();
+
+		b = _hooks[name].get()->original();
+
+		std::cout << "original";
+
+		if (a)
+			return a;
+		return b;
 	}
 
 	
