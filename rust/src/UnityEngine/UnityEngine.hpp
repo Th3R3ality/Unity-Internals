@@ -21,4 +21,7 @@
 #include "Quaternion/Quaternion.hpp"
 #include "Vector3/Vector3.hpp"
 
+#include "Transform/Transform_proxy.hpp"
+#include "Component/Component_proxy.hpp"
+
 #include "enums/enums.hpp"

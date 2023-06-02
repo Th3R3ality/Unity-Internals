@@ -165,6 +165,9 @@
     <ClInclude Include="src\UnityEngine\Component\Component_proxy.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UnityEngine.Animations\UnityEngine.Animations.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -294,6 +297,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine.Animations\ParentConstraint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine.Animations\ConstraintSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

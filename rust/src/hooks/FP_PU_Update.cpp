@@ -4,6 +4,8 @@
 #include <Windows.h>
 #include <cheat.hpp>
 
+#include "UnityEngine.Animations/UnityEngine.Animations.hpp"
+
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
 	static int counter = -1; ++counter;
@@ -26,15 +28,29 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 		std::cout << bundle << " : bundle\n";
 
-		//static auto prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
-		//std::cout << prefab << " : prefab\n";
 
-		//UnityEngine::GameObject* monke = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
-		//std::cout << monke << " : monke" << std::endl;
+		static auto prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
+		std::cout << prefab << " : prefab\n";
 
-		//if (monke)
-		//	((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
+		UnityEngine::GameObject* monke = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+		std::cout << monke << " : monke" << std::endl;
 
+		if (monke) {
+			_transform(monke)->localPosition(_transform(cache::local())->localPosition());
+			_transform(monke)->localRotation(_transform(cache::local())->localRotation());
+
+			{
+				using namespace UnityEngine::Animations;
+				ParentConstraint* parentConstraint = (UnityEngine::Animations::ParentConstraint*)monke->AddComponent(UnityEngine::Animations::ParentConstraint());
+
+				ConstraintSource* constraint = (ConstraintSource*)Il2cppLib::new_object("UnityEngine.Animations::ParentConstraint");
+				constraint->sourceTransform(_transform(instance));
+				constraint->weight(1.f);
+
+				parentConstraint->AddSource(constraint);
+			}
+		}
+		//((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
 
 
 		//UnityEngine::GameObject* sphere = UnityEngine::GameObject::CreatePrimitive(UnityEngine::PrimitiveType::Sphere);

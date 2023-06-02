@@ -1,6 +1,12 @@
 #pragma once
 #include <string>
 
+#define type_overload(sig) \
+	__forceinline operator mscorlib::System::Type* () \
+	{ \
+		return ( mscorlib::System::Type* )Il2cppLib::type_object(sig); \
+	}
+
 namespace Il2cppLib
 {
 	bool initialize();
@@ -12,6 +18,8 @@ namespace Il2cppLib
 	
 	void* type_object(std::string class_signature);
 	
+	void* new_object(std::string class_signature);
+
 	namespace api
 	{
 		void* _new_string(std::string str);

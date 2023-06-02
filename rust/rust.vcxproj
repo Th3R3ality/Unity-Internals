@@ -130,6 +130,7 @@
     <ClInclude Include="src\rust\classes\ModelState\ModelState.hpp" />
     <ClInclude Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.hpp" />
     <ClInclude Include="src\rust\rust.hpp" />
+    <ClInclude Include="src\UnityEngine.Animations\UnityEngine.Animations.hpp" />
     <ClInclude Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.hpp" />
     <ClInclude Include="src\UnityEngine\AssetBundle\AssetBundle.hpp" />
     <ClInclude Include="src\UnityEngine\AsyncOperation\AsyncOperations.hpp" />
@@ -180,6 +181,8 @@
     <ClCompile Include="src\rust\classes\HeldEntity\HeldEntity.cpp" />
     <ClCompile Include="src\rust\classes\ModelState\ModelState.cpp" />
     <ClCompile Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.cpp" />
+    <ClCompile Include="src\UnityEngine.Animations\ConstraintSource.cpp" />
+    <ClCompile Include="src\UnityEngine.Animations\ParentConstraint.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundle\AssetBundle.cpp" />
     <ClCompile Include="src\UnityEngine\AsyncOperation\AsyncOperations.cpp" />

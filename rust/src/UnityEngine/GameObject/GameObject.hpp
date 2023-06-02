@@ -18,10 +18,14 @@ namespace UnityEngine
 
 		Transform_proxy* transform();
 
+		/*
 		__forceinline operator mscorlib::System::Type* ()
 		{
 			return (mscorlib::System::Type*)Il2cppLib::type_object("UnityEngine::GameObject");
 		}
+		*/
+
+		type_overload("UnityEngine::GameObject")
 
 		static GameObject* CreatePrimitive(PrimitiveType type);
 
