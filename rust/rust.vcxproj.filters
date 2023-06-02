@@ -171,6 +171,12 @@
     <ClInclude Include="src\UnityEngine\SkinnedMeshRenderer\SkinnedMeshRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\memory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Network\Networkable\Networkable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -305,9 +311,6 @@
     <ClCompile Include="src\constraints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\constraints.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\UnityEngine\Renderer\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -315,6 +318,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UnityEngine\SkinnedMeshRenderer\SkinnedMeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\constraints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Network\Networkable\Networkable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

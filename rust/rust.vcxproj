@@ -104,6 +104,7 @@
     <ClInclude Include="src\hooks\hooking.hpp" />
     <ClInclude Include="src\hooks\hooking2.hpp" />
     <ClInclude Include="src\hooks\hooks.hpp" />
+    <ClInclude Include="src\memory.hpp" />
     <ClInclude Include="src\minhook\include\MinHook.h" />
     <ClInclude Include="src\minhook\src\buffer.h" />
     <ClInclude Include="src\minhook\src\hde\hde32.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="src\mscorlib\System\Array\Array.hpp" />
     <ClInclude Include="src\mscorlib\System\String\String.hpp" />
     <ClInclude Include="src\mscorlib\System\Type\Type.hpp" />
+    <ClInclude Include="src\Network\Networkable\Networkable.hpp" />
     <ClInclude Include="src\ProtoBuf\Entity\Entity.hpp" />
     <ClInclude Include="src\ProtoBuf\ProtoBuf.hpp" />
     <ClInclude Include="src\rust\classes\BaseCombatEntity\BaseCombatEntity.hpp" />
@@ -170,6 +172,7 @@
     <ClCompile Include="src\mscorlib\System\Array\Array.cpp" />
     <ClCompile Include="src\mscorlib\System\String\String.cpp" />
     <ClCompile Include="src\mscorlib\System\Type\Type.cpp" />
+    <ClCompile Include="src\Network\Networkable\Networkable.cpp" />
     <ClCompile Include="src\ProtoBuf\Entity\Entity.cpp" />
     <ClCompile Include="src\rust\classes\BaseCombatEntity\BaseCombatEntity.cpp" />
     <ClCompile Include="src\rust\classes\BaseEntity\BaseEntity.cpp" />
@@ -183,7 +186,6 @@
     <ClCompile Include="src\rust\classes\HeldEntity\HeldEntity.cpp" />
     <ClCompile Include="src\rust\classes\ModelState\ModelState.cpp" />
     <ClCompile Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.cpp" />
-    <ClCompile Include="src\constraints.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundle\AssetBundle.cpp" />
     <ClCompile Include="src\UnityEngine\AsyncOperation\AsyncOperations.cpp" />
