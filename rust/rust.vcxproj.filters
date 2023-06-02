@@ -141,6 +141,30 @@
     <ClInclude Include="src\rust\classes\HeldEntity\HeldEntity.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cache.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\YieldInstruction\YieldInstruction.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\AsyncOperation\AsyncOperations.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\ResourceRequest\ResourceRequest.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\enums\PrimitiveType.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\enums\enums.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\Component\Component_proxy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -255,6 +279,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\hooks\HE_AddPunch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\YieldInstruction\YieldInstruction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\AsyncOperation\AsyncOperations.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\ResourceRequest\ResourceRequest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

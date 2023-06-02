@@ -10,24 +10,65 @@
 
 #include "UnityEngine/UnityEngine.hpp"
 
-
+#include "cache.hpp"
 
 namespace cheat
 {
 	UnityEngine::AssetBundle* bundle = 0;
-	UnityEngine::GameObject* prefab = 0;
-	bool load_assets()
+	UnityEngine::Object* prefab = 0;
+	status current_state = status::none;
+	bool did_unload = false;
+
+	status state()
 	{
-		bundle = UnityEngine::AssetBundle::LoadFromFile(Il2cppLib::api::new_string<System::String*>("C:\\Users\\reality\\Desktop\\monke.bundle"));
-		if (!bundle) return false;
-		UnityEngine::Object* prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
-		if (!prefab) return false;
-		return true;
+		return current_state;
+	}
+	void state(status new_state)
+	{
+		current_state = new_state;
 	}
 
-	UnityEngine::GameObject* instantiate_prefab()
+	bool has_unloaded()
 	{
-		return (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+		return did_unload;
+	}
+	void has_unloaded(bool status)
+	{
+		did_unload = status;
+	}
+
+	void unload_gameObjects()
+	{
+		auto gameObjects = cache::gameObjects();
+		for (auto go : gameObjects) {
+			std::cout << "destroying " << go.second << "    key : " << go.first << std::endl;
+			UnityEngine::Object::Destroy(go.second);
+		}
+		gameObjects.clear();
+	}
+
+	void unload_assetbundles()
+	{
+		auto bundles = cache::bundles();
+		for (auto bundle : bundles) {
+			std::cout << "unloading " << bundle.first << "    at : " << bundle.second << std::endl;
+			bundle.second->Unload(true);
+		}
+		bundles.clear();
+	}
+
+	UnityEngine::AssetBundle* load_assetbundle(std::string path)
+	{
+		auto bundle = cache::bundle(path);
+		if (!bundle) {
+			bundle = UnityEngine::AssetBundle::LoadFromFile(Il2cppLib::api::new_string<System::String*>(path));
+			cache::add(bundle, path);
+			std::cout << "loaded new bundle : " << path << "    at : " << bundle << std::endl;
+		}
+		else {
+			std::cout << "fetched loaded bundle : " << path << "    at : " << bundle << std::endl;
+		}
+		return bundle;
 	}
 
 	System::Array<System::String*>* get_asset_names()
@@ -43,27 +84,9 @@ namespace cheat
 		//hooking::Enable("pu_update");
 
 		HOOK(FP_PU_Update);
-
 		HOOK(BP_Load);
-
 		HOOK(PWM_HandleJumping);
-
 		HOOK(HE_AddPunch);
-
-		/*
-		hooking::HK_STATUS status;
-
-		status = hooking::new_hook("bp_load", hk__BP_Load_sig, &hk__BasePlayer_Load);
-
-		std::cout << "hk_create | bp_load: " << hooking::get_status_message(status) << std::endl;
-		std::cout << "hk_enable | bp_load: " << hooking::get_status_message(hooking::enable("bp_load")) << std::endl;
-
-
-		//status = hooking::new_hook("pu_update", hk__FP_PU_Update_sig, &hk__FP_PU_Update);
-
-		//std::cout << "hk_create | pu_update: " << hooking::get_status_message(status) << std::endl;
-		//std::cout << "hk_enable | pu_update: " << hooking::get_status_message(hooking::enable("pu_update")) << std::endl;
-		*/
 
 		return true;
 	}
@@ -71,9 +94,11 @@ namespace cheat
 	void unload()
 	{
 		std::cout << "unloading" << std::endl;
-
+		cheat::state(cheat::status::unloading);
+		while (!cheat::has_unloaded()) {
+			std::cout << "wating for unload..." << std::endl;
+		}
 		hooking::Kill();
-		//hooking::restore_all();
 		MH_Uninitialize();
 	}
 }

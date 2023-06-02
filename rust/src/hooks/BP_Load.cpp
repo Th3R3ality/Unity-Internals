@@ -6,16 +6,21 @@
 #include "ProtoBuf/ProtoBuf.hpp"
 #include "UnityEngine/UnityEngine.hpp"
 
-//#include "caching.hpp"
-//#include <vector>
+#include "cheat.hpp"
+#include "cache.hpp"
+
+UnityEngine::AssetBundle* bundle;
+UnityEngine::Object* prefab;
 
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
 	ORIG(hk__BP_Load);
-
-	if (!orig) return;
-
 	orig(instance, info);
+
+	if (cache::check(instance))
+		return;
+
+	cache::add(instance);
 
 	//UnityEngine::GameObject* go = instance->gameObject();
 
@@ -32,14 +37,38 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::cout << "fail - name" << std::endl;
 		return;
 	}
+	std::wcout << name << std::endl;
 
-	std::wcout << go->name() << std::endl;
-
-	/*
-	auto iter = std::find(caching::players::begin(), caching::players::end(), instance);
-	if (iter == caching::players::end()) {
-		std::cout << "cached new player" << std::endl;
-		caching::players::push_back(instance);
+	if (name->equals(L"LocalPlayer")) {
+		cache::local(instance);
+		std::cout << "set localplayer!" << std::endl;
 	}
-	*/
+
+		
+	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
+
+	if (!prefab) {
+		prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
+		std::cout << "loaded asset : " << prefab << std::endl;
+	}
+
+	UnityEngine::GameObject* monke = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+	cache::go(instance, monke);
+	std::cout << "monke : " << monke << "    added to    baseplayer : " << instance << std::endl;
+
+	if (monke) {
+		_transform(monke)->localPosition(_transform(instance)->localPosition());
+		_transform(monke)->localRotation(_transform(instance)->localRotation());
+
+		/*
+		ParentConstraint parentConstraint = monke->AddComponent();
+
+		parentConstraint.AddSource(new ConstraintSource{ sourceTransform = _transform(target) });
+
+		parentConstraint.weight = 1.f;
+		*/
+
+		((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)instance->transform())->position());
+	}
+	
 }

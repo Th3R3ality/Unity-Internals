@@ -9,7 +9,9 @@ namespace UnityEngine
 	class Object
 	{
 	public:
+		static Object* Instantiate(Object* original, Vector3 pos, Quaternion rot);
 		static Object* Instantiate(Object* original);
+		static void Destroy(Object* obj);
 
 		mscorlib::System::String* name();
 	};

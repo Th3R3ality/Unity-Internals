@@ -35,25 +35,32 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
         freopen_s(&f, "CONOUT$", "w", stdout);
         std::cout << "[+] hello!" << std::endl;
 
+        cheat::state(cheat::status::loading);
+
         std::cout << "init | Il2cppLib\n";
         if (!Il2cppLib::initialize()) {
-            std::cout << "\n---FAILED---\n\n";
+            std::cout << "---FAILED---\n\n";
             break;
         }
         init_Il2cppLib = true;
 
-        /*if (!cheat::load_assets()) {
+        std::cout << "init | hooks \n";
+        if (!cheat::init_hooks()) {
+            std::cout << "---FAILED---\n\n";
+            break;
+        }
+        cheat_init_hooks = true;
+
+        /*
+        std::cout << "init | assetbundle \n";
+        if (!cheat::load_assets()) {
+            std::cout << "---FAILED---\n\n";
             break;
         }
         cheat_load_assets = true;
         */
 
-        std::cout << "init | hooks \n";
-        if (!cheat::init_hooks()) {
-            std::cout << "\n---FAILED---\n\n";
-            break;
-        }
-        cheat_init_hooks = true;
+        cheat::state(cheat::status::running);
 
         if (auto handle = CreateThread(0, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(mainThread), hModule, 0, 0))
             CloseHandle(handle);
@@ -72,16 +79,32 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 
 void mainThread(HMODULE hModule)
 {
-    bool loaded = false;
+    
+    /*
+    auto names = cheat::get_asset_names();
+            
+    for (int idx = 0; idx < names->length(); idx++) {
+        auto name = names->data()[idx];
+        std::wcout << L"[=] Asset Name: " << name->buffer << std::endl;
+    }
+    */
+    
     while (!GetAsyncKeyState(VK_DELETE)) {
         /*
-        auto names = cheat::get_asset_names();
+        if (GetAsyncKeyState(0x4C) & 0x0001) {
             
-        for (int idx = 0; idx < names->length(); idx++) {
-            auto name = names->data()[idx];
-            std::wcout << L"[=] Asset Name: " << name->buffer << std::endl;
+            UnityEngine::GameObject* monke = cheat::instantiate_prefab();
+            if (monke)
+                ((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
+
+            
+
+            //UnityEngine::GameObject* sphere = UnityEngine::GameObject::CreatePrimitive(UnityEngine::PrimitiveType::Sphere);
+            //((UnityEngine::Transform*)sphere->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
+            
         }
         */
+
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 

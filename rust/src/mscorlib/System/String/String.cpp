@@ -1,14 +1,14 @@
 #include "String.hpp"
 
+#define min( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
+
 namespace mscorlib::System
 {		
-	String::String(const wchar_t* str)
+	String::String(std::wstring str)
 	{
-#define min( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
-		size = min(wcslen(str), 128);
-#undef min
+		size = min(str.length(), 128);
 		for (int idx = 0; idx < size; idx++) {
-			buffer[idx] = str[idx];
+			buffer[idx] = str.at(idx);
 		}
 		buffer[size] = 0;
 	}
@@ -35,5 +35,5 @@ namespace mscorlib::System
 	{
 		os << Sstr->buffer;
 		return os;
-	}	
+	}
 }

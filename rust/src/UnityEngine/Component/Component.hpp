@@ -8,7 +8,7 @@
 #include "mscorlib/System/Type/Type.hpp"
 //using namespace mscorlib;
 
-
+#define _component(x) ((Component*)x)
 
 namespace UnityEngine
 {

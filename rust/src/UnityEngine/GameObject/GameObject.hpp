@@ -1,7 +1,9 @@
 #pragma once
 #include "UnityEngine/Object/Object.hpp"
+#include "UnityEngine/enums/PrimitiveType.hpp"
 
 #include "UnityEngine/Transform/Transform_proxy.hpp"
+#include "UnityEngine/Component/Component_proxy.hpp"
 
 #include "mscorlib/System/Type/Type.hpp"
 //using namespace mscorlib;
@@ -20,5 +22,9 @@ namespace UnityEngine
 		{
 			return (mscorlib::System::Type*)Il2cppLib::type_object("UnityEngine::GameObject");
 		}
+
+		static GameObject* CreatePrimitive(PrimitiveType type);
+
+		Component_proxy* AddComponent(mscorlib::System::Type* componentType);
 	};
 }
