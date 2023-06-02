@@ -97,4 +97,6 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	}
 	
 	LABaAC(model_pelvis, player_pelvis);
+
+	std::cout << "done...";
 }

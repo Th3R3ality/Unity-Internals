@@ -11,6 +11,14 @@
 
 namespace cache
 {
+	enum item_type
+	{
+		all = 0xff,
+		players = 1 << 0,
+		constraints = 1 << 1,
+		CHANGE_THIS_local = 1 << 2
+	};
+
 	void add(BasePlayer* bp);
 	void add(UnityEngine::AssetBundle* bundle, std::string path);
 	

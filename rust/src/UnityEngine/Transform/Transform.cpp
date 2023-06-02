@@ -41,9 +41,11 @@ namespace UnityEngine
 
 	Transform* Transform::RecursiveFindChild(Transform* parent, std::wstring name)
 	{
-		for (int i = 0; i < parent->childCount(); i++) {
+		auto count = parent->childCount();
+		for (int i = 0; i < count; i++) {
 			auto child = parent->GetChild(i);
-			if (child->name() == name) {
+			auto child_name = child->name();
+			if (child_name == name) {
 				return child;
 			}
 			auto ret_ = RecursiveFindChild(child, name);
@@ -56,6 +58,6 @@ namespace UnityEngine
 
 	Transform* Transform::RecursiveFindChild(Transform* parent, mscorlib::System::String* name)
 	{
-		RecursiveFindChild(parent, name->buffer);
+		return RecursiveFindChild(parent, name->buffer);
 	}
 }
