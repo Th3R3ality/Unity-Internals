@@ -2,9 +2,9 @@
 
 namespace UnityEngine
 {
-	Transform_proxy* GameObject::transform()
+	Transform* GameObject::transform()
 	{
-		static auto fn = (Transform_proxy * (*)(GameObject*))Il2cppLib::method_from_signature("UnityEngine::GameObject.get_transform()");
+		static auto fn = (Transform * (*)(GameObject*))Il2cppLib::method_from_signature("UnityEngine::GameObject.get_transform()");
 		return fn(this);
 	}
 
@@ -14,10 +14,22 @@ namespace UnityEngine
 		return fn(type);
 	}
 	
-	Component_proxy* GameObject::AddComponent(mscorlib::System::Type* componentType)
+	Component* GameObject::AddComponent(mscorlib::System::Type* componentType)
 	{
-		static auto fn = (Component_proxy*(*)(GameObject*, mscorlib::System::Type*))Il2cppLib::method_from_signature("UnityEngine::GameObject.AddComponent(Type)");
+		static auto fn = (Component*(*)(GameObject*, mscorlib::System::Type*))Il2cppLib::method_from_signature("UnityEngine::GameObject.AddComponent(Type)");
 		return fn(this, componentType);
 	}
 	
+	mscorlib::System::Array<Component*>* GameObject::GetComponentsInChildren(mscorlib::System::Type* type)
+	{
+		static auto fn = (mscorlib::System::Array<Component*>*(*)(GameObject*, mscorlib::System::Type*))Il2cppLib::method_from_signature("UnityEngine::GameObject.GetComponentsInChildren(Type)");
+		return fn(this, type);
+	}
+
+	void GameObject::SetActive(bool value)
+	{
+		static auto fn = (void(*)(GameObject*, bool))Il2cppLib::method_from_signature("UnityEngine::GameObject.SetActive(bool)");
+		return fn(this, value);
+	}
 }
+

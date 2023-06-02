@@ -123,9 +123,6 @@
     <ClInclude Include="src\UnityEngine\Transform\Transform.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnityEngine\Transform\Transform_proxy.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\hooks\hooking2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -162,10 +159,16 @@
     <ClInclude Include="src\UnityEngine\enums\enums.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnityEngine\Component\Component_proxy.hpp">
+    <ClInclude Include="src\constraints.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\UnityEngine.Animations\UnityEngine.Animations.hpp">
+    <ClInclude Include="src\UnityEngine\Renderer\Renderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\MeshRenderer\MeshRenderer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\SkinnedMeshRenderer\SkinnedMeshRenderer.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -299,10 +302,19 @@
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\UnityEngine.Animations\ParentConstraint.cpp">
+    <ClCompile Include="src\constraints.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\UnityEngine.Animations\ConstraintSource.cpp">
+    <ClCompile Include="src\constraints.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Renderer\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\MeshRenderer\MeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\SkinnedMeshRenderer\SkinnedMeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

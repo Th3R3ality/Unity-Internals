@@ -212,7 +212,6 @@ DO_API(uint32_t, il2cpp_object_get_size, (Il2CppObject* obj));
 DO_API(const MethodInfo*, il2cpp_object_get_virtual_method, (Il2CppObject* obj, const MethodInfo* method));
 DO_API(Il2CppObject*, il2cpp_object_new, (const Il2CppClass* klass));
 DO_API(void*, il2cpp_object_unbox, (Il2CppObject* obj));
-
 DO_API(Il2CppObject*, il2cpp_value_box, (Il2CppClass* klass, void* data));
 
 // monitor

@@ -5,6 +5,9 @@
 #include "UnityEngine/AssetBundle/AssetBundle.hpp"
 #include "UnityEngine/Object/Object.hpp"
 #include "UnityEngine/GameObject/GameObject.hpp"
+#include "UnityEngine/MeshRenderer/MeshRenderer.hpp"
+#include "UnityEngine/SkinnedMeshRenderer/SkinnedMeshRenderer.hpp"
+#include "UnityEngine/Component/Component.hpp"
 
 #include "mscorlib/System/String/String.hpp"
 
@@ -12,14 +15,24 @@
 #include "rust/classes/BaseNetworkable/BaseNetworkable.hpp"
 
 
-#include "UnityEngine.Animations/UnityEngine.Animations.hpp"
-#include "UnityEngine/Component/Component.hpp"
 
 #include "cheat.hpp"
 #include "cache.hpp"
 
 UnityEngine::AssetBundle* bundle;
 UnityEngine::Object* prefab;
+
+void LABaAC(UnityEngine::Transform* destination, UnityEngine::Transform* source)
+{
+	for (int i = 0; i < destination->childCount(); i++) {
+		auto dst_bone = destination->GetChild(i);
+		auto src_bone = UnityEngine::Transform::RecursiveFindChild(source, dst_bone->name());
+		if (src_bone != nullptr) {
+			cache::add_constraint(constraint_type::rotation, src_bone->gameObject(), dst_bone->gameObject(), true);
+		}
+		LABaAC(destination->GetChild(i), source);
+	}
+}
 
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
@@ -30,8 +43,6 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		return;
 
 	cache::add(instance);
-
-	//UnityEngine::GameObject* go = instance->gameObject();
 
 	std::cout << "bp_load hook!" << std::endl;
 
@@ -53,7 +64,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::cout << "set localplayer!" << std::endl;
 	}
 
-		
+	
 	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 
 	if (!prefab) {
@@ -64,114 +75,26 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	UnityEngine::GameObject* monke = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
 	cache::go(instance, monke);
 	std::cout << "monke : " << monke << "    added to    baseplayer : " << instance << std::endl;
-
-    //if (monke) {
-    if (false) {
-		_transform(monke)->localPosition(_transform(instance)->localPosition());
-		_transform(monke)->localRotation(_transform(instance)->localRotation());
-
-        {
-            using namespace UnityEngine::Animations;
-            ParentConstraint* parentConstraint = (UnityEngine::Animations::ParentConstraint*)monke->AddComponent(UnityEngine::Animations::ParentConstraint());
-            
-            ConstraintSource* constraint = (ConstraintSource*)Il2cppLib::new_object("UnityEngine.Animations::ParentConstraint");
-            constraint->sourceTransform(_transform(instance));
-		    constraint->weight(1.f);
-        
-		    parentConstraint->AddSource(constraint);
-        }
-        
-
-
-		
-
-
-		((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)instance->transform())->position());
-
-		/*
-
-            private void AddRotationConstraint(GameObject objectToConstrain, GameObject targetObject){
-                RotationConstraint rotationConstraint = objectToConstrain.AddComponent<RotationConstraint>();
-
-                // Configure the Rotation Constraint to constrain to the target object
-                rotationConstraint.constraintActive = true;
-                rotationConstraint.AddSource(new ConstraintSource
-                {
-                    sourceTransform = targetObject.transform,
-                    weight = 1f,
-                });
-                rotationConstraint.rotationOffset = new Vector3(0,0,0);
-            }
-
-            private Transform RecursiveFindChild(Transform parent, string name){
-        
-                for (int i = 0; i < parent.childCount; i++){
-                    var child = parent.GetChild(i);
-                    if (child.name == name){
-                        return child;
-                    }
-                    var ret_ = RecursiveFindChild(child, name);
-                    if (ret_ != null){
-                        Debug.Log("Found Child : " + child.name);
-                        return ret_;
-                    }
-                }
-                return null;
-            }
-
-            //Loop All Bones
-            //and
-            //Apply Constraints
-
-            private void LABaAC(Transform objectToConstrain, Transform target){
-                for (int i = 0; i < objectToConstrain.childCount; i++){
-                    var child = objectToConstrain.GetChild(i);
-                    var res = RecursiveFindChild(target, child.name);
-                    if (res != null){
-                        AddRotationConstraint(child.gameObject, res.gameObject);
-                    }
-                    LABaAC(objectToConstrain.GetChild(i), target);
-                }
-            }
     
-            public void AddParentConstraint(GameObject objectToConstrain, GameObject target)
-            {
-                objectToConstrain.transform.localPosition = target.transform.localPosition;
-                objectToConstrain.transform.localRotation = target.transform.localRotation;
+	auto player = instance->gameObject();
+	
+	cache::add_constraint(constraint_type::position, player, monke, true);
 
-                ParentConstraint parentConstraint = objectToConstrain.AddComponent<ParentConstraint>();
-
-                parentConstraint.AddSource(new ConstraintSource { sourceTransform = target.transform });
-
-                parentConstraint.weight = 1f;
-            }
-
-            void Start()
-            {
-                GameObject target_base = GameObject.Find("monke1");
-
-                GameObject source_base = Instantiate(monke_prefab, new Vector3(0,0,0), Quaternion.identity);
-
-                Transform target = RecursiveFindChild(target_base.transform, "Pelvis");
-                Transform source = RecursiveFindChild(source_base.transform, "Pelvis");
-
-                var mesh_renderers = target_base.GetComponentsInChildren<MeshRenderer>();
-                foreach (var mesh_renderer in mesh_renderers)
-                {
-                    mesh_renderer.gameObject.SetActive(false);
-                }
-                var skinned_mesh_renderers = target_base.GetComponentsInChildren<SkinnedMeshRenderer>();
-                foreach (var skinned_mesh_renderer in skinned_mesh_renderers)
-                {
-                    skinned_mesh_renderer.gameObject.SetActive(false);
-                }
-
-                AddParentConstraint(source_base, target_base);
-
-                LABaAC(source, target);
-            }
-
-		*/
+	UnityEngine::Transform* player_pelvis = UnityEngine::Transform::RecursiveFindChild(player->transform(), L"Pelvis");
+	UnityEngine::Transform* model_pelvis = UnityEngine::Transform::RecursiveFindChild(monke->transform(), L"Pelvis");
+	
+	{
+		auto mesh_renderers = player->GetComponentsInChildren(UnityEngine::MeshRenderer());
+		for (int idx = 0; idx < mesh_renderers->length(); idx++) {
+			mesh_renderers->data()[idx]->gameObject()->SetActive(false);
+		}
+	}
+	{
+		auto skinnedmesh_renderers = player->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer());
+		for (int idx = 0; idx < skinnedmesh_renderers->length(); idx++) {
+			skinnedmesh_renderers->data()[idx]->gameObject()->SetActive(false);
+		}
 	}
 	
+	LABaAC(model_pelvis, player_pelvis);
 }

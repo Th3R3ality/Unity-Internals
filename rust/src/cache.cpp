@@ -1,12 +1,17 @@
 #include "cache.hpp"
 
+#include <iostream>
+
 #include <unordered_map>
 #include <vector>
 
 namespace cache
 {
 	BasePlayer* localplayer{ 0 };
+	
 	std::vector<BasePlayer*> players{ 0 };
+	std::vector<constraint> _constraints;
+
 	std::unordered_map<std::string, UnityEngine::AssetBundle*> assetbundles;
 	std::unordered_map<void*, UnityEngine::GameObject*> custom_gameObjects;
 
@@ -26,6 +31,17 @@ namespace cache
 	void go(void* peter, UnityEngine::GameObject* go)
 	{
 		custom_gameObjects[peter] = go;
+	}
+
+	void add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled)
+	{
+		std::cout << "added constraint to: " << dst->name() << " -> " << src->name() << std::endl;
+		_constraints.push_back(constraint(type, src, dst, startEnabled));
+	}
+
+	std::vector<constraint>& get_constraints()
+	{
+		return _constraints;
 	}
 
 	UnityEngine::AssetBundle* bundle(std::string path)

@@ -7,6 +7,8 @@
 
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 
+#include "constraints.hpp"
+
 namespace cache
 {
 	void add(BasePlayer* bp);
@@ -18,6 +20,9 @@ namespace cache
 	bool check();
 	bool check(BasePlayer* bp);
 	bool check_model(BasePlayer* bp);
+
+	void add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled = false);
+	std::vector<constraint>& get_constraints();
 
 	UnityEngine::AssetBundle* bundle(std::string path);
 	std::unordered_map<void*, UnityEngine::GameObject*>& gameObjects();

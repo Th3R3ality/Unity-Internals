@@ -2,7 +2,6 @@
 #include "UnityEngine/Component/Component.hpp"
 #include "UnityEngine/Vector3/Vector3.hpp"
 
-#define _transform(x) ((UnityEngine::Transform*)x->transform())
 
 namespace UnityEngine
 {
@@ -12,11 +11,15 @@ namespace UnityEngine
 		void position(Vector3 pos);
 		Vector3 position();
 
-		void localPosition(Vector3 pos);
-		Vector3 localPosition();
-
-		void localRotation(Quaternion pos);
-		Quaternion localRotation();
+		void rotation(Quaternion pos);
+		Quaternion rotation();
 		
+		int childCount();
+
+		Transform* GetChild(int index);
+
+		static Transform* RecursiveFindChild(Transform* parent, std::wstring name);
+		static Transform* RecursiveFindChild(Transform* parent, mscorlib::System::String* name);
+
 	};
 }

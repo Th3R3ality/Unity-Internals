@@ -20,6 +20,8 @@ namespace mscorlib
 			std::string rest(int start);
 
 			friend std::wostream& operator<<(std::wostream& os, const System::String* Sstr);
+			friend bool operator==(const String* self, const std::wstring& other);
+
 
 			bool equals(const wchar_t* str)
 			{
