@@ -15,7 +15,7 @@ namespace UnityEngine
 		Quaternion rotation();
 		
 		int childCount();
-
+		Transform* root();
 		Transform* GetChild(int index);
 
 		static Transform* RecursiveFindChild(Transform* parent, std::wstring name);

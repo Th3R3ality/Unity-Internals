@@ -87,6 +87,7 @@ namespace cheat
 		HOOK(BP_Load);
 		HOOK(PWM_HandleJumping);
 		HOOK(HE_AddPunch);
+		HOOK(PVS_Receive);
 
 		return true;
 	}

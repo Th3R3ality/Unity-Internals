@@ -115,6 +115,7 @@
     <ClInclude Include="src\minhook\src\trampoline.h" />
     <ClInclude Include="src\mscorlib\mscorlib.hpp" />
     <ClInclude Include="src\mscorlib\System\Array\Array.hpp" />
+    <ClInclude Include="src\mscorlib\System\Byte\Byte.hpp" />
     <ClInclude Include="src\mscorlib\System\String\String.hpp" />
     <ClInclude Include="src\mscorlib\System\Type\Type.hpp" />
     <ClInclude Include="src\Network\Networkable\Networkable.hpp" />
@@ -131,6 +132,8 @@
     <ClInclude Include="src\rust\classes\Facepunch\PerformanceUI\PerformanceUI.hpp" />
     <ClInclude Include="src\rust\classes\HeldEntity\HeldEntity.hpp" />
     <ClInclude Include="src\rust\classes\ModelState\ModelState.hpp" />
+    <ClInclude Include="src\rust\classes\Model\Model.hpp" />
+    <ClInclude Include="src\rust\classes\PlayerVoiceSpeaker\PlayerVoiceSpeaker.hpp" />
     <ClInclude Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.hpp" />
     <ClInclude Include="src\rust\rust.hpp" />
     <ClInclude Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.hpp" />
@@ -163,6 +166,7 @@
     <ClCompile Include="src\hooks\hooking.cpp" />
     <ClCompile Include="src\hooks\FP_PU_Update.cpp" />
     <ClCompile Include="src\hooks\hooking2.cpp" />
+    <ClCompile Include="src\hooks\PVS_Recieve.cpp" />
     <ClCompile Include="src\hooks\PWM_HandleJumping.cpp" />
     <ClCompile Include="src\minhook\src\buffer.c" />
     <ClCompile Include="src\minhook\src\hde\hde32.c" />
@@ -170,6 +174,7 @@
     <ClCompile Include="src\minhook\src\hook.c" />
     <ClCompile Include="src\minhook\src\trampoline.c" />
     <ClCompile Include="src\mscorlib\System\Array\Array.cpp" />
+    <ClCompile Include="src\mscorlib\System\Byte\Byte.cpp" />
     <ClCompile Include="src\mscorlib\System\String\String.cpp" />
     <ClCompile Include="src\mscorlib\System\Type\Type.cpp" />
     <ClCompile Include="src\Network\Networkable\Networkable.cpp" />
@@ -185,6 +190,8 @@
     <ClCompile Include="src\rust\classes\Facepunch\PerformanceUI\PerformanceUI.cpp" />
     <ClCompile Include="src\rust\classes\HeldEntity\HeldEntity.cpp" />
     <ClCompile Include="src\rust\classes\ModelState\ModelState.cpp" />
+    <ClCompile Include="src\rust\classes\Model\Model.cpp" />
+    <ClCompile Include="src\rust\classes\PlayerVoiceSpeaker\PlayerVoiceSpeaker.cpp" />
     <ClCompile Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundle\AssetBundle.cpp" />

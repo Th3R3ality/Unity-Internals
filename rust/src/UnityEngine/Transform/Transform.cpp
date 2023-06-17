@@ -26,19 +26,21 @@ namespace UnityEngine
 		static auto fn = (Quaternion(*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_rotation()");
 		return fn(this);
 	}
-
 	int Transform::childCount()
 	{
 		static auto fn = (int(*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_childCount()");
 		return fn(this);
 	}
-
+	Transform* Transform::root()
+	{
+		static auto fn = (Transform * (*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_root()");
+		return fn(this);
+	}
 	Transform* Transform::GetChild(int index)
 	{
 		static auto fn = (Transform*(*)(Transform*, int))Il2cppLib::method_from_signature("UnityEngine::Transform.GetChild(int)");
 		return fn(this, index);
 	}
-
 	Transform* Transform::RecursiveFindChild(Transform* parent, std::wstring name)
 	{
 		auto count = parent->childCount();

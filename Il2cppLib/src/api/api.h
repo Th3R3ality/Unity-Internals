@@ -37,14 +37,13 @@ namespace Il2cppLib::api
 		TYPE_MAPPING("AssetBundle", "UnityEngine.AssetBundle");
 		TYPE_MAPPING("Object", "UnityEngine.Object");
 
-		TYPE_MAPPING("ConstraintSource", "UnityEngine.Animations.ConstraintSource");
-
 		TYPE_MAPPING("float", "System.Single");
 		TYPE_MAPPING("bool", "System.Boolean");
 		TYPE_MAPPING("string", "System.String");
 		TYPE_MAPPING("int", "System.Int32");
 		TYPE_MAPPING("object", "System.Object");
 		TYPE_MAPPING("Type", "System.Type");
+		TYPE_MAPPING("byte", "System.Byte");
 
 		TYPE_MAPPING("LoadInfo", "BaseNetworkable.LoadInfo");
 

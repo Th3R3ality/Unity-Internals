@@ -31,3 +31,8 @@ void hk__PWM_HandleJumping(PlayerWalkMovement* instance, ModelState* state, bool
 #include "rust/classes/HeldEntity/HeldEntity.hpp"
 const static std::string hk__HE_AddPunch_sig = "HeldEntity.AddPunch(Vector3, float)";
 void hk__HE_AddPunch(HeldEntity* instance, UnityEngine::Vector3 amount, float duration);
+
+//PlayerVoiceSpeaker.Recieve
+#include "rust/classes/PlayerVoiceSpeaker/PlayerVoiceSpeaker.hpp"
+const static std::string hk__PVS_Receive_sig = "PlayerVoiceSpeaker.Receive(System.Byte[])";
+void hk__PVS_Receive(PlayerVoiceSpeaker* instance, System::Array<System::Byte*>* data);
