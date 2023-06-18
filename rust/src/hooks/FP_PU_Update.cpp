@@ -24,4 +24,9 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		cheat::has_unloaded(true);
 	}
 
+
+	static std::vector<constraint>& constraints = cache::get_constraints();
+	for (auto&& c : constraints) {
+		c.apply();
+	}
 }

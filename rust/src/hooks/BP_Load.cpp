@@ -42,6 +42,12 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	ORIG(hk__BP_Load);
 	orig(instance, info);
 	
+	auto pModel = instance->model();
+	if (!pModel) {
+		std::cout << "\n--------------------------------\n            no model           \n--------------------------------\n\n";
+		return;
+	}
+
 	if (cache::check(instance))
 		return;
 
@@ -63,54 +69,59 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		cache::local(instance);
 		std::cout << "set localplayer!" << std::endl;
 		lp = true;
+		return;
 	}
 
-	/*
-	auto player_model_root = instance->model()->transform()->root()->gameObject();			//crashes on other players maybe? or second player
-	std::wcout << "--- MODEL : " << player_model_root->name() << " ---\n";
+	
 
+
+	UnityEngine::GameObject* player_model_root = pModel->transform()->root()->gameObject();
+	std::wcout << "--- MODEL : " << player_model_root->name() << " ---\n";
 	for (int i = 0; i < player_model_root->transform()->childCount(); i++) {
 		std::wcout << " - " << player_model_root->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
-	*/
+	
 	
 
-	/*
+	
 	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
-
 	if (!prefab) {
 		prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
 		std::cout << "loaded asset : " << prefab << std::endl;
 	}
 
-	UnityEngine::GameObject* monke = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
-	cache::go(instance, monke);
-	std::cout << "monke : " << monke->name() << "    added to    baseplayer : " << instance->name() << std::endl;
-    
-	auto player_model_root = instance->model()->transform()->root()->gameObject();
-	
-	cache::add_constraint(constraint_type::position, player_model_root, monke, true);
 
+	UnityEngine::GameObject* monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
+	//already defined ealier l:70
+
+	cache::add_constraint(constraint_type::position, player_model_root, monke_root, true);
+	std::cout << "adding constraint to\n\tmonke_root : " << monke_root->name() << "\nconstrained to\n\tbaseplayer : " << instance->name() << std::endl;
+  
 	std::cout << "searching for \"Pelvis\" on player: " << player_model_root->name() << std::endl;
-	UnityEngine::Transform* player_pelvis = UnityEngine::Transform::RecursiveFindChild(player_model_root->transform(), L"Pelvis");
+	UnityEngine::Transform* player_pelvis = UnityEngine::Transform::RecursiveFindChild(player_model_root->transform(), L"pelvis");
 
-	std::cout << "searching for \"Pelvis\" on player: monke" << std::endl;
-	UnityEngine::Transform* model_pelvis = UnityEngine::Transform::RecursiveFindChild(monke->transform(), L"Pelvis");
+	std::cout << "searching for \"Pelvis\" on player: monke_root" << std::endl;
+	UnityEngine::Transform* model_pelvis = UnityEngine::Transform::RecursiveFindChild(monke_root->transform(), L"pelvis");
 	
+	std::cout << "\n";
 	if (player_pelvis && model_pelvis)
 	{
 		auto mesh_renderers = player_model_root->GetComponentsInChildren(UnityEngine::MeshRenderer());
 		for (int idx = 0; idx < mesh_renderers->length(); idx++) {
+			std::wcout << "disabling mesh_renderer: " << mesh_renderers->data()[idx]->name() << std::endl;
 			mesh_renderers->data()[idx]->gameObject()->SetActive(false);
 		}
+		std::cout << "\n";
 		auto skinnedmesh_renderers = player_model_root->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer());
 		for (int idx = 0; idx < skinnedmesh_renderers->length(); idx++) {
+			std::wcout << "disabling mesh_renderer: " << skinnedmesh_renderers->data()[idx]->name() << std::endl;
 			skinnedmesh_renderers->data()[idx]->gameObject()->SetActive(false);
 		}
 		
 		LABaAC(model_pelvis, player_pelvis);
 	}
 	
-	*/
-	std::cout << "done...";
+	
+	std::cout << "\ndone..." << std::endl;
 }

@@ -133,7 +133,7 @@ namespace Il2cppLib
 		return method_from_signature(signature, true);
 	}
 
-	int32_t Il2cppLib::field_offset_from_signature(std::string signature)
+	uintptr_t Il2cppLib::field_offset_from_signature(std::string signature)
 	{
 		std::string klass_signature;
 		size_t pos = 0;
@@ -150,7 +150,7 @@ namespace Il2cppLib
 		auto klass = class_from_signature(klass_signature);
 		if (!klass) return 0;
 
-		return il2cpp_class_get_field_from_name(klass, signature.c_str())->offset;
+		return (uintptr_t)il2cpp_class_get_field_from_name(klass, signature.c_str())->offset;
 	}
 
 	namespace api

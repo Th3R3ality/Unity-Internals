@@ -35,13 +35,12 @@ namespace cache
 		custom_gameObjects[peter] = go;
 	}
 
-	void add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled)
+	void cache::add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled)
 	{
 		std::cout << "added constraint to: " << dst->name() << " -> " << src->name() << std::endl;
 		__constraints.push_back(constraint(type, src, dst, startEnabled));
 	}
-
-	std::vector<constraint>& get_constraints()
+	std::vector<constraint>& cache::get_constraints()
 	{
 		return __constraints;
 	}
