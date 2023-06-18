@@ -19,9 +19,9 @@
 #include "cheat.hpp"
 #include "cache.hpp"
 
-UnityEngine::AssetBundle* bundle;
-UnityEngine::Object* prefab;
-
+UnityEngine::AssetBundle* bundle{ 0 };
+UnityEngine::Object* prefab{ 0 };
+UnityEngine::GameObject* monke_root{ 0 };
 //Loop All Bones
 //and
 //Add Constraints
@@ -81,20 +81,20 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::wcout << " - " << player_model_root->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
 	
-	
-	
 	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 	if (!prefab) {
 		prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
 		std::cout << "loaded asset : " << prefab << std::endl;
 	}
 
+	if (monke_root)
+		return;
 
-	UnityEngine::GameObject* monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+	monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
 	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
 	//already defined ealier l:70
 
-	cache::add_constraint(constraint_type::position, player_model_root, monke_root, true);
+	cache::add_constraint(constraint_type::position | constraint_type::rotation, player_model_root, monke_root, true);
 	std::cout << "adding constraint to\n\tmonke_root : " << monke_root->name() << "\nconstrained to\n\tbaseplayer : " << instance->name() << std::endl;
   
 	std::cout << "searching for \"Pelvis\" on player: " << player_model_root->name() << std::endl;

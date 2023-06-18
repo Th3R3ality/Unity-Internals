@@ -11,9 +11,15 @@ namespace UnityEngine
 		void position(Vector3 pos);
 		Vector3 position();
 
+		void localPosition(Vector3 pos);
+		Vector3 localPosition();
+
 		void rotation(Quaternion pos);
 		Quaternion rotation();
 		
+		void localRotation(Quaternion pos);
+		Quaternion localRotation();
+
 		int childCount();
 		Transform* root();
 		Transform* GetChild(int index);
