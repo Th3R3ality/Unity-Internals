@@ -82,7 +82,6 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	} std::wcout << std::endl;
 	
 	
-
 	
 	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 	if (!prefab) {
