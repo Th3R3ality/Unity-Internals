@@ -99,6 +99,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Include\Il2cppLib.h" />
+    <ClInclude Include="src\api\2019.4.40f1.h" />
+    <ClInclude Include="src\types\2019.4.40f1.h" />
     <ClInclude Include="src\api\2021.3.21f1.h" />
     <ClInclude Include="src\api\api.h" />
     <ClInclude Include="src\api\config-api-platform.h" />

@@ -39,6 +39,12 @@
     <ClInclude Include="src\api\2021.3.21f1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\types\2019.4.40f1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\2019.4.40f1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Il2cppLib.cpp">

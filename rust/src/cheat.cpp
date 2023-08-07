@@ -14,8 +14,6 @@
 
 namespace cheat
 {
-	UnityEngine::AssetBundle* bundle = 0;
-	UnityEngine::Object* prefab = 0;
 	status current_state = status::none;
 	bool did_unload = false;
 
@@ -71,11 +69,6 @@ namespace cheat
 		return bundle;
 	}
 
-	System::Array<System::String*>* get_asset_names()
-	{
-		return bundle->GetAllAssetNames();
-	}
-
 	bool init_hooks()
 	{
 		MH_Initialize();
@@ -87,7 +80,9 @@ namespace cheat
 		HOOK(BP_Load);
 		HOOK(PWM_HandleJumping);
 		HOOK(HE_AddPunch);
-		HOOK(PVS_Receive);
+		
+		//HOOK(PVS_Receive);
+		HOOK(BP_SendVoiceData);
 
 		return true;
 	}

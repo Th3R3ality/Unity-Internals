@@ -2,8 +2,9 @@
 
 #include <iostream>
 #include <Windows.h>
-#include <cheat.hpp>
 
+#include "cheat.hpp"
+#include "config.hpp"
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -23,7 +24,6 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		//cheat::unload_assetbundles();
 		cheat::has_unloaded(true);
 	}
-
 
 	static std::vector<constraint>& constraints = cache::get_constraints();
 	for (auto&& c : constraints) {

@@ -40,7 +40,7 @@ namespace mscorlib::System
 	}
 	bool operator==(const String* self, const std::wstring& other)
 	{
-		std::wcout << L"comparing: " << self->buffer << L" == " << other << " = " << (other.compare(self->buffer) == 0) << std::endl;
+		//std::wcout << L"comparing: " << self->buffer << L" == " << other << " = " << (other.compare(self->buffer) == 0) << std::endl;
 		return other.compare(self->buffer) == 0;
 	}
 

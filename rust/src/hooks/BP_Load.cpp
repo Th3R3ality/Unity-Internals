@@ -72,23 +72,21 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		return;
 	}
 
-	
-
-
+	/*
 	UnityEngine::GameObject* player_model_root = pModel->transform()->root()->gameObject();
 	std::wcout << "--- MODEL : " << player_model_root->name() << " ---\n";
 	for (int i = 0; i < player_model_root->transform()->childCount(); i++) {
 		std::wcout << " - " << player_model_root->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
 	
-	auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
+	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 	if (!prefab) {
 		prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
 		std::cout << "loaded asset : " << prefab << std::endl;
 	}
 
-	if (monke_root)
-		return;
+	//if (monke_root)
+	//	return;
 
 	monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
 	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
@@ -121,6 +119,6 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		LABaAC(model_pelvis, player_pelvis);
 	}
 	
-	
+	*/
 	std::cout << "\ndone..." << std::endl;
 }
