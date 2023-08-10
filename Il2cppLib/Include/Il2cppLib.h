@@ -20,6 +20,8 @@ namespace Il2cppLib
 	
 	void* type_object(std::string class_signature);
 	
+	void* new_array(std::string class_signature, unsigned int length);
+
 	void* new_object(std::string class_signature);
 
 	namespace api

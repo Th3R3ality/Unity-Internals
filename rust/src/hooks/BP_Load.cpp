@@ -73,6 +73,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	}
 
 	/*
+	
 	UnityEngine::GameObject* player_model_root = pModel->transform()->root()->gameObject();
 	std::wcout << "--- MODEL : " << player_model_root->name() << " ---\n";
 	for (int i = 0; i < player_model_root->transform()->childCount(); i++) {
@@ -87,6 +88,8 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 
 	//if (monke_root)
 	//	return;
+
+	
 
 	monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
 	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
@@ -118,7 +121,8 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		
 		LABaAC(model_pelvis, player_pelvis);
 	}
-	
+
 	*/
+	
 	std::cout << "\ndone..." << std::endl;
 }

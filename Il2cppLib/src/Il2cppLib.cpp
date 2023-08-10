@@ -27,6 +27,11 @@ namespace Il2cppLib
 		return il2cpp_type_get_object(type);
 	}
 
+	void* new_array(std::string class_signature, unsigned int length)
+	{
+		return il2cpp_array_new(class_from_signature(class_signature), length);
+	}
+
 	void* new_object(std::string class_signature)
 	{
 		return il2cpp_object_new(class_from_signature(class_signature));
