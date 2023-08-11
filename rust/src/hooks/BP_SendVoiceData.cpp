@@ -7,7 +7,7 @@
 
 typedef std::mt19937 rng_type;
 std::uniform_int_distribution<rng_type::result_type> randomizerRng(0, 0xFF);
-std::uniform_int_distribution<rng_type::result_type> repeaterRng(7, 15);
+std::uniform_int_distribution<rng_type::result_type> repeaterRng(5, 10);
 
 rng_type rng;
 
@@ -22,18 +22,19 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 	rng_type::result_type const seedval = seed;; // get this from somewhere
 	rng.seed(seedval);
 
-	constexpr bool repeater = true;
-	constexpr bool exploit = false;
-	constexpr bool randomizer = true;
+	constexpr bool repeater = false;
+	constexpr bool exploit = true;
+	constexpr bool doubler = true;
+	constexpr bool randomizer = false;
 
 	static int nigger = 0;
 
 	std::cout << std::hex << std::endl;
 
-	nigger -= 7;
+	nigger -= 5;
 
 	System::Array<System::Byte*>* exploitBuffer = (System::Array<System::Byte*>*)Il2cppLib::new_array("System::Byte", 0x1B);
-	auto sendBuffer = exploit ? exploitBuffer : data;
+	auto sendBuffer = data;
 
 	uint32_t crc = crc32_fast(sendBuffer->data(), sendBuffer->length() - 4);
 	
@@ -73,7 +74,7 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 
 		constexpr unsigned int lowerBound = 18;
 
-		if (i > lowerBound) {
+		if (i >= lowerBound) {
 
 			if (randomizer) {
 				((uint8_t*)sendBuffer->data())[i] = (uint8_t)randomizerRng(rng);
@@ -86,7 +87,7 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 			}
 		}
 
-		std::cout << std::hex << (uintptr_t)((uint8_t*)sendBuffer->data())[i] << " ";
+		//std::cout << std::hex << (uintptr_t)((uint8_t*)sendBuffer->data())[i] << " ";
 		hue::reset(std::cout);
 	}
 	
@@ -117,6 +118,11 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 			}
 		}
 		return;
+	}
+	
+	if (doubler) {
+		orig(instance, sendBuffer, sendBuffer->length());
+		return orig(instance, sendBuffer, sendBuffer->length());
 	}
 
 	return orig(instance, sendBuffer, sendBuffer->length());
