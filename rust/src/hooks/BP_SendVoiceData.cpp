@@ -24,6 +24,7 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 
 	constexpr bool repeater = false;
 	constexpr bool exploit = true;
+	constexpr bool exploitOnly = true;
 	constexpr bool doubler = true;
 	constexpr bool randomizer = false;
 
@@ -33,12 +34,11 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 
 	nigger -= 5;
 
-	System::Array<System::Byte*>* exploitBuffer = (System::Array<System::Byte*>*)Il2cppLib::new_array("System::Byte", 0x1B);
-	auto sendBuffer = data;
+	uint32_t crc = crc32_fast(data->data(), data->length() - 4);
+	bool crcCheck = (crc == *(uint32_t*)((uintptr_t)data->data() + data->length() - 4));
 
-	uint32_t crc = crc32_fast(sendBuffer->data(), sendBuffer->length() - 4);
-	
-	bool crcCheck = (crc == *(uint32_t*)((uintptr_t)sendBuffer->data() + sendBuffer->length() - 4));
+	System::Array<System::Byte*>* exploitOnlyBuffer = (System::Array<System::Byte*>*)Il2cppLib::new_array("System::Byte", 0x1B);
+	auto sendBuffer = exploitOnly ? exploitOnlyBuffer : data;
 	
 	std::cout 
 		<< std::hex << std::showbase
@@ -84,6 +84,9 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 			if (exploit && i - lowerBound < sizeof(exploitData)) {
 				((uint8_t*)sendBuffer->data())[i] = exploitData[i - lowerBound];
 				hue::light_red(std::cout);
+			}
+			else if (exploitOnly) {
+				((uint8_t*)sendBuffer->data())[i] = ((uint8_t*)data->data())[i];
 			}
 		}
 
