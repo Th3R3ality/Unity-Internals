@@ -2,5 +2,8 @@
 
 namespace UnityEngine
 {
+    void Renderer::enabled(bool value)
+    {
 
+    }
 }

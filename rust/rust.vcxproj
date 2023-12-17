@@ -168,6 +168,7 @@
     <ClCompile Include="src\constraints.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\hooks\BP_Load.cpp" />
+    <ClCompile Include="src\hooks\BP_OnVoiceData.cpp" />
     <ClCompile Include="src\hooks\BP_SendVoiceData.cpp" />
     <ClCompile Include="src\hooks\HE_AddPunch.cpp" />
     <ClCompile Include="src\hooks\hooking.cpp" />

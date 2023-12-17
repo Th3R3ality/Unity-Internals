@@ -82,7 +82,8 @@ namespace cheat
 		HOOK(HE_AddPunch);
 		
 		//HOOK(PVS_Receive);
-		HOOK(BP_SendVoiceData);
+		//HOOK(BP_SendVoiceData);
+		//HOOK(BP_OnVoiceData);
 
 		return true;
 	}
@@ -93,6 +94,7 @@ namespace cheat
 		cheat::state(cheat::status::unloading);
 		while (!cheat::has_unloaded()) {
 			std::cout << "wating for unload..." << std::endl;
+			cheat::has_unloaded(true);
 		}
 		hooking::Kill();
 		MH_Uninitialize();

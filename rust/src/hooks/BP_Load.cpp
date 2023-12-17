@@ -21,7 +21,6 @@
 
 UnityEngine::AssetBundle* bundle{ 0 };
 UnityEngine::Object* prefab{ 0 };
-UnityEngine::GameObject* monke_root{ 0 };
 //Loop All Bones
 //and
 //Add Constraints
@@ -72,12 +71,10 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		return;
 	}
 
-	/*
 	
-	UnityEngine::GameObject* player_model_root = pModel->transform()->root()->gameObject();
-	std::wcout << "--- MODEL : " << player_model_root->name() << " ---\n";
-	for (int i = 0; i < player_model_root->transform()->childCount(); i++) {
-		std::wcout << " - " << player_model_root->transform()->GetChild(i)->name() << "\n";
+	std::wcout << "--- MODEL : " << pModel->name() << " ---\n";
+	for (int i = 0; i < pModel->transform()->childCount(); i++) {
+		std::wcout << " - " << pModel->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
 	
 	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
@@ -86,14 +83,51 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::cout << "loaded asset : " << prefab << std::endl;
 	}
 
-	//if (monke_root)
-	//	return;
 
 	
-
-	monke_root = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
+	UnityEngine::GameObject* monkeModel = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
 	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
 	//already defined ealier l:70
+	
+	pModel->GetComponentsInChildren(UnityEngine::Renderer());
+
+	auto renderers = pModel->GetComponentsInChildren(UnityEngine::Renderer());
+	for (int idx = 0; idx < renderers->length(); idx++) {
+		std::wcout << "disabling renderer: " << renderers->data()[idx]->name() << std::endl;
+		renderers->data()[idx]->enabled(false);
+	}
+
+	monkeModel->transform()->SetParent(pModel->transform());
+
+	//monkeModel->transform().SetParent(oldGo.transform);
+
+
+	/*
+	foreach(Renderer renderer in oldGo.GetComponentsInChildren<Renderer>())
+	{
+		renderer.enabled = false;
+	}
+
+
+	//newGo.transform.localPosition = Vector3.zero;
+	//newGo.transform.localRotation = Quaternion.identity;
+	//newGo.transform.localScale = Vector3.one;
+
+	newSkinnedMeshRenderer = newGo.transform.GetComponentInChildren<SkinnedMeshRenderer>();
+	newArmature = newSkinnedMeshRenderer.rootBone.transform.parent;
+
+	newArmature.SetParent(oldGo.transform, true);
+	//newArmature.transform.localScale = oldArmature.transform.localScale;
+	//newArmature.transform.localRotation = oldArmature.transform.localRotation;
+	//newArmature.transform.localPosition = oldArmature.transform.localPosition;
+
+	oldAnimator = oldGo.GetComponent<Animator>();
+	newAnimator = newGo.GetComponent<Animator>();
+
+	oldAnimator.avatar = newAnimator.avatar;
+	*/
+
+	/*
 
 	cache::add_constraint(constraint_type::position | constraint_type::rotation, player_model_root, monke_root, true);
 	std::cout << "adding constraint to\n\tmonke_root : " << monke_root->name() << "\nconstrained to\n\tbaseplayer : " << instance->name() << std::endl;

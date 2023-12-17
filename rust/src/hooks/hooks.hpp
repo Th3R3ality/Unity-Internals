@@ -37,8 +37,12 @@ void hk__HE_AddPunch(HeldEntity* instance, UnityEngine::Vector3 amount, float du
 const static std::string hk__PVS_Receive_sig = "PlayerVoiceSpeaker.Receive(System.Byte[])";
 void hk__PVS_Receive(PlayerVoiceSpeaker* instance, System::Array<System::Byte*>* data);
 
-
 //BasePlayer.SendVoiceData
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 const static std::string hk__BP_SendVoiceData_sig = "BasePlayer.SendVoiceData(System.Byte[], int)";
 void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* data, int len);
+
+//BasePlayer.OnVoiceData
+#include "rust/classes/BasePlayer/BasePlayer.hpp"
+const static std::string hk__BP_OnVoiceData_sig = "BasePlayer.OnVoiceData(System.Byte[])";
+void hk__BP_OnVoiceData(BasePlayer* instance, System::Array<System::Byte*>* data);

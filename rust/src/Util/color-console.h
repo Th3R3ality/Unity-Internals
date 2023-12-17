@@ -1,5 +1,4 @@
-#ifndef COLOR_HPP
-#define COLOR_HPP
+#pragma once
 
 #include <algorithm>
 #include <iostream>
@@ -873,5 +872,3 @@ namespace dye
     template<typename T> R<T> bright_white_on_light_yellow(T t) { return R<T> { S<T>(t, "bw", "ly") }; }
     template<typename T> R<T> bright_white_on_bright_white(T t) { return R<T> { S<T>(t, "bw", "bw") }; }
 }
-
-#endif

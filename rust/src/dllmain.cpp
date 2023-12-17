@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <iostream>
 #include <chrono>
+#include <thread>
 
 #include "Il2cppLib.h"
 #pragma comment( lib, "Il2cppLib" )
@@ -105,6 +106,7 @@ void mainThread(HMODULE hModule)
         }
         */
 
+        
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 

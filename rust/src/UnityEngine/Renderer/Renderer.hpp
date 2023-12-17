@@ -6,6 +6,8 @@ namespace UnityEngine
 	class Renderer : public Component
 	{
 	public:
+		type_overload("UnityEngine::Renderer")
 
+		void enabled(bool value);
 	};
 }

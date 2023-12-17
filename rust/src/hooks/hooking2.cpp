@@ -45,9 +45,14 @@ namespace hooking
 		std::cout << "hook enable - " << __name << " : " << MH_StatusToString(__status) << std::endl;
 	}
 
+	void Disable(std::string __name)
+	{
+		auto __status = MH_DisableHook(__targets[__name]);
+		std::cout << "hook disable - " << __name << " : " << MH_StatusToString(__status) << std::endl;
+	}
+
 	void Kill()
 	{
 		MH_DisableHook(MH_ALL_HOOKS);
-		//MH_RemoveHook();
 	}
 }

@@ -19,5 +19,6 @@ namespace UnityEngine
 		GameObject* gameObject();
 
 		mscorlib::System::Array<Component*>* GetComponentsInChildren(mscorlib::System::Type* t);
+
 	};
 }

