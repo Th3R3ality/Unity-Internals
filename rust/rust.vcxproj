@@ -139,9 +139,11 @@
     <ClInclude Include="src\rust\classes\PlayerVoiceSpeaker\PlayerVoiceSpeaker.hpp" />
     <ClInclude Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.hpp" />
     <ClInclude Include="src\rust\rust.hpp" />
+    <ClInclude Include="src\UnityEngine\Animator\Animator.hpp" />
     <ClInclude Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.hpp" />
     <ClInclude Include="src\UnityEngine\AssetBundle\AssetBundle.hpp" />
     <ClInclude Include="src\UnityEngine\AsyncOperation\AsyncOperations.hpp" />
+    <ClInclude Include="src\UnityEngine\Avatar\Avatar.hpp" />
     <ClInclude Include="src\UnityEngine\Behaviour\Behaviour.hpp" />
     <ClInclude Include="src\UnityEngine\Component\Component.hpp" />
     <ClInclude Include="src\UnityEngine\enums\enums.hpp" />
@@ -203,9 +205,11 @@
     <ClCompile Include="src\rust\classes\Model\Model.cpp" />
     <ClCompile Include="src\rust\classes\PlayerVoiceSpeaker\PlayerVoiceSpeaker.cpp" />
     <ClCompile Include="src\rust\classes\PlayerWalkMovement\PlayerWalkMovement.cpp" />
+    <ClCompile Include="src\UnityEngine\Animator\Animator.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundleRequest\AssetBundleRequest.cpp" />
     <ClCompile Include="src\UnityEngine\AssetBundle\AssetBundle.cpp" />
     <ClCompile Include="src\UnityEngine\AsyncOperation\AsyncOperations.cpp" />
+    <ClCompile Include="src\UnityEngine\Avatar\Avatar.cpp" />
     <ClCompile Include="src\UnityEngine\Behaviour\Behaviour.cpp" />
     <ClCompile Include="src\UnityEngine\Component\Component.cpp" />
     <ClCompile Include="src\UnityEngine\GameObject\GameObject.cpp" />

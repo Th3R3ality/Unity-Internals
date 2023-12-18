@@ -86,4 +86,15 @@ namespace UnityEngine
 	{
 		return RecursiveFindChild(parent, name->buffer);
 	}
+
+	void Transform::SetParent(UnityEngine::Transform* transform)
+	{
+		static auto fn = (void(*)(Transform*, Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.SetParent(UnityEngine.Transform)");
+		return fn(this, transform);
+	}
+	Transform* Transform::parent()
+	{
+		static auto fn = (Transform*(*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_parent()");
+		return fn(this);
+	}
 }

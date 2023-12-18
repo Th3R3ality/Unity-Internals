@@ -22,6 +22,11 @@ namespace UnityEngine
 		return{ 0 };
 	}
 	
+	Component* Component::GetComponent(System::Type* t) {
+		static auto fn = (Component*(*)(Component*, System::Type*))Il2cppLib::virtual_method_from_signature("UnityEngine::Component.GetComponent(Type)");
+		return fn(this, t);
+	}
+
 	System::Array<Component*>* Component::GetComponentsInChildren(System::Type* t)
 	{
 		static auto fn = (System::Array<Component*>*(*)(Component*, System::Type*))Il2cppLib::virtual_method_from_signature("UnityEngine::Component.GetComponentsInChildren(Type)");

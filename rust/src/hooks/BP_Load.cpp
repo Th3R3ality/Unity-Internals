@@ -8,6 +8,7 @@
 #include "UnityEngine/MeshRenderer/MeshRenderer.hpp"
 #include "UnityEngine/SkinnedMeshRenderer/SkinnedMeshRenderer.hpp"
 #include "UnityEngine/Component/Component.hpp"
+#include "UnityEngine/Animator/Animator.hpp"
 
 #include "mscorlib/System/String/String.hpp"
 
@@ -40,26 +41,32 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
 	ORIG(hk__BP_Load);
 	orig(instance, info);
+
+	std::cout << "bp_load hook!" << std::endl;
 	
-	auto pModel = instance->model();
-	if (!pModel) {
+	auto model = instance->model();
+	if (!model) {
 		std::cout << "\n--------------------------------\n            no model           \n--------------------------------\n\n";
 		return;
 	}
 
-	if (cache::check(instance))
+	auto pModel = model->gameObject();
+	std::cout << "got pModel Go\n";
+
+	if (cache::check(instance)) {
 		return;
-
+	}
 	cache::add(instance);
+	std::cout << "new player found!\n";
 
-	std::cout << "bp_load hook!" << std::endl;
+
 
 	std::cout << std::hex << std::showbase << "instance* " << instance 
 		<< std::dec << std::noshowbase << std::endl;
 
 	auto go = instance->gameObject();
 	auto name = go->name();
-	std::wcout << go->name() << std::endl;
+	std::wcout << name << std::endl;
 	
 	std::wcout << instance->displayName() << std::endl;
 
@@ -68,9 +75,8 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		cache::local(instance);
 		std::cout << "set localplayer!" << std::endl;
 		lp = true;
-		return;
+		//return;
 	}
-
 	
 	std::wcout << "--- MODEL : " << pModel->name() << " ---\n";
 	for (int i = 0; i < pModel->transform()->childCount(); i++) {
@@ -79,84 +85,52 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	
 	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
 	if (!prefab) {
-		prefab = bundle->LoadAsset("assets/monke.prefab", UnityEngine::GameObject());
+		prefab = bundle->LoadAsset("assets/rust monke.prefab", UnityEngine::GameObject());
 		std::cout << "loaded asset : " << prefab << std::endl;
+	} else {
+		std::cout << "bundle already loaded\n";
 	}
-
-
 	
 	UnityEngine::GameObject* monkeModel = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
-	//UnityEngine::GameObject* player_model_root = instance->model()->transform()->root()->gameObject();
-	//already defined ealier l:70
+	std::cout << "instantiated monkeModel\n";
 	
-	pModel->GetComponentsInChildren(UnityEngine::Renderer());
 
-	auto renderers = pModel->GetComponentsInChildren(UnityEngine::Renderer());
+	auto renderers = (mscorlib::System::Array<UnityEngine::Renderer* > *)pModel->GetComponentsInChildren(UnityEngine::Renderer());
+	std::cout << "got old renderers\n";
+
 	for (int idx = 0; idx < renderers->length(); idx++) {
-		std::wcout << "disabling renderer: " << renderers->data()[idx]->name() << std::endl;
+		std::wcout << "disabling renderer: " << renderers->data()[idx]->name() << " idx: " << idx << std::endl;
 		renderers->data()[idx]->enabled(false);
 	}
-
 	monkeModel->transform()->SetParent(pModel->transform());
-
-	//monkeModel->transform().SetParent(oldGo.transform);
-
-
-	/*
-	foreach(Renderer renderer in oldGo.GetComponentsInChildren<Renderer>())
-	{
-		renderer.enabled = false;
-	}
-
+	std::cout << "set parent\n";
 
 	//newGo.transform.localPosition = Vector3.zero;
 	//newGo.transform.localRotation = Quaternion.identity;
 	//newGo.transform.localScale = Vector3.one;
 
-	newSkinnedMeshRenderer = newGo.transform.GetComponentInChildren<SkinnedMeshRenderer>();
-	newArmature = newSkinnedMeshRenderer.rootBone.transform.parent;
-
-	newArmature.SetParent(oldGo.transform, true);
+	auto newSkinnedMeshRenderer = (UnityEngine::SkinnedMeshRenderer*)(monkeModel->transform()->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer())->data()[0]);
+	std::cout << "got newSkinnedMeshRenderer\n";
+	auto newArmature = newSkinnedMeshRenderer->rootBone()->transform()->parent();
+	std::cout << "got newArmature\n";
+	newArmature->SetParent(pModel->transform());
+	std::cout << "set newArmature parent\n";
 	//newArmature.transform.localScale = oldArmature.transform.localScale;
 	//newArmature.transform.localRotation = oldArmature.transform.localRotation;
 	//newArmature.transform.localPosition = oldArmature.transform.localPosition;
 
-	oldAnimator = oldGo.GetComponent<Animator>();
-	newAnimator = newGo.GetComponent<Animator>();
-
-	oldAnimator.avatar = newAnimator.avatar;
-	*/
-
-	/*
-
-	cache::add_constraint(constraint_type::position | constraint_type::rotation, player_model_root, monke_root, true);
-	std::cout << "adding constraint to\n\tmonke_root : " << monke_root->name() << "\nconstrained to\n\tbaseplayer : " << instance->name() << std::endl;
-  
-	std::cout << "searching for \"Pelvis\" on player: " << player_model_root->name() << std::endl;
-	UnityEngine::Transform* player_pelvis = UnityEngine::Transform::RecursiveFindChild(player_model_root->transform(), L"pelvis");
-
-	std::cout << "searching for \"Pelvis\" on player: monke_root" << std::endl;
-	UnityEngine::Transform* model_pelvis = UnityEngine::Transform::RecursiveFindChild(monke_root->transform(), L"pelvis");
 	
-	std::cout << "\n";
-	if (player_pelvis && model_pelvis)
-	{
-		auto mesh_renderers = player_model_root->GetComponentsInChildren(UnityEngine::MeshRenderer());
-		for (int idx = 0; idx < mesh_renderers->length(); idx++) {
-			std::wcout << "disabling mesh_renderer: " << mesh_renderers->data()[idx]->name() << std::endl;
-			mesh_renderers->data()[idx]->gameObject()->SetActive(false);
-		}
-		std::cout << "\n";
-		auto skinnedmesh_renderers = player_model_root->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer());
-		for (int idx = 0; idx < skinnedmesh_renderers->length(); idx++) {
-			std::wcout << "disabling mesh_renderer: " << skinnedmesh_renderers->data()[idx]->name() << std::endl;
-			skinnedmesh_renderers->data()[idx]->gameObject()->SetActive(false);
-		}
-		
-		LABaAC(model_pelvis, player_pelvis);
-	}
 
-	*/
-	
+	auto oldAnimator = (UnityEngine::Animator*)pModel->transform()->GetComponent(UnityEngine::Animator());
+	std::cout << "got oldAnimator\n";
+	auto newAnimator = (UnityEngine::Animator*)monkeModel->transform()->GetComponent(UnityEngine::Animator());
+	std::cout << "got newAnimator\n";
+
+	auto avatar = newAnimator->avatar();
+	std::cout << "got newAnimator avatar\n";
+	oldAnimator->avatar(avatar);
+	std::cout << "set oldAnimator avatar -> newAnimator avatar\n";
+
+	std::cout << "swapped avatar\n";
 	std::cout << "\ndone..." << std::endl;
 }

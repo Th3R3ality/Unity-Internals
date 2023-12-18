@@ -8,6 +8,8 @@ namespace UnityEngine
 	class SkinnedMeshRenderer : public Renderer
 	{
 	public:
-		type_overload("UnityEngine::SkinnedMeshRenderer")
+		type_overload("UnityEngine::SkinnedMeshRenderer");
+
+		Transform* rootBone();
 	};
 }
