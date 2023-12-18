@@ -23,11 +23,11 @@ namespace cheat
 	void has_unloaded(bool status);
 
 	void unload_gameObjects();
+	void revert_model_changes();
 	void unload_assetbundles();
-	
+
 	UnityEngine::AssetBundle* load_assetbundle(std::string path);
 
-	System::Array<System::String*>* get_asset_names();
 
 	bool init_hooks();
 

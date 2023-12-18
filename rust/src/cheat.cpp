@@ -2,6 +2,8 @@
 
 #include <string>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "minhook/include/MinHook.h"
 
@@ -45,14 +47,45 @@ namespace cheat
 		gameObjects.clear();
 	}
 
+	void revert_model_changes()
+	{
+		std::cout << "cleaning up model changes\n";
+		auto cachedPlayers = cache::cachedPlayers();
+
+		for (auto& cachedPlayer : cachedPlayers) {
+			auto animator = cachedPlayer.second.pAnimator;
+			std::cout << "animator: " << animator << "\n";
+			if (!animator) continue;
+			auto avatar = cachedPlayer.second.pOrigAvatar;
+			std::cout << "avatar: " << avatar << "\n";
+			if (!avatar) continue;
+
+			animator->avatar(avatar);
+
+			auto armature = cachedPlayer.second.pArmatureGo;
+			std::cout << "armature: " << armature << "\n";
+			if (!armature) continue;
+			UnityEngine::Object::Destroy(armature);
+			
+			auto mesh = cachedPlayer.second.pMeshGo;
+			std::cout << "mesh: " << mesh << "\n";
+			if (!mesh) continue;
+			UnityEngine::Object::Destroy(mesh);
+		}
+	}
+
 	void unload_assetbundles()
 	{
-		auto bundles = cache::bundles();
-		for (auto bundle : bundles) {
-			std::cout << "unloading " << bundle.first << "    at : " << bundle.second << std::endl;
-			bundle.second->Unload(true);
+		static bool unloadingBundles = false;
+		if (!unloadingBundles) {
+			unloadingBundles = true;
+			auto bundles = cache::bundles();
+			for (auto bundle : bundles) {
+				std::cout << "unloading " << bundle.first << "    at : " << bundle.second << std::endl;
+				bundle.second->Unload(true);
+			}
+			bundles.clear();
 		}
-		bundles.clear();
 	}
 
 	UnityEngine::AssetBundle* load_assetbundle(std::string path)
@@ -94,7 +127,8 @@ namespace cheat
 		cheat::state(cheat::status::unloading);
 		while (!cheat::has_unloaded()) {
 			std::cout << "wating for unload..." << std::endl;
-			cheat::has_unloaded(true);
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			//cheat::has_unloaded(true);
 		}
 		hooking::Kill();
 		MH_Uninitialize();

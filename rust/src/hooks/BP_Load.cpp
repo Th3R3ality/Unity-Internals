@@ -9,33 +9,16 @@
 #include "UnityEngine/SkinnedMeshRenderer/SkinnedMeshRenderer.hpp"
 #include "UnityEngine/Component/Component.hpp"
 #include "UnityEngine/Animator/Animator.hpp"
+#include "UnityEngine/enums/HumanBodyBones.hpp"
 
 #include "mscorlib/System/String/String.hpp"
 
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 #include "rust/classes/BaseNetworkable/BaseNetworkable.hpp"
 
-
-
 #include "cheat.hpp"
 #include "cache.hpp"
 
-UnityEngine::AssetBundle* bundle{ 0 };
-UnityEngine::Object* prefab{ 0 };
-//Loop All Bones
-//and
-//Add Constraints
-void LABaAC(UnityEngine::Transform* destination, UnityEngine::Transform* source)
-{
-	for (int i = 0; i < destination->childCount(); i++) {
-		auto dst_bone = destination->GetChild(i);
-		auto src_bone = UnityEngine::Transform::RecursiveFindChild(source, dst_bone->name());
-		if (src_bone != nullptr) {
-			cache::add_constraint(constraint_type::rotation, src_bone->gameObject(), dst_bone->gameObject(), true);
-		}
-		LABaAC(destination->GetChild(i), source);
-	}
-}
 
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
@@ -44,21 +27,24 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 
 	std::cout << "bp_load hook!" << std::endl;
 	
-	auto model = instance->model();
-	if (!model) {
-		std::cout << "\n--------------------------------\n            no model           \n--------------------------------\n\n";
+	auto playerModel = instance->playerModel();
+	if (!playerModel) {
+		playerModel = (PlayerModel*)instance->transform()->GetComponent(PlayerModel());
+	}
+	if (!playerModel) {
+		std::cout << "\n--------------------------------\n|        no playerModel        |\n--------------------------------\n\n";
 		return;
 	}
-
-	auto pModel = model->gameObject();
-	std::cout << "got pModel Go\n";
 
 	if (cache::check(instance)) {
 		return;
 	}
 	cache::add(instance);
+	cache::CachedPlayer& cachedPlayer = cache::get(instance);
 	std::cout << "new player found!\n";
 
+	auto pModel = playerModel->gameObject();
+	std::cout << "got pModel Go\n";
 
 
 	std::cout << std::hex << std::showbase << "instance* " << instance 
@@ -84,37 +70,57 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	} std::wcout << std::endl;
 	
 	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
-	if (!prefab) {
-		prefab = bundle->LoadAsset("assets/rust monke.prefab", UnityEngine::GameObject());
-		std::cout << "loaded asset : " << prefab << std::endl;
+	static UnityEngine::Object* monkePrefab = nullptr;
+
+
+	if (!monkePrefab) {
+		monkePrefab = bundle->LoadAsset("assets/rust monke.prefab", UnityEngine::GameObject());
+		std::cout << "loaded monkePrefab : " << monkePrefab << std::endl;
 	} else {
-		std::cout << "bundle already loaded\n";
+		std::cout << "monkePrefab already loaded\n";
 	}
 	
-	UnityEngine::GameObject* monkeModel = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(prefab);
-	std::cout << "instantiated monkeModel\n";
+	static auto invicibleBundle = cheat::load_assetbundle("C:\\users\\reality\\Desktop\\invicible.bundle");
+	static UnityEngine::Shader* invicibleShader = nullptr;
 	
+	if (!invicibleShader) {
+		invicibleShader = (UnityEngine::Shader*)invicibleBundle->LoadAsset("assets\\invicible.shader", UnityEngine::Shader());
+		std::cout << "loaded invicibleShader : " << invicibleShader << std::endl;
+	}
+	else {
+		std::cout << "invicibleShader already loaded\n";
+	}
+
+	UnityEngine::GameObject* monkeModel = (UnityEngine::GameObject*)UnityEngine::Object::Instantiate(monkePrefab);
 
 	auto renderers = (mscorlib::System::Array<UnityEngine::Renderer* > *)pModel->GetComponentsInChildren(UnityEngine::Renderer());
-	std::cout << "got old renderers\n";
 
 	for (int idx = 0; idx < renderers->length(); idx++) {
-		std::wcout << "disabling renderer: " << renderers->data()[idx]->name() << " idx: " << idx << std::endl;
-		renderers->data()[idx]->enabled(false);
+		auto renderer = renderers->data()[idx];
+		
+		auto materials = renderer->materials();
+		//std::cout << "material shaders:\n";
+		for (int jdx = 0; jdx < materials->length(); jdx++) {
+			auto material = materials->data()[jdx];
+			if (!material) continue;
+
+			auto shader = material->shader();
+			//std::wcout << " L " << shader->name() << std::endl;
+		}
+
+		//std::wcout << "disabling renderer: " << renderer->name() << " idx: " << idx << std::endl;
+		//renderer->enabled(false);
 	}
 	monkeModel->transform()->SetParent(pModel->transform());
-	std::cout << "set parent\n";
-
+	cachedPlayer.pMeshGo = monkeModel;
 	//newGo.transform.localPosition = Vector3.zero;
 	//newGo.transform.localRotation = Quaternion.identity;
 	//newGo.transform.localScale = Vector3.one;
 
 	auto newSkinnedMeshRenderer = (UnityEngine::SkinnedMeshRenderer*)(monkeModel->transform()->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer())->data()[0]);
-	std::cout << "got newSkinnedMeshRenderer\n";
 	auto newArmature = newSkinnedMeshRenderer->rootBone()->transform()->parent();
-	std::cout << "got newArmature\n";
+	cachedPlayer.pArmatureGo = newArmature->gameObject();
 	newArmature->SetParent(pModel->transform());
-	std::cout << "set newArmature parent\n";
 	//newArmature.transform.localScale = oldArmature.transform.localScale;
 	//newArmature.transform.localRotation = oldArmature.transform.localRotation;
 	//newArmature.transform.localPosition = oldArmature.transform.localPosition;
@@ -122,15 +128,33 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	
 
 	auto oldAnimator = (UnityEngine::Animator*)pModel->transform()->GetComponent(UnityEngine::Animator());
-	std::cout << "got oldAnimator\n";
 	auto newAnimator = (UnityEngine::Animator*)monkeModel->transform()->GetComponent(UnityEngine::Animator());
-	std::cout << "got newAnimator\n";
+	cachedPlayer.pAnimator = oldAnimator;
 
-	auto avatar = newAnimator->avatar();
-	std::cout << "got newAnimator avatar\n";
-	oldAnimator->avatar(avatar);
-	std::cout << "set oldAnimator avatar -> newAnimator avatar\n";
+	
+	//auto lFoot = oldAnimator->GetBoneTransform(UnityEngine::HumanBodyBones::LeftFoot);
+	auto lFoot = playerModel->leftFootBone();
+	if (lFoot) {
+		std::cout << "lFoot found\n";
+		std::cout << lFoot->name() << std::endl;
+	}
+	else std::cout << "no lFoot found!!!\n";
 
-	std::cout << "swapped avatar\n";
-	std::cout << "\ndone..." << std::endl;
+	//auto rFoot = oldAnimator->GetBoneTransform(UnityEngine::HumanBodyBones::RightFoot);
+	auto rFoot = playerModel->rightFootBone();
+	if (rFoot) {
+		std::cout << "rFoot found\n";
+		std::cout << rFoot->name() << std::endl;
+		cachedPlayer.rFoot = rFoot;
+		
+	}
+	else std::cout << "no rFoot found!!!\n";
+	
+	auto oldAvatar = oldAnimator->avatar();
+	auto newAvatar = newAnimator->avatar();
+	cachedPlayer.pOrigAvatar = oldAvatar;
+
+	oldAnimator->avatar(newAvatar);
+
+	std::cout << "swapped models..." << std::endl;
 }

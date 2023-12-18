@@ -23,7 +23,7 @@
 bool init_Il2cppLib = false;
 bool cheat_load_assets = false;
 bool cheat_init_hooks = false;
-
+bool console_present = false;
 void mainThread(HMODULE hModule);
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
@@ -31,9 +31,14 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        AllocConsole();
-        FILE* f;
-        freopen_s(&f, "CONOUT$", "w", stdout);
+        if (GetConsoleWindow()) {
+            console_present = true;
+        }
+        if (!console_present) {
+            AllocConsole();
+            FILE* f;
+            freopen_s(&f, "CONOUT$", "w", stdout);
+        }
         std::cout << "[+] hello!" << std::endl;
 
         cheat::state(cheat::status::loading);
@@ -51,15 +56,6 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
             break;
         }
         cheat_init_hooks = true;
-
-        /*
-        std::cout << "init | assetbundle \n";
-        if (!cheat::load_assets()) {
-            std::cout << "---FAILED---\n\n";
-            break;
-        }
-        cheat_load_assets = true;
-        */
 
         cheat::state(cheat::status::running);
 
@@ -81,36 +77,16 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 void mainThread(HMODULE hModule)
 {
     
-    /*
-    auto names = cheat::get_asset_names();
-            
-    for (int idx = 0; idx < names->length(); idx++) {
-        auto name = names->data()[idx];
-        std::wcout << L"[=] Asset Name: " << name->buffer << std::endl;
-    }
-    */
-    
     while (!GetAsyncKeyState(VK_DELETE)) {
-        /*
-        if (GetAsyncKeyState(0x4C) & 0x0001) {
-            
-            UnityEngine::GameObject* monke = cheat::instantiate_prefab();
-            if (monke)
-                ((UnityEngine::Transform*)monke->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
 
-            
-
-            //UnityEngine::GameObject* sphere = UnityEngine::GameObject::CreatePrimitive(UnityEngine::PrimitiveType::Sphere);
-            //((UnityEngine::Transform*)sphere->transform())->position(((UnityEngine::Transform*)cache::local()->transform())->position());
-            
-        }
-        */
 
         
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     cheat::unload();
-    FreeConsole();
+    if (!console_present) {
+        FreeConsole();
+    }
     FreeLibraryAndExitThread(hModule, 0);
 }

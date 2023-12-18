@@ -32,7 +32,8 @@ namespace UnityEngine
 
 	void AssetBundle::Unload(bool unloadAllLoadedObjects)
 	{
-		static auto fn = (void(*)(AssetBundle*, bool))Il2cppLib::method_from_signature("UnityEngine::AssetBundle.Unload(bool)");
-		return fn(this, unloadAllLoadedObjects);
+		//static auto fn = (void(*)(AssetBundle*, bool))Il2cppLib::method_from_signature("UnityEngine::AssetBundle.Unload(bool)");
+		static auto fn = Il2cppLib::resolve_icall("UnityEngine.AssetBundle::Unload(System.Boolean)");
+		return ((void(*)(AssetBundle*, bool))fn)(this, unloadAllLoadedObjects);
 	}
 }

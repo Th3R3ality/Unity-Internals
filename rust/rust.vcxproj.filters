@@ -207,6 +207,18 @@
     <ClInclude Include="src\UnityEngine\Avatar\Avatar.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UnityEngine\Material\Material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\Shader\Shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\enums\HumanBodyBones.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\PlayerModel\PlayerModel.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -390,6 +402,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UnityEngine\Avatar\Avatar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Material\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Shader\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\PlayerModel\PlayerModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

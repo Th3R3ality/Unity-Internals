@@ -5,25 +5,38 @@
 #include <unordered_map>
 #include <vector>
 
+
 namespace cache
 {
-
+	
 
 	BasePlayer* localplayer{ 0 };
-	
-	std::vector<BasePlayer*> __players{ 0 };
-	std::vector<constraint> __constraints;
+
+	std::unordered_map<BasePlayer*, CachedPlayer> __cachedPlayers;
 
 	std::unordered_map<std::string, UnityEngine::AssetBundle*> assetbundles;
 	std::unordered_map<void*, UnityEngine::GameObject*> custom_gameObjects;
 
 	void add(BasePlayer* bp)
 	{
-		__players.push_back(bp);
+		__cachedPlayers[bp] = { bp, nullptr };
 	}
 	void add(UnityEngine::AssetBundle* bundle, std::string path)
 	{
 		assetbundles[path] = bundle;
+	}
+	void set(BasePlayer* bp, UnityEngine::Avatar* avatar)
+	{
+		__cachedPlayers[bp].pOrigAvatar = avatar;
+	}
+	void set(BasePlayer* bp, UnityEngine::Animator* animator)
+	{
+		__cachedPlayers[bp].pAnimator = animator;
+	}
+
+	CachedPlayer& get(BasePlayer* bp)
+	{
+		return __cachedPlayers[bp];
 	}
 	
 	void go(BasePlayer* bp, UnityEngine::GameObject* go)
@@ -33,16 +46,6 @@ namespace cache
 	void go(void* peter, UnityEngine::GameObject* go)
 	{
 		custom_gameObjects[peter] = go;
-	}
-
-	void cache::add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled)
-	{
-		std::cout << "added constraint to: " << dst->name() << " -> " << src->name() << std::endl;
-		__constraints.push_back(constraint(type, src, dst, startEnabled));
-	}
-	std::vector<constraint>& cache::get_constraints()
-	{
-		return __constraints;
 	}
 
 	UnityEngine::AssetBundle* bundle(std::string path)
@@ -58,6 +61,10 @@ namespace cache
 	{
 		return assetbundles;
 	}
+	std::unordered_map<BasePlayer*, CachedPlayer>& cachedPlayers()
+	{
+		return __cachedPlayers;
+	}
 
 	bool check()
 	{
@@ -65,8 +72,8 @@ namespace cache
 	}
 	bool check(BasePlayer* bp)
 	{
-		for (auto&& p : __players) {
-			if (bp == p)
+		for (auto&& cachedPlayer : __cachedPlayers) {
+			if (bp == cachedPlayer.first)
 				return true;
 		}
 		return false;
