@@ -61,16 +61,11 @@ namespace cheat
 			if (!avatar) continue;
 
 			animator->avatar(avatar);
-
-			auto armature = cachedPlayer.second.pArmatureGo;
-			std::cout << "armature: " << armature << "\n";
-			if (!armature) continue;
-			UnityEngine::Object::Destroy(armature);
 			
-			auto mesh = cachedPlayer.second.pMeshGo;
-			std::cout << "mesh: " << mesh << "\n";
-			if (!mesh) continue;
-			UnityEngine::Object::Destroy(mesh);
+			auto gameobject = cachedPlayer.second.pGameObject;
+			std::cout << "gameobject: " << gameobject << "\n";
+			if (!gameobject) continue;
+			UnityEngine::Object::Destroy(gameobject);
 		}
 	}
 

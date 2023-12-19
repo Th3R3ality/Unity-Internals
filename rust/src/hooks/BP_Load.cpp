@@ -27,9 +27,10 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 
 	std::cout << "bp_load hook!" << std::endl;
 	
-	auto playerModel = instance->playerModel();
+	//auto playerModel = instance->playerModel();
+	auto playerModel = instance->model();
 	if (!playerModel) {
-		playerModel = (PlayerModel*)instance->transform()->GetComponent(PlayerModel());
+		//playerModel = (PlayerModel*)instance->transform()->GetComponent(PlayerModel());
 	}
 	if (!playerModel) {
 		std::cout << "\n--------------------------------\n|        no playerModel        |\n--------------------------------\n\n";
@@ -69,12 +70,12 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::wcout << " - " << pModel->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
 	
-	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\monke.bundle");
+	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\modelchange.bundle");
 	static UnityEngine::Object* monkePrefab = nullptr;
 
 
 	if (!monkePrefab) {
-		monkePrefab = bundle->LoadAsset("assets/rust monke.prefab", UnityEngine::GameObject());
+		monkePrefab = bundle->LoadAsset("assets\\cxtgirl\\catgxrl_modelchange.prefab", UnityEngine::GameObject());
 		std::cout << "loaded monkePrefab : " << monkePrefab << std::endl;
 	} else {
 		std::cout << "monkePrefab already loaded\n";
@@ -98,6 +99,8 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	for (int idx = 0; idx < renderers->length(); idx++) {
 		auto renderer = renderers->data()[idx];
 		
+		bool isSkin = false;
+
 		auto materials = renderer->materials();
 		//std::cout << "material shaders:\n";
 		for (int jdx = 0; jdx < materials->length(); jdx++) {
@@ -105,22 +108,26 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 			if (!material) continue;
 
 			auto shader = material->shader();
-			//std::wcout << " L " << shader->name() << std::endl;
+			std::wcout << " L " << shader->name() << std::endl;
+			if (shader->name()->equals(L"Core/Skin")) {
+				isSkin = true;
+			}
 		}
-
-		//std::wcout << "disabling renderer: " << renderer->name() << " idx: " << idx << std::endl;
-		//renderer->enabled(false);
+		if (isSkin) {
+			std::wcout << "disabling renderer: " << renderer->name() << " idx: " << idx << std::endl;
+			renderer->enabled(false);
+		}
 	}
-	monkeModel->transform()->SetParent(pModel->transform());
-	cachedPlayer.pMeshGo = monkeModel;
+	monkeModel->transform()->SetParent(pModel->transform(), false);
+	cachedPlayer.pGameObject = monkeModel;
 	//newGo.transform.localPosition = Vector3.zero;
 	//newGo.transform.localRotation = Quaternion.identity;
 	//newGo.transform.localScale = Vector3.one;
 
-	auto newSkinnedMeshRenderer = (UnityEngine::SkinnedMeshRenderer*)(monkeModel->transform()->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer())->data()[0]);
-	auto newArmature = newSkinnedMeshRenderer->rootBone()->transform()->parent();
-	cachedPlayer.pArmatureGo = newArmature->gameObject();
-	newArmature->SetParent(pModel->transform());
+	//auto newSkinnedMeshRenderer = (UnityEngine::SkinnedMeshRenderer*)(monkeModel->transform()->GetComponentsInChildren(UnityEngine::SkinnedMeshRenderer())->data()[0]);
+	//auto newArmature = newSkinnedMeshRenderer->rootBone()->transform()->parent();
+	//cachedPlayer.pArmatureGo = newArmature->gameObject();
+	//newArmature->SetParent(pModel->transform());
 	//newArmature.transform.localScale = oldArmature.transform.localScale;
 	//newArmature.transform.localRotation = oldArmature.transform.localRotation;
 	//newArmature.transform.localPosition = oldArmature.transform.localPosition;
@@ -131,7 +138,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	auto newAnimator = (UnityEngine::Animator*)monkeModel->transform()->GetComponent(UnityEngine::Animator());
 	cachedPlayer.pAnimator = oldAnimator;
 
-	
+	/*
 	//auto lFoot = oldAnimator->GetBoneTransform(UnityEngine::HumanBodyBones::LeftFoot);
 	auto lFoot = playerModel->leftFootBone();
 	if (lFoot) {
@@ -149,7 +156,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		
 	}
 	else std::cout << "no rFoot found!!!\n";
-	
+	*/
 	auto oldAvatar = oldAnimator->avatar();
 	auto newAvatar = newAnimator->avatar();
 	cachedPlayer.pOrigAvatar = oldAvatar;

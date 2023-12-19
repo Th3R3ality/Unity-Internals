@@ -18,8 +18,7 @@ namespace cache
 		BasePlayer* pBasePlayer = nullptr;
 		UnityEngine::Avatar* pOrigAvatar = nullptr;
 		UnityEngine::Animator* pAnimator = nullptr;
-		UnityEngine::GameObject* pArmatureGo = nullptr;
-		UnityEngine::GameObject* pMeshGo = nullptr;
+		UnityEngine::GameObject* pGameObject = nullptr;
 		UnityEngine::Transform* lFoot = nullptr;
 		UnityEngine::Transform* rFoot = nullptr;
 	};

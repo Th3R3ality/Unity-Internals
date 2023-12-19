@@ -27,7 +27,8 @@ namespace UnityEngine
 		static Transform* RecursiveFindChild(Transform* parent, std::wstring name);
 		static Transform* RecursiveFindChild(Transform* parent, mscorlib::System::String* name);
 
-		void SetParent(UnityEngine::Transform*);
+		void SetParent(UnityEngine::Transform* transform);
+		void SetParent(UnityEngine::Transform* transform, bool worldPositionStays);
 		Transform* parent();
 	};
 }

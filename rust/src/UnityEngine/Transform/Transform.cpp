@@ -92,6 +92,13 @@ namespace UnityEngine
 		static auto fn = (void(*)(Transform*, Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.SetParent(UnityEngine.Transform)");
 		return fn(this, transform);
 	}
+
+	void Transform::SetParent(UnityEngine::Transform* transform, bool worldPositionStays)
+	{
+		static auto fn = (void(*)(Transform*, Transform*, bool))Il2cppLib::method_from_signature("UnityEngine::Transform.SetParent(UnityEngine.Transform, bool)");
+		return fn(this, transform, worldPositionStays);
+	}
+
 	Transform* Transform::parent()
 	{
 		static auto fn = (Transform*(*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_parent()");
