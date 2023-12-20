@@ -11,6 +11,16 @@ using namespace mscorlib;
 class BasePlayer : public BaseCombatEntity
 {
 public:
+
+	enum CameraMode
+	{
+		FirstPerson,
+		ThirdPerson,
+		Eyes,
+		FirstPersonWithArms,
+		DeathCamClassic,
+		Last = 3
+	};
 	System::String* displayName();
 
 	void SendVoiceData(System::Array<System::Byte*>* data, int len);

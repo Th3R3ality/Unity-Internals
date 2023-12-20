@@ -27,8 +27,9 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 
 	std::cout << "bp_load hook!" << std::endl;
 	
-	//auto playerModel = instance->playerModel();
-	auto playerModel = instance->model();
+	auto playerModel = instance->playerModel();
+	std::cout << "playerModel : " << playerModel << std::endl;
+
 	if (!playerModel) {
 		//playerModel = (PlayerModel*)instance->transform()->GetComponent(PlayerModel());
 	}
@@ -70,12 +71,24 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		std::wcout << " - " << pModel->transform()->GetChild(i)->name() << "\n";
 	} std::wcout << std::endl;
 	
-	static auto bundle = cheat::load_assetbundle("C:\\Users\\reality\\Desktop\\modelchange.bundle");
+	std::string modelPaths[] = {
+		"C:\\Users\\reality\\Desktop\\peter.bundle",
+		"C:\\Users\\reality\\Desktop\\monke.bundle",
+		"C:\\Users\\reality\\Desktop\\modelchange.bundle"
+	};
+	std::string prefabPaths[] = {
+		"assets\\peter\\peter.prefab",
+		"assets\\rust monke.prefab",
+		"assets\\cxtgirl\\catgxrl_modelchange.prefab"
+	};
+
+	int model = 0;
+
+	static auto bundle = cheat::load_assetbundle(modelPaths[model]);
 	static UnityEngine::Object* monkePrefab = nullptr;
 
-
 	if (!monkePrefab) {
-		monkePrefab = bundle->LoadAsset("assets\\cxtgirl\\catgxrl_modelchange.prefab", UnityEngine::GameObject());
+		monkePrefab = bundle->LoadAsset(prefabPaths[model], UnityEngine::GameObject());
 		std::cout << "loaded monkePrefab : " << monkePrefab << std::endl;
 	} else {
 		std::cout << "monkePrefab already loaded\n";
@@ -132,13 +145,11 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	//newArmature.transform.localRotation = oldArmature.transform.localRotation;
 	//newArmature.transform.localPosition = oldArmature.transform.localPosition;
 
-	
-
 	auto oldAnimator = (UnityEngine::Animator*)pModel->transform()->GetComponent(UnityEngine::Animator());
 	auto newAnimator = (UnityEngine::Animator*)monkeModel->transform()->GetComponent(UnityEngine::Animator());
 	cachedPlayer.pAnimator = oldAnimator;
 
-	/*
+	
 	//auto lFoot = oldAnimator->GetBoneTransform(UnityEngine::HumanBodyBones::LeftFoot);
 	auto lFoot = playerModel->leftFootBone();
 	if (lFoot) {
@@ -156,7 +167,10 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		
 	}
 	else std::cout << "no rFoot found!!!\n";
-	*/
+	
+	playerModel->leftFootIK(0);
+	playerModel->rightFootIK(0);
+
 	auto oldAvatar = oldAnimator->avatar();
 	auto newAvatar = newAnimator->avatar();
 	cachedPlayer.pOrigAvatar = oldAvatar;

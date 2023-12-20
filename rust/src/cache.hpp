@@ -57,5 +57,5 @@ namespace cache
 	UnityEngine::GameObject* get_model(BasePlayer* bp);
 
 	void local(BasePlayer* bp);
-	UnityEngine::GameObject* local();
+	BasePlayer* local();
 }

@@ -26,4 +26,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		cheat::unload_assetbundles();
 		cheat::has_unloaded(true);
 	}
+
+	auto localPlayer = cache::local();
+
+	if (localPlayer) {
+		//*(int*)((uint64_t)localPlayer + 0x8c8) |= 1024;
+	}
 }

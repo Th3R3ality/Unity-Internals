@@ -8,8 +8,10 @@ public:
 	type_overload("PlayerModel");
 
 	UnityEngine::Transform* leftFootBone();
-	UnityEngine::Transform* rightFootBone();
-
 	void leftFootBone(UnityEngine::Transform* transform);
+	UnityEngine::Transform* rightFootBone();
 	void rightFootBone(UnityEngine::Transform* transform);
+
+	UnityEngine::Transform* leftFootIK(int val);
+	UnityEngine::Transform* rightFootIK(int val);
 };

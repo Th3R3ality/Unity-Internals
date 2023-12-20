@@ -99,11 +99,11 @@ namespace cache
 	{
 		localplayer = bp;
 	}
-	UnityEngine::GameObject* local()
+	BasePlayer* local()
 	{
 		if (!localplayer)
 			return nullptr;
-		return localplayer->gameObject();
+		return localplayer;
 	}
 
 
