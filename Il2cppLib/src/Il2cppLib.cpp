@@ -141,6 +141,11 @@ namespace Il2cppLib
 		return method_from_signature(signature, true);
 	}
 
+	void* Il2cppLib::static_field_from_signature(std::string signature)
+	{
+		return nullptr;
+	}
+
 	uintptr_t Il2cppLib::field_offset_from_signature(std::string signature)
 	{
 		std::string klass_signature;

@@ -14,6 +14,7 @@ namespace Il2cppLib
 	void* method_from_signature(std::string signature, bool _virtual = false);
 	void* virtual_method_from_signature(std::string signature);
 
+	void* static_field_from_signature(std::string signature);
 	uintptr_t field_offset_from_signature(std::string signature);
 
 	void* resolve_icall (const char* name);

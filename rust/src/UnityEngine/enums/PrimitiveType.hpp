@@ -3,11 +3,11 @@ namespace UnityEngine
 {
 	enum PrimitiveType
 	{
-	Sphere,
-	Capsule,
-	Cylinder,
-	Cube,
-	Plane,
-	Quad
+		Sphere,
+		Capsule,
+		Cylinder,
+		Cube,
+		Plane,
+		Quad
 	};
 }

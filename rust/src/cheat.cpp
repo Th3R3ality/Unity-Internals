@@ -109,6 +109,7 @@ namespace cheat
 		HOOK(PWM_HandleJumping);
 		HOOK(HE_AddPunch);
 		
+		HOOK(BP_OnLand);
 		//HOOK(PVS_Receive);
 		//HOOK(BP_SendVoiceData);
 		//HOOK(BP_OnVoiceData);

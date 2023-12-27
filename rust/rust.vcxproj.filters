@@ -413,5 +413,8 @@
     <ClCompile Include="src\rust\classes\PlayerModel\PlayerModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hooks\BP_OnLand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

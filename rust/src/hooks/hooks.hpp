@@ -17,6 +17,10 @@ hooking::Enable( #sig )
 const static std::string hk__BP_Load_sig = "BasePlayer.Load(LoadInfo)";
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info);
 
+#include "rust/classes/BasePlayer/BasePlayer.hpp"
+const static std::string hk__BP_OnLand_sig = "BasePlayer.OnLand(BasePlayer, float)";
+void hk__BP_OnLand(BasePlayer* instance, float fVelocity);
+
 //FacePunch::PerformanceUI.update
 #include "rust/classes/Facepunch/PerformanceUI/PerformanceUI.hpp"
 const static std::string hk__FP_PU_Update_sig = "Facepunch::PerformanceUI.Update()";

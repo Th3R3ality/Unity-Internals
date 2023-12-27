@@ -12,6 +12,6 @@ public:
 	UnityEngine::Transform* rightFootBone();
 	void rightFootBone(UnityEngine::Transform* transform);
 
-	UnityEngine::Transform* leftFootIK(int val);
-	UnityEngine::Transform* rightFootIK(int val);
+	void leftFootIK(int val);
+	void rightFootIK(int val);
 };

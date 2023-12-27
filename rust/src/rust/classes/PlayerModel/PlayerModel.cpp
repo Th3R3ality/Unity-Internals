@@ -26,15 +26,6 @@ UnityEngine::Transform* PlayerModel::leftFootBone()
 
 UnityEngine::Transform* PlayerModel::rightFootBone()
 {
-	//static auto fn = (UnityEngine::Transform * (*)(PlayerModel*))Il2cppLib::method_from_signature("PlayerModel.get_rightFootBone");
-	//if (fn)
-	//	return fn(this);
-	//std::cout << "no il2cpp get_leftFootBone\n";
-	//fn = (UnityEngine::Transform * (*)(PlayerModel*))Il2cppLib::resolve_icall("PlayerModel::get_rightFootBone");
-	//if (fn)
-	//	return fn(this);
-	//std::cout << "no icall get_leftFootBone\n";
-
 	static int offset = Il2cppLib::field_offset_from_signature("PlayerModel.rightFootBone");
 	if (offset)
 		return *(UnityEngine::Transform**)((std::uintptr_t)this + offset);
@@ -46,15 +37,6 @@ UnityEngine::Transform* PlayerModel::rightFootBone()
 
 void PlayerModel::leftFootBone(UnityEngine::Transform* transform)
 {
-	//static auto fn = (void(*)(PlayerModel*, UnityEngine::Transform*))Il2cppLib::method_from_signature("PlayerModel.set_leftFootBone");
-	//if (fn)
-	//	return fn(this, transform);
-	//std::cout << "no il2cpp get_leftFootBone\n";
-	//fn = (void(*)(PlayerModel*, UnityEngine::Transform*))Il2cppLib::resolve_icall("PlayerModel::set_leftFootBone");
-	//if (fn)
-	//	return fn(this, transform);
-	//std::cout << "no icall get_leftFootBone\n";
-
 	static int offset = Il2cppLib::field_offset_from_signature("PlayerModel.leftFootBone");
 	if (offset) {
 		*(UnityEngine::Transform**)((std::uintptr_t)this + offset) = transform;
@@ -68,15 +50,6 @@ void PlayerModel::leftFootBone(UnityEngine::Transform* transform)
 
 void PlayerModel::rightFootBone(UnityEngine::Transform* transform)
 {
-	//static auto fn = (void(*)(PlayerModel*, UnityEngine::Transform*))Il2cppLib::method_from_signature("PlayerModel.set_rightFootBone");
-	//if (fn)
-	//	return fn(this, transform);
-	//std::cout << "no il2cpp get_leftFootBone\n";
-	//fn = (void(*)(PlayerModel*, UnityEngine::Transform*))Il2cppLib::resolve_icall("PlayerModel::set_rightFootBone");
-	//if (fn)
-	//	return fn(this, transform);
-	//std::cout << "no icall get_leftFootBone\n";
-
 	static int offset = Il2cppLib::field_offset_from_signature("PlayerModel.rightFootBone");
 	if (offset) {
 		*(UnityEngine::Transform**)((std::uintptr_t)this + offset) = transform;
@@ -88,15 +61,16 @@ void PlayerModel::rightFootBone(UnityEngine::Transform* transform)
 	return;
 }
 
-
-UnityEngine::Transform* PlayerModel::leftFootIK(int val)
+void PlayerModel::leftFootIK(int val)
 {
-	static int offset = Il2cppLib::field_offset_from_signature("PlayerModel.leftFootIK");
-	//fixxxx static field ???!?!??
+	auto ptr = (int*)Il2cppLib::static_field_from_signature("PlayerModel.leftFootIK");
+	if (ptr)
+		*ptr = val;
 }
 
-UnityEngine::Transform* PlayerModel::rightFootIK(int val)
+void PlayerModel::rightFootIK(int val)
 {
-	static int offset = Il2cppLib::field_offset_from_signature("PlayerModel.rightFootIK");
-	//fixxxx static field ???!?!??
+	auto ptr = (int*)Il2cppLib::field_offset_from_signature("PlayerModel.rightFootIK");
+	if (ptr)
+		*ptr = val;
 }
