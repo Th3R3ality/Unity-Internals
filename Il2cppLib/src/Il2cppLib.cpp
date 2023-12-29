@@ -104,6 +104,7 @@ namespace Il2cppLib
 		while (const MethodInfo* method = il2cpp_class_get_methods(klass, &iterator)) {
 			if (method_name.compare(method->name)) continue;
 			
+			if (arg_count == -1) return method->virtualMethodPointer;
 			
 			int param_idx = 0;
 			std::string parameters = signature;

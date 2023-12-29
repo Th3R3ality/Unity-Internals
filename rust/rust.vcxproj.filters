@@ -416,5 +416,8 @@
     <ClCompile Include="src\hooks\BP_OnLand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hooks\projectile_shoot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

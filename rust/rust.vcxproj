@@ -181,6 +181,7 @@
     <ClCompile Include="src\hooks\hooking.cpp" />
     <ClCompile Include="src\hooks\FP_PU_Update.cpp" />
     <ClCompile Include="src\hooks\hooking2.cpp" />
+    <ClCompile Include="src\hooks\projectile_shoot.cpp" />
     <ClCompile Include="src\hooks\PVS_Recieve.cpp" />
     <ClCompile Include="src\hooks\PWM_HandleJumping.cpp" />
     <ClCompile Include="src\minhook\src\buffer.c" />

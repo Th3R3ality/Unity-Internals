@@ -110,6 +110,11 @@ namespace cheat
 		HOOK(HE_AddPunch);
 		
 		HOOK(BP_OnLand);
+
+		void* projectile_shoot_rpc = (void*)((uintptr_t)GetModuleHandleA("GameAssembly.dll") + 0x1147120);
+		hooking::New("projectile_shoot", projectile_shoot_rpc, (void*)hk__projectile_shoot);
+		hooking::Enable("projectile_shoot");
+
 		//HOOK(PVS_Receive);
 		//HOOK(BP_SendVoiceData);
 		//HOOK(BP_OnVoiceData);

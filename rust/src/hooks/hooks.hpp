@@ -12,11 +12,19 @@ hooking::Enable( #sig )
 
 //hooking::New("pu_update", Il2cppLib::method_from_signature(hk__FP_PU_Update_sig), (void*)hk__FP_PU_Update);
 
+//projectile_shoot
+#include "rust/classes/BaseEntity/BaseEntity.hpp"
+#include "mscorlib/System/String/String.hpp"
+class MethodInfo;
+const static std::string hk__projectile_shoot_sig = "projectile_shoot";
+void hk__projectile_shoot(BaseEntity* instance, mscorlib::System::String* funcName, uint64_t arg1, const MethodInfo* method);
+
 //BasePlayer.Load
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 const static std::string hk__BP_Load_sig = "BasePlayer.Load(LoadInfo)";
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info);
 
+//BasePlayer.OnLand
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 const static std::string hk__BP_OnLand_sig = "BasePlayer.OnLand(BasePlayer, float)";
 void hk__BP_OnLand(BasePlayer* instance, float fVelocity);
