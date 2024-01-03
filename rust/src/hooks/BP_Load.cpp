@@ -67,9 +67,9 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	}
 	
 
+	//return; // dont do model changer
 
 
-	return; // dont do model changer
 
 	std::wcout << "--- MODEL : " << pModel->name() << " ---\n";
 	for (int i = 0; i < pModel->transform()->childCount(); i++) {

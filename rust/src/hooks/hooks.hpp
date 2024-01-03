@@ -26,7 +26,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info);
 
 //BasePlayer.OnLand
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
-const static std::string hk__BP_OnLand_sig = "BasePlayer.OnLand(BasePlayer, float)";
+const static std::string hk__BP_OnLand_sig = "BasePlayer.OnLand(float)";
 void hk__BP_OnLand(BasePlayer* instance, float fVelocity);
 
 //FacePunch::PerformanceUI.update

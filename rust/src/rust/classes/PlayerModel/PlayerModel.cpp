@@ -64,13 +64,15 @@ void PlayerModel::rightFootBone(UnityEngine::Transform* transform)
 void PlayerModel::leftFootIK(int val)
 {
 	auto ptr = (int*)Il2cppLib::static_field_from_signature("PlayerModel.leftFootIK");
-	if (ptr)
+	if (ptr) {
 		*ptr = val;
+	}
 }
 
 void PlayerModel::rightFootIK(int val)
 {
-	auto ptr = (int*)Il2cppLib::field_offset_from_signature("PlayerModel.rightFootIK");
-	if (ptr)
+	auto ptr = (int*)Il2cppLib::static_field_from_signature("PlayerModel.rightFootIK");
+	if (ptr) {
 		*ptr = val;
+	}
 }

@@ -88,10 +88,8 @@ void hk__BP_SendVoiceData(BasePlayer* instance, System::Array<System::Byte*>* da
 			if (exploit && i - lowerBound < sizeof(exploitData)-1) {
 				((uint8_t*)sendBuffer->data())[i] = exploitData[i - lowerBound];
 				hue::light_red(std::cout);
-			}
-			
+			}	
 		}
-
 
 		if (i >= sendBuffer->length() - 4) {
 

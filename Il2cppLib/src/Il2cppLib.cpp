@@ -7,7 +7,7 @@
 
 #include "api/2021.3.21f1.h"
 
-
+#include <iostream>
 
 namespace Il2cppLib
 {
@@ -142,9 +142,27 @@ namespace Il2cppLib
 		return method_from_signature(signature, true);
 	}
 
-	void* Il2cppLib::static_field_from_signature(std::string signature)
+	void* static_field_from_signature(std::string signature)
 	{
-		return nullptr;
+		auto offset = field_offset_from_signature(signature);
+
+		std::string klass_signature;
+		size_t pos = 0;
+		int arg_count = -1;
+
+		pos = signature.find(".");
+		if (pos != std::string::npos) {
+			klass_signature = signature.substr(0, pos);
+			signature.erase(0, pos + 1);
+		} else {
+			return 0;
+		}
+		auto klass = class_from_signature(klass_signature);
+		if (!klass) return 0;
+
+		auto fields = (uintptr_t)klass->static_fields;
+
+		return (void*)(fields + offset);
 	}
 
 	uintptr_t Il2cppLib::field_offset_from_signature(std::string signature)
