@@ -12,6 +12,11 @@ hooking::Enable( #sig )
 
 //hooking::New("pu_update", Il2cppLib::method_from_signature(hk__FP_PU_Update_sig), (void*)hk__FP_PU_Update);
 
+//present hook
+#include "D3D_VMT_Indices.h"
+#include "hkPresent.h"
+#include "hkResizeBuffers.h"
+
 //projectile_shoot
 #include "rust/classes/BaseEntity/BaseEntity.hpp"
 #include "mscorlib/System/String/String.hpp"

@@ -219,6 +219,63 @@
     <ClInclude Include="src\rust\classes\PlayerModel\PlayerModel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\hooks\D3D_VMT_Indices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hooks\hkPresent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\hooks\hkResizeBuffers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\Draw\D2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\Draw\D3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__CIRCLE_pixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UI_pixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UI_vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UNLIT_pixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UNLIT3D_vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\shaders\DefaultShaders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\Backend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\GlobalDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\InternalTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\LapisEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\engine\LapisTypes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lapis\utils\hsl-to-rgb.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -419,5 +476,42 @@
     <ClCompile Include="src\hooks\projectile_shoot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\hooks\hkPresent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\hooks\hkResizeBuffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\Draw\D2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\Draw\D3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\Backend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\InternalTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\LapisEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\engine\LapisTypes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lapis\utils\hsl-to-rgb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Lapis\engine\shaders\DefaultStructs.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UNLIT3D_vertex.hlsl" />
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UNLIT_pixel.hlsl" />
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UI_vertex.hlsl" />
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UI_pixel.hlsl" />
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__CIRCLE_pixel.hlsl" />
   </ItemGroup>
 </Project>

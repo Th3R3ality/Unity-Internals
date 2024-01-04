@@ -7,7 +7,21 @@
 #include "Il2cppLib.h"
 #pragma comment( lib, "Il2cppLib" )
 
+#include <d3d11.h>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <d3dcompiler.h>
+
+#pragma comment (lib, "d3d11.lib")
+#pragma comment (lib, "d3dcompiler.lib")
+
 #include "cheat.hpp"
+
+
+#include "global.h"
+bool ejecting;
+bool presentReset;
+//bool doDebugPrint;
 
 
 //#ifdef NDEBUG
@@ -85,6 +99,7 @@ void mainThread(HMODULE hModule)
     }
 
     cheat::unload();
+    
     if (!console_present) {
         FreeConsole();
     }

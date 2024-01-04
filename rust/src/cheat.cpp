@@ -5,6 +5,8 @@
 #include <chrono>
 #include <thread>
 
+#include <d3d11.h>
+
 #include "minhook/include/MinHook.h"
 
 #include "hooks/hooking2.hpp"
@@ -13,6 +15,8 @@
 #include "UnityEngine/UnityEngine.hpp"
 
 #include "cache.hpp"
+#include "global.h"
+
 
 namespace cheat
 {
@@ -97,8 +101,52 @@ namespace cheat
 		return bundle;
 	}
 
+	uintptr_t swapchainVMT;
 	bool init_hooks()
 	{
+		//directx hooks
+		{
+			// Create Dummy SwapChain to get VTable
+			IDXGISwapChain* pSwapchain = nullptr;
+			{
+				DXGI_SWAP_CHAIN_DESC scd{};
+				scd.BufferCount = 1;                                    // one back buffer
+				scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;     // use 32-bit color
+				scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;      // how swap chain is to be used
+				scd.OutputWindow = GetForegroundWindow();                                // the window to be used
+				scd.SampleDesc.Count = 4;                               // how many multisamples
+				scd.Windowed = TRUE;                                    // windowed/full-screen mode
+				scd.BufferDesc.Width = 800;
+				scd.BufferDesc.Height = 600;
+				scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+				HRESULT hr = D3D11CreateDeviceAndSwapChain(
+					nullptr,
+					D3D_DRIVER_TYPE_HARDWARE,
+					nullptr,
+					0,
+					nullptr,
+					0,
+					D3D11_SDK_VERSION,
+					&scd,
+					&pSwapchain,
+					nullptr,
+					nullptr,
+					nullptr);
+
+				std::cout << "D3D11CreateDeviceAndSwapChain : " << std::system_category().message(hr) << "\n";
+				std::cout << "pSwapchain : " << pSwapchain << "\n";
+			}
+
+			if (pSwapchain) {
+				swapchainVMT = *(uintptr_t*)pSwapchain;
+				safe_release(pSwapchain);
+
+				origPresent = VMTEntryHook(swapchainVMT, (size_t)IDXGISwapChainVMT::Present, (uintptr_t)hkPresent);
+				origResizeBuffers = VMTEntryHook(swapchainVMT, (size_t)IDXGISwapChainVMT::ResizeBuffers, (uintptr_t)hkResizeBuffers);
+			}
+		}
+
+
 		MH_Initialize();
 
 		//hooking::New("pu_update", Il2cppLib::method_from_signature(hk__FP_PU_Update_sig), (void*)hk__FP_PU_Update);
@@ -128,12 +176,25 @@ namespace cheat
 	{
 		std::cout << "unloading" << std::endl;
 		cheat::state(cheat::status::unloading);
+
+		ejecting = true;
+		
+		std::cout << "waiting for present reset...\n";
+		while (!presentReset) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
+
+		VMTEntryHook(swapchainVMT, (size_t)IDXGISwapChainVMT::Present, origPresent);
+		VMTEntryHook(swapchainVMT, (size_t)IDXGISwapChainVMT::ResizeBuffers, origResizeBuffers);
+
+		std::cout << "wating for unload..." << std::endl;
 		while (!cheat::has_unloaded()) {
-			std::cout << "wating for unload..." << std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 			//cheat::has_unloaded(true);
 		}
 		hooking::Kill();
 		MH_Uninitialize();
+
+		std::cout << "[ + ] Unloaded\n";
 	}
 }

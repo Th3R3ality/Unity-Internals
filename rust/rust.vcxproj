@@ -72,6 +72,11 @@
       <AdditionalDependencies>Il2cppLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Il2cppLib\Include\</AdditionalLibraryDirectories>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <VariableName>%(Filename)</VariableName>
+      <HeaderFileOutput>src/Lapis/engine/shaders/compiled/%(Filename).h</HeaderFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -96,15 +101,39 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Il2cppLib\Include\</AdditionalLibraryDirectories>
       <AdditionalDependencies>Il2cppLib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <VariableName>%(Filename)</VariableName>
+      <HeaderFileOutput>src/Lapis/engine/shaders/compiled/%(Filename).h</HeaderFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\cache.hpp" />
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\constraints.hpp" />
+    <ClInclude Include="src\global.h" />
+    <ClInclude Include="src\hooks\D3D_VMT_Indices.h" />
+    <ClInclude Include="src\hooks\hkPresent.h" />
+    <ClInclude Include="src\hooks\hkResizeBuffers.h" />
     <ClInclude Include="src\hooks\hooking.hpp" />
     <ClInclude Include="src\hooks\hooking2.hpp" />
     <ClInclude Include="src\hooks\hooks.hpp" />
+    <ClInclude Include="src\Lapis\engine\Backend.h" />
+    <ClInclude Include="src\Lapis\engine\Draw\D2.h" />
+    <ClInclude Include="src\Lapis\engine\Draw\D3.h" />
+    <ClInclude Include="src\Lapis\engine\GlobalDefines.h" />
+    <ClInclude Include="src\Lapis\engine\Helpers.h" />
+    <ClInclude Include="src\Lapis\engine\InternalTypes.h" />
+    <ClInclude Include="src\Lapis\engine\LapisEngine.h" />
+    <ClInclude Include="src\Lapis\engine\LapisTypes.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__CIRCLE_pixel.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UI_pixel.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UI_vertex.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UNLIT3D_vertex.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\compiled\DEFAULTSHADER__UNLIT_pixel.h" />
+    <ClInclude Include="src\Lapis\engine\shaders\DefaultShaders.h" />
+    <ClInclude Include="src\Lapis\utils\hsl-to-rgb.hpp" />
     <ClInclude Include="src\memory.hpp" />
     <ClInclude Include="src\minhook\include\MinHook.h" />
     <ClInclude Include="src\minhook\src\buffer.h" />
@@ -178,12 +207,21 @@
     <ClCompile Include="src\hooks\BP_OnVoiceData.cpp" />
     <ClCompile Include="src\hooks\BP_SendVoiceData.cpp" />
     <ClCompile Include="src\hooks\HE_AddPunch.cpp" />
+    <ClCompile Include="src\hooks\hkPresent.cpp" />
+    <ClCompile Include="src\hooks\hkResizeBuffers.cpp" />
     <ClCompile Include="src\hooks\hooking.cpp" />
     <ClCompile Include="src\hooks\FP_PU_Update.cpp" />
     <ClCompile Include="src\hooks\hooking2.cpp" />
     <ClCompile Include="src\hooks\projectile_shoot.cpp" />
     <ClCompile Include="src\hooks\PVS_Recieve.cpp" />
     <ClCompile Include="src\hooks\PWM_HandleJumping.cpp" />
+    <ClCompile Include="src\Lapis\engine\Backend.cpp" />
+    <ClCompile Include="src\Lapis\engine\Draw\D2.cpp" />
+    <ClCompile Include="src\Lapis\engine\Draw\D3.cpp" />
+    <ClCompile Include="src\Lapis\engine\InternalTypes.cpp" />
+    <ClCompile Include="src\Lapis\engine\LapisEngine.cpp" />
+    <ClCompile Include="src\Lapis\engine\LapisTypes.cpp" />
+    <ClCompile Include="src\Lapis\utils\hsl-to-rgb.cpp" />
     <ClCompile Include="src\minhook\src\buffer.c" />
     <ClCompile Include="src\minhook\src\hde\hde32.c" />
     <ClCompile Include="src\minhook\src\hde\hde64.c" />
@@ -233,6 +271,31 @@
     <ClCompile Include="src\UnityEngine\Vector3\Vector3.cpp" />
     <ClCompile Include="src\UnityEngine\YieldInstruction\YieldInstruction.cpp" />
     <ClCompile Include="src\Util\fast_crc32.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Lapis\engine\shaders\DefaultStructs.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__CIRCLE_pixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UI_pixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UI_vertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UNLIT3D_vertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="src\Lapis\engine\shaders\DEFAULTSHADER__UNLIT_pixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
