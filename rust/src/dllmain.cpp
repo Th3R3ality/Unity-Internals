@@ -79,15 +79,13 @@ void mainThread(HMODULE hModule)
     if (!Il2cppLib::initialize()) {
         std::cout << "---FAILED---\n\n";
         return eject(hModule);
-    }
-    init_Il2cppLib = true;
+    } init_Il2cppLib = true;
 
     std::cout << "init | hooks \n";
     if (!cheat::init_hooks()) {
         std::cout << "---FAILED---\n\n";
         return eject(hModule);
-    }
-    cheat_init_hooks = true;
+    } cheat_init_hooks = true;
 
     cheat::state(cheat::status::running);
 
