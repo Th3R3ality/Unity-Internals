@@ -69,9 +69,10 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			if (GetAsyncKeyState(VK_DOWN))  mainCamera.rot += Vec3(45, 0, 0) * deltaTime;
 		}
 
+		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 1 +  Vec3::up * 1.1, 0, 1), { 0.92, 0.26, .27, 1 });
+		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 2 + -Vec3::up, 0, 1), { 0.92, 0.26, .27, 1 });
+		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 3 + -Vec3::up * 2.1, 0, 1), { 0.92, 0.26, .27, 1 });
 		Lapis::Draw::D2::Triangle(100, { 500,100 }, 300, { 0.5,0.5,0.5,0.5 });
-
-		Lapis::Draw::D3::Cube(Transform(Vec3::forward*3 + -Vec3::up, 0, 1), { 0.92, 0.26, .27, 1 });
 
 		Lapis::RenderFrame();
 		Lapis::FlushFrame();

@@ -106,6 +106,7 @@ namespace cheat
 	{
 		//directx hooks
 		{
+			std::cout << "hooking d3d\n";
 			// Create Dummy SwapChain to get VTable
 			IDXGISwapChain* pSwapchain = nullptr;
 			{

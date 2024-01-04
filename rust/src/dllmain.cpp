@@ -39,43 +39,15 @@ bool cheat_load_assets = false;
 bool cheat_init_hooks = false;
 bool console_present = false;
 void mainThread(HMODULE hModule);
+void eject(HMODULE hModule);
 
 BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved )
 {
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
-        if (GetConsoleWindow()) {
-            console_present = true;
-        }
-        if (!console_present) {
-            AllocConsole();
-            FILE* f;
-            freopen_s(&f, "CONOUT$", "w", stdout);
-        }
-        std::cout << "[+] hello!" << std::endl;
-
-        cheat::state(cheat::status::loading);
-
-        std::cout << "init | Il2cppLib\n";
-        if (!Il2cppLib::initialize()) {
-            std::cout << "---FAILED---\n\n";
-            break;
-        }
-        init_Il2cppLib = true;
-
-        std::cout << "init | hooks \n";
-        if (!cheat::init_hooks()) {
-            std::cout << "---FAILED---\n\n";
-            break;
-        }
-        cheat_init_hooks = true;
-
-        cheat::state(cheat::status::running);
-
         if (auto handle = CreateThread(0, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(mainThread), hModule, 0, 0))
             CloseHandle(handle);
-
         break;
     case DLL_THREAD_ATTACH:
         break;
@@ -90,16 +62,46 @@ BOOL APIENTRY DllMain( HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpRese
 
 void mainThread(HMODULE hModule)
 {
-    
+
+    if (GetConsoleWindow()) {
+        console_present = true;
+    }
+    if (!console_present) {
+        AllocConsole();
+        FILE* f;
+        freopen_s(&f, "CONOUT$", "w", stdout);
+    }
+    std::cout << "[+] hello!" << std::endl;
+
+    cheat::state(cheat::status::loading);
+
+    std::cout << "init | Il2cppLib\n";
+    if (!Il2cppLib::initialize()) {
+        std::cout << "---FAILED---\n\n";
+        return eject(hModule);
+    }
+    init_Il2cppLib = true;
+
+    std::cout << "init | hooks \n";
+    if (!cheat::init_hooks()) {
+        std::cout << "---FAILED---\n\n";
+        return eject(hModule);
+    }
+    cheat_init_hooks = true;
+
+    cheat::state(cheat::status::running);
+
     while (!GetAsyncKeyState(VK_DELETE)) {
-
-
-        
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     cheat::unload();
     
+    eject(hModule);
+}
+
+void eject(HMODULE hModule)
+{
     if (!console_present) {
         FreeConsole();
     }

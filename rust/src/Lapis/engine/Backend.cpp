@@ -265,7 +265,7 @@ namespace Lapis
 
         void WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
-            std::cout << "Lapis::WndProcHandler()\n";
+            //std::cout << "Lapis::WndProcHandler()\n";
 
             switch (msg) {
             case WM_SIZE:
