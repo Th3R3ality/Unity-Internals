@@ -60,10 +60,10 @@ namespace Lapis
 
 				Backend::PushVertex(Vertex(Vec3(-.5f,  .5f, -.5f), rgba, Vec2(0,0), Vec3()));
 				Backend::PushVertex(Vertex(Vec3(-.5f,  .5f,  .5f), rgba, Vec2(1,0), Vec3()));
-				Backend::PushVertex(Vertex(Vec3( .5f,  .5f, -.5f), rgba, Vec2(0,.33), Vec3()));
-				Backend::PushVertex(Vertex(Vec3( .5f,  .5f,  .5f), rgba, Vec2(1,.33), Vec3()));
-				Backend::PushVertex(Vertex(Vec3( .5f, -.5f, -.5f), rgba, Vec2(0,.67), Vec3()));
-				Backend::PushVertex(Vertex(Vec3( .5f, -.5f,  .5f), rgba, Vec2(1,.67), Vec3()));
+				Backend::PushVertex(Vertex(Vec3( .5f,  .5f, -.5f), rgba, Vec2(0,.33f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3( .5f,  .5f,  .5f), rgba, Vec2(1,.33f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3( .5f, -.5f, -.5f), rgba, Vec2(0,.67f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3( .5f, -.5f,  .5f), rgba, Vec2(1,.67f), Vec3()));
 				Backend::PushVertex(Vertex(Vec3(-.5f, -.5f, -.5f), rgba, Vec2(0,1), Vec3()));
 				Backend::PushVertex(Vertex(Vec3(-.5f, -.5f,  .5f), rgba, Vec2(1,1), Vec3()));
 
@@ -71,10 +71,10 @@ namespace Lapis
 				
 				Backend::PushVertex(Vertex(Vec3( 0.5,  0.5, -0.5), rgba, Vec2(0,0), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5, -0.5, -0.5), rgba, Vec2(1,0), Vec3()));
-				Backend::PushVertex(Vertex(Vec3(-0.5,  0.5, -0.5), rgba, Vec2(0,.33), Vec3()));
-				Backend::PushVertex(Vertex(Vec3(-0.5, -0.5, -0.5), rgba, Vec2(1,.33), Vec3()));
-				Backend::PushVertex(Vertex(Vec3(-0.5,  0.5,  0.5), rgba, Vec2(0,.67), Vec3()));
-				Backend::PushVertex(Vertex(Vec3(-0.5, -0.5,  0.5), rgba, Vec2(1,.67), Vec3()));
+				Backend::PushVertex(Vertex(Vec3(-0.5,  0.5, -0.5), rgba, Vec2(0,.33f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3(-0.5, -0.5, -0.5), rgba, Vec2(1,.33f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3(-0.5,  0.5,  0.5), rgba, Vec2(0,.67f), Vec3()));
+				Backend::PushVertex(Vertex(Vec3(-0.5, -0.5,  0.5), rgba, Vec2(1,.67f), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5,  0.5,  0.5), rgba, Vec2(0,1), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5, -0.5,  0.5), rgba, Vec2(1,1), Vec3()));
 			}

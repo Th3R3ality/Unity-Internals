@@ -7,6 +7,7 @@
 #include "UnityEngine/Avatar/Avatar.hpp"
 #include "UnityEngine/Animator/Animator.hpp"
 #include "UnityEngine/Transform/Transform.hpp"
+#include "UnityEngine/Camera/Camera.hpp"
 
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 
@@ -55,6 +56,9 @@ namespace cache
 	std::unordered_map<BasePlayer*, CachedPlayer>& cachedPlayers();
 
 	UnityEngine::GameObject* get_model(BasePlayer* bp);
+
+	UnityEngine::Camera* cameraMain();
+	void cameraMain(UnityEngine::Camera* cam);
 
 	void local(BasePlayer* bp);
 	BasePlayer* local();

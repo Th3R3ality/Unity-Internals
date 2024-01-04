@@ -63,11 +63,20 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		cache::local(instance);
 		std::cout << "set localplayer!" << std::endl;
 		lp = true;
-		//return;
+
+		if (!cache::cameraMain()) {
+
+			if (auto cam = UnityEngine::Camera::main()) {
+
+				cache::cameraMain(cam);
+			} else {
+				std::cout << "COULDNT GET MAIN CAM!!!!!!!!!!!!!!!\n";
+			}
+		}
 	}
 	
 
-	//return; // dont do model changer
+	return; // dont do model changer
 
 
 

@@ -10,7 +10,8 @@ namespace cache
 {
 	
 
-	BasePlayer* localplayer{ 0 };
+	UnityEngine::Camera* camera_main{};
+	BasePlayer* localplayer{};
 
 	std::unordered_map<BasePlayer*, CachedPlayer> __cachedPlayers;
 
@@ -93,6 +94,15 @@ namespace cache
 			return custom_gameObjects[bp];
 		}
 		return { 0 };
+	}
+
+	void cameraMain(UnityEngine::Camera* cam)
+	{
+		camera_main = cam;
+	}
+	UnityEngine::Camera* cameraMain()
+	{
+		return camera_main;
 	}
 
 	void local(BasePlayer* bp)

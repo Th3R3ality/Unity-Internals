@@ -25,6 +25,11 @@ namespace Lapis
         ///////////////////////
         /*  BACKEND GLOBALS  */
 
+        mat4x4 matrix_screen;
+        mat4x4 matrix_world;
+        mat4x4 matrix_view;
+        mat4x4 matrix_projection;
+
         HWND hwnd;
         Vec4 clientRect;
 
@@ -176,6 +181,18 @@ namespace Lapis
                 //desc.BackFace = desc.FrontFace;
                 device->CreateDepthStencilState(&desc, &depthStencilState);
             }
+
+            DirectX::XMVECTOR Eye = Helpers::XMVectorSet(0);
+            DirectX::XMVECTOR At = Helpers::XMVectorSet(Vec3::forward);
+            DirectX::XMVECTOR Up = Helpers::XMVectorSet(Vec3::up);
+            matrix_view = DirectX::XMMatrixLookAtLH(Eye, At, Up);
+            matrix_world = DirectX::XMMatrixIdentity();
+            matrix_projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 0.01f, 10000.0f);
+
+            gcb.World = DirectX::XMMatrixTranspose(matrix_world);
+            gcb.View = DirectX::XMMatrixTranspose(matrix_view);
+            gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
+
         }
         void SetupD3D11State()
         {
@@ -262,6 +279,21 @@ namespace Lapis
             safe_release(pBuffer);
         }
 
+        void PushWorldMatrix(mat4x4 mat)
+        {
+            matrix_world = mat;
+        }
+
+        void PushViewMatrix(mat4x4 mat)
+        {
+            matrix_view = mat;
+        }
+
+        void PushProjectionMatrix(mat4x4 mat)
+        {
+            matrix_projection = mat;
+        }
+
 
         void WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
@@ -277,7 +309,6 @@ namespace Lapis
                 break;
             }
         }
-
 
         void NewFrame()
         {
@@ -455,33 +486,22 @@ namespace Lapis
                  0.0f,             0.0f,           0.5f,       0.0f ,
                  (R + L) / (L - R),(T + B) / (B - T),    0.5f,       1.0f
             };
-            auto screen = m;
-
-            auto dxscreen = DirectX::XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, -10, 1000);
-
+            matrix_screen = m;
+            //auto dxscreen = DirectX::XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, -10, 1000);
 
 
-            auto world = DirectX::XMMatrixIdentity();
-#if USE_Z_UP
-            world = world * Lapis::Helpers::XMMatrixRotationAxis(Vec3::right, 90 * DEG2RAD);
-            world = world * DirectX::XMMatrixScaling(1, 1, -1);
-#endif
+            //auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
+            //auto rotateView = Helpers::XMMatrixRotationRollPitchYaw(-mainCamera.rotation);
+            //auto scaleView = Helpers::XMMatrixScaling(mainCamera.scale);
+            //matrix_view = matrix_view * translateView * rotateView;
 
-            DirectX::XMVECTOR Eye = Helpers::XMVectorSet(0);
-            DirectX::XMVECTOR At = Helpers::XMVectorSet(Vec3::forward);
-            DirectX::XMVECTOR Up = Helpers::XMVectorSet(Vec3::up);
-            auto view = DirectX::XMMatrixLookAtLH(Eye, At, Up);
-            auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
-            auto rotateView = Helpers::XMMatrixRotationRollPitchYaw(-mainCamera.rotation);
-            auto scaleView = Helpers::XMMatrixScaling(mainCamera.scale);
-            view = view * translateView * rotateView;
+            //gcb.World = DirectX::XMMatrixTranspose(matrix_world);
+            //gcb.View = DirectX::XMMatrixTranspose(matrix_view);
+            //gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
 
-            auto projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 0.01f, 100.0f);
 
-            gcb.Screen = screen;
-            gcb.World = DirectX::XMMatrixTranspose(world);
-            gcb.View = DirectX::XMMatrixTranspose(view);
-            gcb.Projection = DirectX::XMMatrixTranspose(projection);
+
+            gcb.Screen = matrix_screen;
 
             RemapSubResource(constantBuffer, &gcb, sizeof(gcb));
 

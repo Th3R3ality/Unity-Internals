@@ -52,6 +52,10 @@ namespace Lapis
 		void DestroyViews();
 		void CreateViews(IDXGISwapChain* _swapchain);
 
+		void PushWorldMatrix(mat4x4 mat);
+		void PushViewMatrix(mat4x4 mat);
+		void PushProjectionMatrix(mat4x4 mat);
+
 		void PushVertex(Vertex vert);
 		inline void PushVertex(Vec3 pos, Color col, Vec2 uv, Vec3 normal) { PushVertex(Vertex(pos, col, uv, normal)); };
 		void PushCommand(LapisCommand lapisCommand);

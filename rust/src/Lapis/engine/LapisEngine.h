@@ -28,4 +28,7 @@ namespace Lapis
 	void DestroyViews();
 	void CreateViews(IDXGISwapChain* swapchain);
 
+	void PushWorldMatrix(mat4x4 mat);
+	void PushViewMatrix(mat4x4 mat);
+	void PushProjectionMatrix(mat4x4 mat);
 }

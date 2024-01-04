@@ -276,6 +276,12 @@
     <ClInclude Include="src\Lapis\utils\hsl-to-rgb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UnityEngine\Camera\Camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\Matrix4x4\Matrix4x4.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -501,6 +507,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Lapis\utils\hsl-to-rgb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Camera\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Matrix4x4\Matrix4x4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

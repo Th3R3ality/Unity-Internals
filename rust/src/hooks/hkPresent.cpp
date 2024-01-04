@@ -7,6 +7,7 @@
 
 #include "Lapis/engine/LapisEngine.h"
 
+#include "cache.hpp"
 
 HWND g_hwnd{};
 
@@ -19,7 +20,7 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 	static int presentCalls = -1;
 	presentCalls += 1;
 
-	doDebugPrint = (presentCalls % 60 == 0);
+	//doDebugPrint = (presentCalls % 60 == 0);
 
 	if (ejecting) {
 		Lapis::CleanLapis();
@@ -54,25 +55,28 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 		using namespace Lapis;
 		Lapis::NewFrame();
 
-		// Camera Movement
-		{
-			if (GetAsyncKeyState('A')) mainCamera.pos += Vec3::right * deltaTime;
-			if (GetAsyncKeyState('D')) mainCamera.pos -= Vec3::right * deltaTime;
-			if (GetAsyncKeyState('Q')) mainCamera.pos += Vec3::up * deltaTime;
-			if (GetAsyncKeyState('E')) mainCamera.pos -= Vec3::up * deltaTime;
-			if (GetAsyncKeyState('W')) mainCamera.pos -= Vec3::forward * deltaTime;
-			if (GetAsyncKeyState('S')) mainCamera.pos += Vec3::forward * deltaTime;
+		
+		BasePlayer* lp = cache::local();
+		UnityEngine::Camera* mainCam = cache::cameraMain();
 
-			if (GetAsyncKeyState(VK_RIGHT)) mainCamera.rot += Vec3(0, 45, 0) * deltaTime;
-			if (GetAsyncKeyState(VK_LEFT))  mainCamera.rot -= Vec3(0, 45, 0) * deltaTime;
-			if (GetAsyncKeyState(VK_UP))    mainCamera.rot -= Vec3(45, 0, 0) * deltaTime;
-			if (GetAsyncKeyState(VK_DOWN))  mainCamera.rot += Vec3(45, 0, 0) * deltaTime;
+		if (lp && mainCam) {
+			Vec3 lpPos = cache::local()->transform()->position();
+
+			auto viewMat = mainCam->worldToCameraMatrix();
+			auto projMat = mainCam->nonJitteredProjectionMatrix();
+
+			//Lapis::PushViewMatrix(viewMat);
+			//Lapis::PushProjectionMatrix(projMat);
+
+			std::cout << "LocalPlayer Pos : " << lpPos << "\n";
+			std::cout << "Main Camera Pos : " << mainCam->transform()->position() << "\n";
+			Lapis::Draw::D3::Cube(Transform( lpPos + Vec3::forward*3 + -Vec3::up, 0, 1), "#FEE75C");
 		}
 
-		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 1 +  Vec3::up * 1.1, 0, 1), { 0.92, 0.26, .27, 1 });
-		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 2 + -Vec3::up, 0, 1), { 0.92, 0.26, .27, 1 });
-		Lapis::Draw::D3::Cube(Transform(Vec3::forward * 3 + -Vec3::up * 2.1, 0, 1), { 0.92, 0.26, .27, 1 });
-		Lapis::Draw::D2::Triangle(100, { 500,100 }, 300, { 0.5,0.5,0.5,0.5 });
+		//Lapis::mainCamera.pos = lpPos + -Vec3::forward * 3;
+
+
+		Draw::D2::Triangle(0, { 50,0 }, {0,50}, "#ED424599");
 
 		Lapis::RenderFrame();
 		Lapis::FlushFrame();

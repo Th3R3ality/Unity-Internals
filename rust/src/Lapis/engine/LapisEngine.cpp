@@ -47,4 +47,18 @@ namespace Lapis
 		Backend::CreateViews(swapchain);
 	}
 
+	void PushWorldMatrix(mat4x4 mat)
+	{
+		Backend::PushWorldMatrix(mat);
+	}
+
+	void PushViewMatrix(mat4x4 mat)
+	{
+		Backend::PushViewMatrix(mat);
+	}
+
+	void PushProjectionMatrix(mat4x4 mat)
+	{
+		Backend::PushProjectionMatrix(mat);
+	}
 }

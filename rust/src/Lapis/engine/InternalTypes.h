@@ -21,7 +21,7 @@ namespace Lapis
 	};
 
 	_declspec(align(16))
-		struct GlobalConstantBuffer
+	struct GlobalConstantBuffer
 	{
 		float elapsedTime;
 		float deltaTime;

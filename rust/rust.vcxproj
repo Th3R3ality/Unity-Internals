@@ -175,12 +175,14 @@
     <ClInclude Include="src\UnityEngine\AsyncOperation\AsyncOperations.hpp" />
     <ClInclude Include="src\UnityEngine\Avatar\Avatar.hpp" />
     <ClInclude Include="src\UnityEngine\Behaviour\Behaviour.hpp" />
+    <ClInclude Include="src\UnityEngine\Camera\Camera.hpp" />
     <ClInclude Include="src\UnityEngine\Component\Component.hpp" />
     <ClInclude Include="src\UnityEngine\enums\enums.hpp" />
     <ClInclude Include="src\UnityEngine\enums\HumanBodyBones.hpp" />
     <ClInclude Include="src\UnityEngine\enums\PrimitiveType.hpp" />
     <ClInclude Include="src\UnityEngine\GameObject\GameObject.hpp" />
     <ClInclude Include="src\UnityEngine\Material\Material.hpp" />
+    <ClInclude Include="src\UnityEngine\Matrix4x4\Matrix4x4.hpp" />
     <ClInclude Include="src\UnityEngine\MeshRenderer\MeshRenderer.hpp" />
     <ClInclude Include="src\UnityEngine\MonoBehaviour\MonoBehaviour.hpp" />
     <ClInclude Include="src\UnityEngine\Object\Object.hpp" />
@@ -256,9 +258,11 @@
     <ClCompile Include="src\UnityEngine\AsyncOperation\AsyncOperations.cpp" />
     <ClCompile Include="src\UnityEngine\Avatar\Avatar.cpp" />
     <ClCompile Include="src\UnityEngine\Behaviour\Behaviour.cpp" />
+    <ClCompile Include="src\UnityEngine\Camera\Camera.cpp" />
     <ClCompile Include="src\UnityEngine\Component\Component.cpp" />
     <ClCompile Include="src\UnityEngine\GameObject\GameObject.cpp" />
     <ClCompile Include="src\UnityEngine\Material\Material.cpp" />
+    <ClCompile Include="src\UnityEngine\Matrix4x4\Matrix4x4.cpp" />
     <ClCompile Include="src\UnityEngine\MeshRenderer\MeshRenderer.cpp" />
     <ClCompile Include="src\UnityEngine\MonoBehaviour\MonoBehaviour.cpp" />
     <ClCompile Include="src\UnityEngine\Object\Object.cpp" />
