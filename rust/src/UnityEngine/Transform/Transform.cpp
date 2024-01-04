@@ -28,10 +28,21 @@ namespace UnityEngine
 		return fn(this);
 	}
 
-	void Transform::rotation(Quaternion pos)
+	void Transform::eulerAngles(Vector3 rot)
+	{
+		static auto fn = (void(*)(Transform*, Vector3))Il2cppLib::method_from_signature("UnityEngine::Transform.set_eulerAngles(Vector3)");
+		return fn(this, rot);
+	}
+	Vector3 Transform::eulerAngles()
+	{
+		static auto fn = (Vector3(*)(Transform*))Il2cppLib::method_from_signature("UnityEngine::Transform.get_eulerAngles()");
+		return fn(this);
+	}
+
+	void Transform::rotation(Quaternion quat)
 	{
 		static auto fn = (void(*)(Transform*, Quaternion))Il2cppLib::method_from_signature("UnityEngine::Transform.set_rotation(Quaternion)");
-		return fn(this, pos);
+		return fn(this, quat);
 	}
 	Quaternion Transform::rotation()
 	{

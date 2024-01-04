@@ -294,7 +294,6 @@ namespace Lapis
             matrix_projection = mat;
         }
 
-
         void WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
         {
             //std::cout << "Lapis::WndProcHandler()\n";
@@ -490,19 +489,24 @@ namespace Lapis
             //auto dxscreen = DirectX::XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, -10, 1000);
 
 
-            //auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
+            auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
             //auto rotateView = Helpers::XMMatrixRotationRollPitchYaw(-mainCamera.rotation);
-            //auto scaleView = Helpers::XMMatrixScaling(mainCamera.scale);
-            //matrix_view = matrix_view * translateView * rotateView;
+            auto scaleView = Helpers::XMMatrixScaling(Vec3(1, -1, 1));
+            //auto view = static_cast<DirectX::XMMATRIX>(matrix_view) * translateView * rotateView;
+            auto view = static_cast<DirectX::XMMATRIX>(matrix_view) * translateView * scaleView;
 
-            //gcb.World = DirectX::XMMatrixTranspose(matrix_world);
-            //gcb.View = DirectX::XMMatrixTranspose(matrix_view);
-            //gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
+
+
+            gcb.World = DirectX::XMMatrixTranspose(matrix_world);
+            gcb.View = DirectX::XMMatrixTranspose(view);
+            gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
 
 
 
             gcb.Screen = matrix_screen;
 
+            std::cout << "matrix_view : " << static_cast<mat4x4>(view) << "\n";
+            std::cout << "matrix_projection : " << matrix_projection << "\n";
             RemapSubResource(constantBuffer, &gcb, sizeof(gcb));
 
         }

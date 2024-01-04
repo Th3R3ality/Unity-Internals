@@ -133,6 +133,12 @@ namespace Lapis
 		Vec4& operator=(const DirectX::XMVECTOR& other);
 		operator DirectX::XMVECTOR();
 
+		friend std::ostream& operator<<(std::ostream& os, const Vec4& v3)
+		{
+			os << v3.x << "/" << v3.y << "/" << v3.z << "/" << v3.w;
+			return os;
+		}
+
 		constexpr Vec4() :
 			x(0), y(0), z(0), w(0)
 		{}
@@ -147,6 +153,10 @@ namespace Lapis
 		{}
 		constexpr Vec4(Vec3 v3) :
 			x(v3.x), y(v3.y), z(v3.z), w(0)
+		{}
+
+		Vec4(DirectX::XMVECTOR& v4) :
+			x(v4.m128_f32[0]), y(v4.m128_f32[1]), z(v4.m128_f32[2]), w(v4.m128_f32[3])
 		{}
 	};
 	using Vector4 = Vec4;
@@ -226,8 +236,19 @@ namespace Lapis
 			_41(mat.m30), _42(mat.m31), _43(mat.m32), _44(mat.m33)
 		{}
 
+		mat4x4(DirectX::XMMATRIX& mat) :
+			r{ mat.r[0], mat.r[0], mat.r[0], mat.r[0]}
+		{}
+
 		mat4x4& operator=(const DirectX::XMMATRIX& other);
 		operator DirectX::XMMATRIX();
+
+
+		friend std::ostream& operator<<(std::ostream& os, const mat4x4& mat)
+		{
+			os << mat.r[0] << " | " << mat.r[1] << " | " << mat.r[2] << " | " << mat.r[3];
+			return os;
+		}
 
 		static const mat4x4 Identity;
 	};

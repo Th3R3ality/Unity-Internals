@@ -14,6 +14,9 @@ namespace UnityEngine
 		void localPosition(Vector3 pos);
 		Vector3 localPosition();
 
+		void eulerAngles(Vector3 rot);
+		Vector3 eulerAngles();
+
 		void rotation(Quaternion pos);
 		Quaternion rotation();
 		

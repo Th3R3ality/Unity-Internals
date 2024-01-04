@@ -55,22 +55,44 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 		using namespace Lapis;
 		Lapis::NewFrame();
 
-		
 		BasePlayer* lp = cache::local();
 		UnityEngine::Camera* mainCam = cache::cameraMain();
 
 		if (lp && mainCam) {
 			Vec3 lpPos = cache::local()->transform()->position();
 
+			std::cout << "Camera Angles : " << mainCam->transform()->eulerAngles() << "\n";
+
 			auto viewMat = mainCam->worldToCameraMatrix();
 			auto projMat = mainCam->nonJitteredProjectionMatrix();
+
+			/*
+				TRY THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+				Camera cam = Camera.main;
+				Matrix4x4 P = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false);
+				Matrix4x4 V = cam.worldToCameraMatrix;
+				Matrix4x4 M = renderer.localToWorldMatrix;
+ 
+				Matrix4x4 MVP = P * V * M;
+ 
+			*/
+
+
+
+			//std::cout << "viewMat : " << static_cast<mat4x4>(viewMat) << "\n";
+			//std::cout << "projMat : " << static_cast<mat4x4>(projMat) << "\n";
 
 			//Lapis::PushViewMatrix(viewMat);
 			//Lapis::PushProjectionMatrix(projMat);
 
-			std::cout << "LocalPlayer Pos : " << lpPos << "\n";
-			std::cout << "Main Camera Pos : " << mainCam->transform()->position() << "\n";
-			Lapis::Draw::D3::Cube(Transform( lpPos + Vec3::forward*3 + -Vec3::up, 0, 1), "#FEE75C");
+			//std::cout << "LocalPlayer Pos : " << lpPos << "\n";
+			//std::cout << "Main Camera Pos : " << mainCam->transform()->position() << "\n";
+
+			//Lapis::mainCamera.pos = mainCam->transform()->position();
+			//Lapis::mainCamera.rot = mainCam->transform()->eulerAngles();
+
+			Lapis::Draw::D3::Cube(Transform( 0, 0, 1), "#FEE75C99");
 		}
 
 		//Lapis::mainCamera.pos = lpPos + -Vec3::forward * 3;
