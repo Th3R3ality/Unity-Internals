@@ -11,9 +11,17 @@
 
 #include "rust/classes/BasePlayer/BasePlayer.hpp"
 
+#include "Lapis/engine/LapisTypes.h"
 
 namespace cache
 {
+	struct debugDrawable
+	{
+		Lapis::Transform transform;
+		Lapis::Color color;
+		Lapis::Shape shape;
+	};
+
 	class CachedPlayer {
 	public:
 		BasePlayer* pBasePlayer = nullptr;
@@ -38,6 +46,9 @@ namespace cache
 	void set(BasePlayer* bp, UnityEngine::Avatar* avatar);
 	void set(BasePlayer* bp, UnityEngine::Animator* animator);
 
+	void debugDraw(std::string id, debugDrawable drawCall);
+	std::unordered_map<std::string, debugDrawable>& debugDrawables();
+
 	CachedPlayer& get(BasePlayer* bp);
 
 
@@ -54,4 +65,8 @@ namespace cache
 
 	void local(BasePlayer* bp);
 	BasePlayer* local();
+
+	void validatePlayers();
+
+
 }

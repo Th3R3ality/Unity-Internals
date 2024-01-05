@@ -4,5 +4,13 @@
 class BaseCombatEntity : public BaseEntity
 {
 public:
+	enum class LifeState
+	{
+		Alive,
+		Dead
+	};
+	
+	LifeState lifestate();
+	void lifestate(LifeState state);
 
 };

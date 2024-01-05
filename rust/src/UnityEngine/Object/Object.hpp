@@ -14,5 +14,7 @@ namespace UnityEngine
 		static void Destroy(Object* obj);
 
 		mscorlib::System::String* name();
+
+		static Object* FindObjectFromInstanceID(int instanceID);
 	};
 }

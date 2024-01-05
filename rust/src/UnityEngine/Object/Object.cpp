@@ -34,4 +34,12 @@ namespace UnityEngine
 			return fn(this);
 		return { 0 };
 	}
+
+	Object* Object::FindObjectFromInstanceID(int instanceID)
+	{
+		static auto fn = (Object * (*)(int))Il2cppLib::method_from_signature("UnityEngine::Object.FindObjectFromInstanceID(int)");
+		if (fn)
+			return fn(instanceID);
+		return nullptr;
+	}
 }

@@ -22,12 +22,11 @@ namespace cheat
 	bool has_unloaded();
 	void has_unloaded(bool status);
 
-	void unload_gameObjects();
-	void revert_model_changes();
+	void revert_all_models();
+	void revert_model_change(cache::CachedPlayer player);
 	void unload_assetbundles();
 
 	UnityEngine::AssetBundle* load_assetbundle(std::string path);
-
 
 	bool init_hooks();
 

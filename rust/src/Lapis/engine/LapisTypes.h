@@ -11,6 +11,14 @@
 
 namespace Lapis
 {
+	enum class Shape
+	{
+		Icosahedron,
+		Cube,
+		Triangle,
+		Plane
+	};
+
 	struct Color
 	{
 		union

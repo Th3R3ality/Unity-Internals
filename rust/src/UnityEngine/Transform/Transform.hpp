@@ -33,5 +33,7 @@ namespace UnityEngine
 		void SetParent(UnityEngine::Transform* transform);
 		void SetParent(UnityEngine::Transform* transform, bool worldPositionStays);
 		Transform* parent();
+
+		Vector3 forward();
 	};
 }

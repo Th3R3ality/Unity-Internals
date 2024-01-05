@@ -33,6 +33,11 @@ namespace mscorlib::System
 		return str;
 	}
 
+	bool String::operator==(const wchar_t* other)
+	{
+		return wcscmp(this->buffer, other) == 0;
+	}
+	
 	std::wostream& operator<<(std::wostream& os, const System::String* Sstr)
 	{
 		os << Sstr->buffer;

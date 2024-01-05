@@ -25,7 +25,7 @@ PlayerModel* BasePlayer::playerModel()
 	//	return fn(this);
 	//std::cout << "no fucking icall get_playerModel\n";
 
-	int offset = Il2cppLib::field_offset_from_signature("BasePlayer.playerModel");
+	static auto offset = Il2cppLib::field_offset_from_signature("BasePlayer.playerModel");
 	if (offset)
 		return *(PlayerModel**)((std::uintptr_t)this + offset);
 

@@ -288,6 +288,15 @@
     <ClInclude Include="src\rust\Render\Players.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\UnityEngine\Physics\Physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\RaycastHit\RaycastHit.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UnityEngine\Vector2\Vector2.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -525,6 +534,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\Render\Players.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Physics\Physics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\RaycastHit\RaycastHit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnityEngine\Vector2\Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

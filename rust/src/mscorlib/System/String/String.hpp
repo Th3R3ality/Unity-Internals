@@ -22,7 +22,8 @@ namespace mscorlib
 			friend std::wostream& operator<<(std::wostream& os, const System::String* Sstr);
 			friend bool operator==(const String* self, const std::wstring& other);
 
-
+			bool operator==(const wchar_t* other);
+			
 			bool equals(const wchar_t* str)
 			{
 				return wcscmp(this->buffer, str) == 0;

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <format>
 #include <chrono>
 #include <thread>
 
@@ -41,26 +42,43 @@ namespace cheat
 		did_unload = status;
 	}
 
-	void revert_model_changes()
+	void revert_all_models()
 	{
-		std::cout << "cleaning up model changes\n";
-		auto cachedPlayers = cache::cachedPlayers();
+		auto& cachedPlayers = cache::cachedPlayers();
 
 		for (auto& cachedPlayer : cachedPlayers) {
-			auto animator = cachedPlayer.second.pAnimator;
-			std::cout << "animator: " << animator << "\n";
-			if (!animator) continue;
-			auto avatar = cachedPlayer.second.pOrigAvatar;
-			std::cout << "avatar: " << avatar << "\n";
-			if (!avatar) continue;
-
-			animator->avatar(avatar);
-			
-			auto gameobject = cachedPlayer.second.pGameObject;
-			std::cout << "gameobject: " << gameobject << "\n";
-			if (!gameobject) continue;
-			UnityEngine::Object::Destroy(gameobject);
+			revert_model_change(cachedPlayer.second);
 		}
+	}
+
+	void revert_model_change(cache::CachedPlayer player)
+	{
+		std::cout << std::format("cleaning up model : {:x}\n", (uintptr_t)player.pBasePlayer);
+		
+		auto& cachedPlayersRef = cache::cachedPlayers();
+		auto& playerRef = cachedPlayersRef[player.pBasePlayer];
+		
+		auto animator = playerRef.pAnimator;
+		auto avatar = playerRef.pOrigAvatar;
+		if (animator && avatar)
+		{
+			std::cout << "animator: " << animator << "\n";
+			std::cout << "avatar: " << avatar << "\n";
+			animator->avatar(avatar);
+
+			playerRef.pAnimator = nullptr;
+			playerRef.pOrigAvatar = nullptr;
+		}
+		
+		auto gameobject = playerRef.pGameObject;
+		if (gameobject)
+		{
+			std::cout << "gameobject: " << gameobject << "\n";
+			UnityEngine::Object::Destroy(gameobject);
+
+			playerRef.pGameObject = nullptr;
+		}
+
 	}
 
 	void unload_assetbundles()

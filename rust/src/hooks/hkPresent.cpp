@@ -6,6 +6,7 @@
 #include <d3d11.h>
 
 #include "Lapis/engine/LapisEngine.h"
+#include "Lapis/engine/Helpers.h"
 
 #include "cache.hpp"
 
@@ -67,6 +68,7 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 		// VIEW & PROJECTION MATRIX
 		if (mainCam) {
 
+
 			// Get and Fix Matrices
 			{
 				auto viewMat = mainCam->worldToCameraMatrix();
@@ -94,10 +96,29 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			Draw::D3::Icosahedron(Transform(25, 0, 5), "FF0050");
 
 			Render::Players();
+
+
+			auto& drawCalls = cache::debugDrawables();
+			for (auto& drawCall : drawCalls) {
+				switch (drawCall.second.shape) {
+				case Lapis::Shape::Icosahedron:
+					Lapis::Draw::D3::Icosahedron(drawCall.second.transform, drawCall.second.color);
+					break;
+				case Lapis::Shape::Cube:
+					Lapis::Draw::D3::Cube(drawCall.second.transform, drawCall.second.color);
+					break;
+				case Lapis::Shape::Plane:
+					Lapis::Draw::D3::Plane(drawCall.second.transform, drawCall.second.color);
+					break;
+				case Lapis::Shape::Triangle:
+					Lapis::Draw::D3::Triangle(drawCall.second.transform, drawCall.second.color);
+					break;
+				default:
+					std::cout << "no shape\n";
+					break;
+				}
+			}
 		}
-
-		//Draw::D2::Triangle(0, { 25,0 }, { 0,25 }, "#00000099");
-
 
 		RenderFrame();
 		FlushFrame();
