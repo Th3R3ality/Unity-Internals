@@ -41,16 +41,6 @@ namespace cheat
 		did_unload = status;
 	}
 
-	void unload_gameObjects()
-	{
-		auto gameObjects = cache::gameObjects();
-		for (auto go : gameObjects) {
-			std::cout << "destroying " << go.second << "    key : " << go.first << std::endl;
-			UnityEngine::Object::Destroy(go.second);
-		}
-		gameObjects.clear();
-	}
-
 	void revert_model_changes()
 	{
 		std::cout << "cleaning up model changes\n";

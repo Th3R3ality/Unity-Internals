@@ -115,16 +115,23 @@ namespace Lapis
 
 	struct Vec4
 	{
-		float x, y;
 		union
 		{
-			float z;
-			float width;
-		};
-		union
-		{
-			float w;
-			float height;
+			float i[4];
+			struct
+			{
+				float x, y;
+				union
+				{
+					float z;
+					float width;
+				};
+				union
+				{
+					float w;
+					float height;
+				};
+			};
 		};
 
 		Vec4 operator+(const Vec4& other) const;
@@ -209,15 +216,15 @@ namespace Lapis
 	{
 		union
 		{
-			struct
-			{
-				float _11, _12, _13, _14;
-				float _21, _22, _23, _24;
-				float _31, _32, _33, _34;
-				float _41, _42, _43, _44;
-			};
 			Vec4 r[4];
 			float m[4][4];
+			struct
+			{
+				float _00, _10, _20, _30;
+				float _01, _11, _21, _31;
+				float _02, _12, _22, _32;
+				float _03, _13, _23, _33;
+			};
 		};
 
 		mat4x4(const mat4x4&) = default;
@@ -230,10 +237,10 @@ namespace Lapis
 		{}
 
 		mat4x4(UnityEngine::Matrix4x4& mat) :
-			_11(mat.m00), _12(mat.m01), _13(mat.m02), _14(mat.m03),
-			_21(mat.m10), _22(mat.m11), _23(mat.m12), _24(mat.m13),
-			_31(mat.m20), _32(mat.m21), _33(mat.m22), _34(mat.m23),
-			_41(mat.m30), _42(mat.m31), _43(mat.m32), _44(mat.m33)
+			_00(mat.m00), _10(mat.m10), _20(mat.m20), _30(mat.m30),
+			_01(mat.m01), _11(mat.m11), _21(mat.m21), _31(mat.m31),
+			_02(mat.m02), _12(mat.m12), _22(mat.m22), _32(mat.m32),
+			_03(mat.m03), _13(mat.m13), _23(mat.m23), _33(mat.m33)
 		{}
 
 		mat4x4(DirectX::XMMATRIX& mat) :
@@ -242,6 +249,7 @@ namespace Lapis
 
 		mat4x4& operator=(const DirectX::XMMATRIX& other);
 		operator DirectX::XMMATRIX();
+		operator UnityEngine::Matrix4x4();
 
 
 		friend std::ostream& operator<<(std::ostream& os, const mat4x4& mat)

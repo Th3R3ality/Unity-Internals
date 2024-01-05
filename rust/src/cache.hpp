@@ -40,22 +40,14 @@ namespace cache
 
 	CachedPlayer& get(BasePlayer* bp);
 
-	void go(BasePlayer* bp, UnityEngine::GameObject* go);
-	void go(void*, UnityEngine::GameObject* go);
 
-	bool check();
 	bool check(BasePlayer* bp);
-	bool check_model(BasePlayer* bp);
 
-	//void add_constraint(unsigned int type, UnityEngine::GameObject* src, UnityEngine::GameObject* dst, bool startEnabled = false);
-	//std::vector<constraint>& get_constraints();
 
 	UnityEngine::AssetBundle* bundle(std::string path);
-	std::unordered_map<void*, UnityEngine::GameObject*>& gameObjects();
 	std::unordered_map<std::string, UnityEngine::AssetBundle*>& bundles();
 	std::unordered_map<BasePlayer*, CachedPlayer>& cachedPlayers();
 
-	UnityEngine::GameObject* get_model(BasePlayer* bp);
 
 	UnityEngine::Camera* cameraMain();
 	void cameraMain(UnityEngine::Camera* cam);

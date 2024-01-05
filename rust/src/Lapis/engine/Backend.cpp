@@ -182,12 +182,13 @@ namespace Lapis
                 device->CreateDepthStencilState(&desc, &depthStencilState);
             }
 
+            matrix_world = DirectX::XMMatrixIdentity();
             DirectX::XMVECTOR Eye = Helpers::XMVectorSet(0);
             DirectX::XMVECTOR At = Helpers::XMVectorSet(Vec3::forward);
             DirectX::XMVECTOR Up = Helpers::XMVectorSet(Vec3::up);
             matrix_view = DirectX::XMMatrixLookAtLH(Eye, At, Up);
-            matrix_world = DirectX::XMMatrixIdentity();
             matrix_projection = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV2, SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 0.01f, 10000.0f);
+            
 
             gcb.World = DirectX::XMMatrixTranspose(matrix_world);
             gcb.View = DirectX::XMMatrixTranspose(matrix_view);
@@ -488,27 +489,24 @@ namespace Lapis
             matrix_screen = m;
             //auto dxscreen = DirectX::XMMatrixOrthographicLH(SCREEN_WIDTH, SCREEN_HEIGHT, -10, 1000);
 
-
-            auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
+            //auto translateView = Helpers::XMMatrixTranslation(mainCamera.pos);
             //auto rotateView = Helpers::XMMatrixRotationRollPitchYaw(-mainCamera.rotation);
-            auto scaleView = Helpers::XMMatrixScaling(Vec3(1, -1, 1));
+            //auto scaleView = Helpers::XMMatrixScaling(Vec3(1, -1, 1));
             //auto view = static_cast<DirectX::XMMATRIX>(matrix_view) * translateView * rotateView;
-            auto view = static_cast<DirectX::XMMATRIX>(matrix_view) * translateView * scaleView;
-
-
-
-            gcb.World = DirectX::XMMatrixTranspose(matrix_world);
-            gcb.View = DirectX::XMMatrixTranspose(view);
-            gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
-
-
+            //auto view = static_cast<DirectX::XMMATRIX>(matrix_view) * translateView * scaleView;
 
             gcb.Screen = matrix_screen;
+            //model
+            gcb.World = DirectX::XMMatrixTranspose(matrix_world);
+            gcb.View = DirectX::XMMatrixTranspose(matrix_view);
+            gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
+            //gcb.View = matrix_view;
+            //gcb.Projection = matrix_projection;
 
-            std::cout << "matrix_view : " << static_cast<mat4x4>(view) << "\n";
-            std::cout << "matrix_projection : " << matrix_projection << "\n";
+
+            //std::cout << "matrix_view : " << static_cast<mat4x4>(matrix_view) << "\n";
+            //std::cout << "matrix_projection : " << matrix_projection << "\n";
             RemapSubResource(constantBuffer, &gcb, sizeof(gcb));
-
         }
         void DrawCommand(InternalLapisCommand internalLapisCommand)
         {

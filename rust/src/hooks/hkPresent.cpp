@@ -9,6 +9,8 @@
 
 #include "cache.hpp"
 
+#include "UnityEngine/GL/GL.hpp"
+
 HWND g_hwnd{};
 
 bool ShowMenu = false;
@@ -53,55 +55,35 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 	// lapis render
 	{
 		using namespace Lapis;
-		Lapis::NewFrame();
+		NewFrame();
 
-		BasePlayer* lp = cache::local();
 		UnityEngine::Camera* mainCam = cache::cameraMain();
 
-		if (lp && mainCam) {
-			Vec3 lpPos = cache::local()->transform()->position();
-
-			std::cout << "Camera Angles : " << mainCam->transform()->eulerAngles() << "\n";
-
+		// VIEW & PROJECTION MATRIX
+		if (mainCam) {
 			auto viewMat = mainCam->worldToCameraMatrix();
-			auto projMat = mainCam->nonJitteredProjectionMatrix();
+			Lapis::PushViewMatrix(viewMat);
 
-			/*
-				TRY THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			UnityEngine::Matrix4x4 projMat = UnityEngine::GL::GetGPUProjectionMatrix(mainCam->nonJitteredProjectionMatrix(), true);
 
-				Camera cam = Camera.main;
-				Matrix4x4 P = GL.GetGPUProjectionMatrix(cam.projectionMatrix, false);
-				Matrix4x4 V = cam.worldToCameraMatrix;
-				Matrix4x4 M = renderer.localToWorldMatrix;
- 
-				Matrix4x4 MVP = P * V * M;
- 
-			*/
-
-
-
-			//std::cout << "viewMat : " << static_cast<mat4x4>(viewMat) << "\n";
-			//std::cout << "projMat : " << static_cast<mat4x4>(projMat) << "\n";
-
-			//Lapis::PushViewMatrix(viewMat);
-			//Lapis::PushProjectionMatrix(projMat);
-
-			//std::cout << "LocalPlayer Pos : " << lpPos << "\n";
-			//std::cout << "Main Camera Pos : " << mainCam->transform()->position() << "\n";
-
-			//Lapis::mainCamera.pos = mainCam->transform()->position();
-			//Lapis::mainCamera.rot = mainCam->transform()->eulerAngles();
-
-			Lapis::Draw::D3::Cube(Transform( 0, 0, 1), "#FEE75C99");
+			// Fix Projection Matrix to Be Compatible With DirectX
+			for (int i = 0; i < 4; i++) {
+				projMat.m[i][1] = -projMat.m[i][1];
+			}
+			// Scale and bias from OpenGL -> D3D depth range
+			for (int i = 0; i < 4; i++) {
+				projMat.m[i][2] = projMat.m[i][2] * 0.5f + projMat.m[i][3] * 0.5f;
+			}
+			
+			Lapis::PushProjectionMatrix(projMat);
+			
 		}
 
-		//Lapis::mainCamera.pos = lpPos + -Vec3::forward * 3;
-
-
+		Draw::D3::Cube(Transform( 0, 0, 1), "#FEE75C99");
 		Draw::D2::Triangle(0, { 50,0 }, {0,50}, "#ED424599");
 
-		Lapis::RenderFrame();
-		Lapis::FlushFrame();
+		RenderFrame();
+		FlushFrame();
 	}
 
 	return ((HRESULT(*)(IDXGISwapChain*, UINT, UINT))origPresent)(_this, SyncInterval, Flags);

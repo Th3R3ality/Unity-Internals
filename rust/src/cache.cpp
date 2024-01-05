@@ -14,9 +14,7 @@ namespace cache
 	BasePlayer* localplayer{};
 
 	std::unordered_map<BasePlayer*, CachedPlayer> __cachedPlayers;
-
 	std::unordered_map<std::string, UnityEngine::AssetBundle*> assetbundles;
-	std::unordered_map<void*, UnityEngine::GameObject*> custom_gameObjects;
 
 	void add(BasePlayer* bp)
 	{
@@ -39,25 +37,12 @@ namespace cache
 	{
 		return __cachedPlayers[bp];
 	}
-	
-	void go(BasePlayer* bp, UnityEngine::GameObject* go)
-	{
-		custom_gameObjects[(void*)bp] = go;
-	}
-	void go(void* peter, UnityEngine::GameObject* go)
-	{
-		custom_gameObjects[peter] = go;
-	}
 
 	UnityEngine::AssetBundle* bundle(std::string path)
 	{
 		return assetbundles[path];
 	}
 
-	std::unordered_map<void*, UnityEngine::GameObject*>& gameObjects()
-	{
-		return custom_gameObjects;
-	}
 	std::unordered_map<std::string, UnityEngine::AssetBundle*>& bundles()
 	{
 		return assetbundles;
@@ -67,10 +52,6 @@ namespace cache
 		return __cachedPlayers;
 	}
 
-	bool check()
-	{
-		return localplayer ? true : false;
-	}
 	bool check(BasePlayer* bp)
 	{
 		for (auto&& cachedPlayer : __cachedPlayers) {
@@ -78,22 +59,6 @@ namespace cache
 				return true;
 		}
 		return false;
-	}
-	
-	bool check_model(BasePlayer* bp)
-	{
-		if (custom_gameObjects.find((void*)bp) != custom_gameObjects.end()) {
-			return true;
-		}
-		return false;
-	}
-
-	UnityEngine::GameObject* get_model(BasePlayer* bp)
-	{
-		if (custom_gameObjects.find(bp) != custom_gameObjects.end()) {
-			return custom_gameObjects[bp];
-		}
-		return { 0 };
 	}
 
 	void cameraMain(UnityEngine::Camera* cam)
@@ -115,6 +80,4 @@ namespace cache
 			return nullptr;
 		return localplayer;
 	}
-
-
 }

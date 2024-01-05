@@ -31,13 +31,16 @@ namespace Il2cppLib::api
 	{
 	#define TYPE_MAPPING(mapping, real) type_map[mapping] = real
 
+		// UnityEngine types
 		TYPE_MAPPING("Vector3", "UnityEngine.Vector3");
 		TYPE_MAPPING("Color", "UnityEngine.Color");
 		TYPE_MAPPING("Bounds", "UnityEngine.Bounds");
 		TYPE_MAPPING("Quaternion", "UnityEngine.Quaternion");
 		TYPE_MAPPING("AssetBundle", "UnityEngine.AssetBundle");
 		TYPE_MAPPING("Object", "UnityEngine.Object");
+		TYPE_MAPPING("Matrix4x4", "UnityEngine.Matrix4x4");
 
+		// System types
 		TYPE_MAPPING("float", "System.Single");
 		TYPE_MAPPING("bool", "System.Boolean");
 		TYPE_MAPPING("string", "System.String");
@@ -46,6 +49,7 @@ namespace Il2cppLib::api
 		TYPE_MAPPING("Type", "System.Type");
 		TYPE_MAPPING("byte", "System.Byte");
 
+		// Rust types
 		TYPE_MAPPING("LoadInfo", "BaseNetworkable.LoadInfo");
 
 	#undef TYPE_MAPPING

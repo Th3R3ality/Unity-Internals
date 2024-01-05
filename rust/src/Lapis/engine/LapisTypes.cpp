@@ -237,5 +237,17 @@ namespace Lapis
 		return res;
 	}
 
+	mat4x4::operator UnityEngine::Matrix4x4()
+	{
+		UnityEngine::Matrix4x4 res{};
+
+		res.m00 = _00; res.m10 = _10; res.m20 = _20; res.m30 = _30;
+		res.m01 = _01; res.m11 = _11; res.m21 = _21; res.m31 = _31;
+		res.m02 = _02; res.m12 = _12; res.m22 = _22; res.m32 = _32;
+		res.m03 = _03; res.m13 = _13; res.m23 = _23; res.m33 = _33;
+
+		return res;
+	}
+
 	mat4x4 const mat4x4::Identity( { 1, 0, 0, 0 }, { 0,1,0,0 }, { 0,0,1,0 }, { 0,0,0,1 } );
 }
