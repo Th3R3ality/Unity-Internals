@@ -21,6 +21,15 @@ namespace UnityEngine
 		return {};
 	}
 
+	Matrix4x4 Camera::projectionMatrix()
+	{
+		auto fn = (Matrix4x4(*)(Camera*))Il2cppLib::method_from_signature("UnityEngine::Camera.get_projectionMatrix()");
+
+		if (fn)
+			return fn(this);
+		return {};
+	}
+
 	Matrix4x4 Camera::nonJitteredProjectionMatrix()
 	{
 		auto fn = (Matrix4x4(*)(Camera*))Il2cppLib::method_from_signature("UnityEngine::Camera.get_nonJitteredProjectionMatrix()");

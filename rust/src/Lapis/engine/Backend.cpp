@@ -1,6 +1,7 @@
 #include "Backend.h"
 
 #include <iostream>
+#include <format>
 
 #include "../../global.h"
 
@@ -529,15 +530,15 @@ namespace Lapis
             auto& material = internalLapisCommand.material;
             debugPrint(material->name);
 
-            static ID3D11VertexShader* prevVertexShader = nullptr;
+            static ID3D11VertexShader* prevVertexShader = builtinMaterials["UI"]->vertexShader;
             if (prevVertexShader != material->vertexShader) {
-                debugPrint(material->vertexShader);
+                //std::cout << std::format("set new vertex  -  prevVertexShader : {:X} | material->vertexShader : {:X}\n", (uintptr_t)prevVertexShader, (uintptr_t)material->vertexShader);
                 deviceContext->VSSetShader(material->vertexShader, 0, 0);
                 prevVertexShader = material->vertexShader;
             }
-            static ID3D11PixelShader* prevPixelShader = nullptr;
+            static ID3D11PixelShader* prevPixelShader = builtinMaterials["UI"]->pixelShader;
             if (prevPixelShader != material->pixelShader) {
-                debugPrint(material->pixelShader);
+                //std::cout << std::format("set new pixel  -  prevPixelShader : {:X} | material->pixelShader : {:X}\n", (uintptr_t)prevPixelShader, (uintptr_t)material->pixelShader);
                 deviceContext->PSSetShader(material->pixelShader, 0, 0);
                 prevPixelShader = material->pixelShader;
             }

@@ -11,6 +11,7 @@ namespace UnityEngine
 		static Camera* main();
 
 		Matrix4x4 worldToCameraMatrix();
+		Matrix4x4 projectionMatrix();
 		Matrix4x4 nonJitteredProjectionMatrix();
 	};
 }

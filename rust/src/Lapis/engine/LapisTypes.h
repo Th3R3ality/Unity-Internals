@@ -33,6 +33,12 @@ namespace Lapis
 			rgba({f,f,f,f})
 		{}
 
+		constexpr Color(int i)
+		{
+			float f = static_cast<float>(i);
+			rgba = { f,f,f,f };
+		}
+
 		constexpr Color(float r, float g, float b, float a) :
 			rgba({r,g,b,a})
 		{}
