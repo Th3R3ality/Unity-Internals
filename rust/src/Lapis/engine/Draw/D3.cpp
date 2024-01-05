@@ -10,7 +10,7 @@ namespace Lapis
 
 			void Line(Vec3 from, Vec3 to, Color rgba)
 			{
-				Backend::PushCommand(LapisCommand(2, D3D11_PRIMITIVE_TOPOLOGY_LINELIST, Transform(), "UNLIT3D"));
+				Backend::PushCommand(LapisCommand(2, D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, Transform(), "UNLIT3D"));
 
 				Backend::PushVertex(Vertex(from, rgba, Vec2(0, 0), {}));
 				Backend::PushVertex(Vertex(to, rgba, Vec2(1, 0), {}));
@@ -67,8 +67,7 @@ namespace Lapis
 				Backend::PushVertex(Vertex(Vec3(-.5f, -.5f, -.5f), rgba, Vec2(0,1), Vec3()));
 				Backend::PushVertex(Vertex(Vec3(-.5f, -.5f,  .5f), rgba, Vec2(1,1), Vec3()));
 
-				Backend::PushCommand(LapisCommand(8, D3D_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
-				
+				Backend::PushCommand(LapisCommand(8, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
 				Backend::PushVertex(Vertex(Vec3( 0.5,  0.5, -0.5), rgba, Vec2(0,0), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5, -0.5, -0.5), rgba, Vec2(1,0), Vec3()));
 				Backend::PushVertex(Vertex(Vec3(-0.5,  0.5, -0.5), rgba, Vec2(0,.33f), Vec3()));
@@ -77,6 +76,64 @@ namespace Lapis
 				Backend::PushVertex(Vertex(Vec3(-0.5, -0.5,  0.5), rgba, Vec2(1,.67f), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5,  0.5,  0.5), rgba, Vec2(0,1), Vec3()));
 				Backend::PushVertex(Vertex(Vec3( 0.5, -0.5,  0.5), rgba, Vec2(1,1), Vec3()));
+			}
+			void Icosahedron(Transform transform, Color rgba)
+			{
+				{
+					Backend::PushCommand(LapisCommand(6, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, 0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, -0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.894425f, -0.447215f, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.276385f, -0.447215f, -0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0, -1, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, -0.52572f), rgba, 0, 0));
+				}
+
+				{
+					Backend::PushCommand(LapisCommand(5, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(0, 1, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.894424f, 0.447215f, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.276385f, 0.447215f, 0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, 0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.276385f, -0.447215f, 0.85064f), rgba, 0, 0));
+				}
+
+				{
+					Backend::PushCommand(LapisCommand(5, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, 0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0, -1, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.276385f, -0.447215f, 0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.894425f, -0.447215f, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, 0.52572f), rgba, 0, 0));
+				}
+
+				{
+					Backend::PushCommand(LapisCommand(5, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, -0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0, 1, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, 0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.276385f, 0.447215f, 0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.276385f, -0.447215f, 0.85064f), rgba, 0, 0));
+				}
+
+				{
+					Backend::PushCommand(LapisCommand(5, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(0, 1, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.7236f, 0.447215f, -0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.276385f, 0.447215f, -0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(-0.276385f, -0.447215f, -0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, -0.52572f), rgba, 0, 0));
+				}
+
+				{
+					Backend::PushCommand(LapisCommand(6, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP, transform, "UNLIT3D"));
+					Backend::PushVertex(Vertex(Vec3(0,1,0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.276385f, 0.447215f, -0.85064f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.894424f, 0.447215f, 0), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, -0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0.7236f, -0.447215f, 0.52572f), rgba, 0, 0));
+					Backend::PushVertex(Vertex(Vec3(0, -1, 0), rgba, 0, 0));
+				}
 			}
 		}
 	}

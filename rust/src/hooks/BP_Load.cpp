@@ -75,10 +75,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		}
 	}
 	
-
 	return; // dont do model changer
-
-
 
 	std::wcout << "--- MODEL : " << pModel->name() << " ---\n";
 	for (int i = 0; i < pModel->transform()->childCount(); i++) {
@@ -96,7 +93,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		"assets\\cxtgirl\\catgxrl_modelchange.prefab"
 	};
 
-	int model = 0;
+	int model = 1;
 
 	static auto bundle = cheat::load_assetbundle(modelPaths[model]);
 	static UnityEngine::Object* monkePrefab = nullptr;

@@ -499,7 +499,13 @@ namespace Lapis
             //model
             gcb.World = DirectX::XMMatrixTranspose(matrix_world);
             gcb.View = DirectX::XMMatrixTranspose(matrix_view);
+
+            /*for (int i = 0; i < 4; i++) {
+                matrix_projection.m[i][2] = matrix_projection.m[i][2] * -1;
+            }*/
+            
             gcb.Projection = DirectX::XMMatrixTranspose(matrix_projection);
+            
             //gcb.View = matrix_view;
             //gcb.Projection = matrix_projection;
 

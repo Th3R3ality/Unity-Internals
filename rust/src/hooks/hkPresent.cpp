@@ -11,6 +11,8 @@
 
 #include "UnityEngine/GL/GL.hpp"
 
+#include "rust/Render/Players.h"
+
 HWND g_hwnd{};
 
 bool ShowMenu = false;
@@ -64,23 +66,37 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			auto viewMat = mainCam->worldToCameraMatrix();
 			Lapis::PushViewMatrix(viewMat);
 
-			UnityEngine::Matrix4x4 projMat = UnityEngine::GL::GetGPUProjectionMatrix(mainCam->nonJitteredProjectionMatrix(), true);
-
-			// Fix Projection Matrix to Be Compatible With DirectX
-			for (int i = 0; i < 4; i++) {
-				projMat.m[i][1] = -projMat.m[i][1];
+			constexpr bool renderIntoTexture = false;
+			UnityEngine::Matrix4x4 projMat = UnityEngine::GL::GetGPUProjectionMatrix(mainCam->nonJitteredProjectionMatrix(), renderIntoTexture);
+			if (renderIntoTexture){
+				for (int i = 0; i < 4; i++) {
+					projMat.m[i][1] = -projMat.m[i][1];
+				}
 			}
-			// Scale and bias from OpenGL -> D3D depth range
+
+			// Invert, Scale and Bias from OpenGL -> D3D depth range (zF,zN)(0,1 -> 1,-1)
 			for (int i = 0; i < 4; i++) {
-				projMat.m[i][2] = projMat.m[i][2] * 0.5f + projMat.m[i][3] * 0.5f;
+				projMat.m[i][2] = projMat.m[i][2] * -1;
+				projMat.m[i][2] = (projMat.m[i][2] * 0.5f + projMat.m[i][3] * 0.5f);
 			}
 			
 			Lapis::PushProjectionMatrix(projMat);
 			
 		}
-
-		Draw::D3::Cube(Transform( 0, 0, 1), "#FEE75C99");
 		Draw::D2::Triangle(0, { 50,0 }, {0,50}, "#ED424599");
+
+		Draw::D3::Cube(Transform(3, 0, 1), "#AAE75C");
+		Draw::D3::Cube(Transform( 0, 0, 1), "#FEE75CAA");
+		Draw::D3::Cube(Transform(-3, 0, 1), "#00E7FF");
+
+
+		Draw::D3::Line(Vec3::right * 10, Vec3(100), "FF0050");
+		Draw::D3::Icosahedron(Transform(25, 0, 5), "FF0050");
+
+		//Render::Players();
+
+		//Draw::D2::Triangle(0, { 25,0 }, { 0,25 }, "#00000099");
+
 
 		RenderFrame();
 		FlushFrame();
