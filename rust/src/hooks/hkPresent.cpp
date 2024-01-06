@@ -63,9 +63,8 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 		Draw::D2::Triangle(0, { 50,0 }, {0,50}, "FF005099");
 
 
-		UnityEngine::Camera* mainCam = cache::cameraMain();
+		UnityEngine::Camera* mainCam = UnityEngine::Camera::main();
 
-		// VIEW & PROJECTION MATRIX
 		if (mainCam) {
 
 

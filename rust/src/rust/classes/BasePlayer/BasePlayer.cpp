@@ -33,3 +33,12 @@ PlayerModel* BasePlayer::playerModel()
 	return nullptr;
 }
 
+BufferList<BasePlayer*>* BasePlayer::visiblePlayerList()
+{
+	static auto fn = (BufferList<BasePlayer*>*(*)())Il2cppLib::method_from_signature("BasePlayer.get_VisiblePlayerList()");
+	if (fn)
+		return fn();
+	return nullptr;
+}
+
+

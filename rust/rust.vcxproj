@@ -112,6 +112,7 @@
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\constraints.hpp" />
+    <ClInclude Include="src\rust\classes\BufferList\BufferList.hpp" />
     <ClInclude Include="src\rust\Render\Players.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\hooks\D3D_VMT_Indices.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\constraints.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\rust\classes\BufferList\BufferList.cpp" />
     <ClCompile Include="src\rust\Render\Players.cpp" />
     <ClCompile Include="src\hooks\BP_Load.cpp" />
     <ClCompile Include="src\hooks\BP_OnLand.cpp" />

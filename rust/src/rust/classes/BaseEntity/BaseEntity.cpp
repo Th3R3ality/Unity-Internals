@@ -13,3 +13,4 @@ Model* BaseEntity::model()
 
 	return *(Model**)((uintptr_t)this + offset);
 }
+

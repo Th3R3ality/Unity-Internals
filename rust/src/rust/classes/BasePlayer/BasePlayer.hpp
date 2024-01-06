@@ -26,4 +26,7 @@ public:
 	void SendVoiceData(System::Array<System::Byte*>* data, int len);
 
 	PlayerModel* playerModel();
+
+	static BufferList<BasePlayer*>* visiblePlayerList();
+
 };
