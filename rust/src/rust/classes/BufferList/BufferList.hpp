@@ -5,13 +5,13 @@ template <typename t>
 class BufferList
 {
 public:
-	char zeroBytes[0xf];
+	char junkBytes[0xf];
 	int count;
 	mscorlib::System::Array<t>* buffer;
 
 	t Get(int idx)
 	{
-		if (idx >= count && idx >= buffer->length())
+		if (idx >= count || idx >= buffer->length())
 			return nullptr;
 		return buffer->data()[idx];
 	}

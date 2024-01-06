@@ -14,6 +14,11 @@
 
 #include "rust/Render/Players.h"
 
+#include "sex.h"
+bool sexbool = false;
+
+
+
 HWND g_hwnd{};
 
 bool ShowMenu = false;
@@ -117,6 +122,14 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 					break;
 				}
 			}
+		}
+
+
+		if (GetAsyncKeyState('O') & 0x1) {
+			sexbool = !sexbool;
+		}
+		if (sexbool) {
+			Lapis::Draw::D2::Circle(Lapis::Vec2(30,30), 10, "fff33399");
 		}
 
 		RenderFrame();

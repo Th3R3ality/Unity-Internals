@@ -8,6 +8,7 @@ BaseCombatEntity::LifeState BaseCombatEntity::lifestate()
 
 	if (offset)
 		return *(LifeState*)((uintptr_t)this + offset);
+	return LifeState::Dead;
 }
 
 void BaseCombatEntity::lifestate(BaseCombatEntity::LifeState state)

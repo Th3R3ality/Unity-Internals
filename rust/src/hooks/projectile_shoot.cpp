@@ -2,6 +2,10 @@
 #include <iostream>
 #include <format>
 
+#include "cache.hpp"
+
+#include "rust/classes/BaseProjectile/BaseProjectile.hpp"
+
 typedef void(*Il2CppMethodPointer)();
 typedef void (*InvokerMethod)(Il2CppMethodPointer, const MethodInfo*, void*, void**, void*);
 typedef struct MethodInfo
@@ -37,19 +41,37 @@ typedef struct MethodInfo
 
 void hk__projectile_shoot(BaseEntity* instance, mscorlib::System::String* funcName, uint64_t arg1, const MethodInfo* method)
 {
-    std::cout << "projectile shoot\n";
+    //std::cout << "projectile shoot\n";
 
 	ORIG(hk__projectile_shoot);
-	orig(instance, funcName, arg1, method);
 
     try {
         std::wcout << "funcName : " << funcName << std::endl;
         if (funcName->equals(L"CLProject")) {
-            
+            std::cout << "instance : " << instance << "\n";
+            auto projectiles = ((BaseProjectile*)instance)->createdProjectiles();
 
+            auto lp = cache::local();
+            auto cam = cache::cameraMain();
+            if (lp && cam) {
+
+                auto camPos = cam->transform()->position();
+                auto pos = camPos + UnityEngine::Vector3(0, 1, 0);
+                cache::debugDraw("manip", cache::debugDrawable(Lapis::Transform(pos, 0, 0.1), "fff33399", Lapis::Shape::Icosahedron));
+
+
+                std::cout << "did yo crash yet?\n";
+
+                for (int i = 0; i < projectiles->_size; i++) {
+                    projectiles->Get(i)->transform()->position(pos);
+                }
+                std::cout << "did yo crash nyow??\n";
+            }
         }
     }
     catch (std::exception e){
         std::cout << "exception in projectile_shoot hook\n";
     }
+
+    orig(instance, funcName, arg1, method);
 }

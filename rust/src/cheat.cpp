@@ -159,7 +159,7 @@ namespace cheat
 		MH_Initialize();
 
 		std::cout << " GameAssembly.dll : " << (uintptr_t)GetModuleHandleA("GameAssembly.dll") << "\n";
-		void* projectile_shoot_rpc = (void*)((uintptr_t)GetModuleHandleA("GameAssembly.dll") + 0x1147120);
+		void* projectile_shoot_rpc = (void*)((uintptr_t)GetModuleHandleA("GameAssembly.dll") + 0x1148440);
 		hooking::New("projectile_shoot", projectile_shoot_rpc, (void*)hk__projectile_shoot);
 		hooking::Enable("projectile_shoot");
 		

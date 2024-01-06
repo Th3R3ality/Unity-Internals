@@ -45,6 +45,16 @@ namespace UnityEngine
 			v.z += f;
 			return v;
 		}
+		Vector3 operator+(const Vector3& other) const
+		{
+			Vector3 res;
+
+			res.x = x + other.x;
+			res.y = y + other.y;
+			res.z = z + other.z;
+
+			return res;
+		}
 		friend Vector3& operator+=(Vector3& v1, const Vector3& v2)
 		{
 			v1.x += v2.x;

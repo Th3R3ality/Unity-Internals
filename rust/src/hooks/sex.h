@@ -4,3 +4,4 @@
 #include "rust/classes/Projectile/Projectile.hpp"
 
 extern std::vector<Projectile*> manippedProjectiles;
+extern bool sexbool;

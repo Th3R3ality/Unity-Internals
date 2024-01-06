@@ -10,6 +10,7 @@
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
+
 	//static int counter = -1; ++counter;
 
 	ORIG(hk__FP_PU_Update);
@@ -55,12 +56,12 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 					std::wcout << hitObject->name() << "\n";
 					std::cout << "Pos : " << hitObjectPos << "\n";
-					cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitObjectPos, 0, 0.1), "0050ff55", Lapis::Shape::Icosahedron));
+					cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitObjectPos, 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
 
 					if (*hitObject->name() == L"hinge") {
 						auto hatchPos = hitObject->transform()->GetChild(1)->position();
 
-						cache::debugDraw("hatch", cache::debugDrawable(Lapis::Transform(Lapis::Vec3(hatchPos) + Lapis::Vec3::up*0.1, 0, 0.1), "ff005055", Lapis::Shape::Icosahedron));
+						cache::debugDraw("hatch", cache::debugDrawable(Lapis::Transform(Lapis::Vec3(hatchPos) + Lapis::Vec3::up*0.1f, 0, 0.1f), "ff005055", Lapis::Shape::Icosahedron));
 					}
 				}
 			}

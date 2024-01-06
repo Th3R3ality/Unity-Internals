@@ -318,6 +318,12 @@
     <ClInclude Include="src\rust\classes\HitTest\HitTest.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mscorlib\System\List\List.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mscorlib\System\Object\Object.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -582,6 +588,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\hooks\Proj_DoHit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\BaseProjectile\BaseProjectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
