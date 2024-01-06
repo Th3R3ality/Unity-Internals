@@ -26,9 +26,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		cheat::revert_all_models();
 		cheat::unload_assetbundles();
 		cheat::has_unloaded(true);
+		return;
 	}
 
-	
+	cache::validatePlayerCache();
 
 
 	auto localPlayer = cache::local();

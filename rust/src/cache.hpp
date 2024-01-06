@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <unordered_map>
+#include <map>
 
 #include "UnityEngine/GameObject/GameObject.hpp"
 #include "UnityEngine/AssetBundle/AssetBundle.hpp"
@@ -57,7 +58,7 @@ namespace cache
 
 	UnityEngine::AssetBundle* bundle(std::string path);
 	std::unordered_map<std::string, UnityEngine::AssetBundle*>& bundles();
-	std::unordered_map<BasePlayer*, CachedPlayer>& cachedPlayers();
+	std::map<BasePlayer*, CachedPlayer>& cachedPlayers();
 
 
 	UnityEngine::Camera* cameraMain();
@@ -66,7 +67,5 @@ namespace cache
 	void local(BasePlayer* bp);
 	BasePlayer* local();
 
-	void validatePlayers();
-
-
+	void validatePlayerCache();
 }

@@ -15,4 +15,13 @@ public:
 			return nullptr;
 		return buffer->data()[idx];
 	}
+
+	bool Contains(t value)
+	{
+		for (int i = 0; i < count; i++) {
+			if (buffer->data()[i] == value)
+				return true;
+		}
+		return false;
+	}
 };

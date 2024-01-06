@@ -3,6 +3,7 @@
 #include <iostream>
 #include <format>
 #include <unordered_map>
+#include <map>
 #include <vector>
 
 #include "cheat.hpp"
@@ -15,7 +16,7 @@ namespace cache
 	UnityEngine::Camera* camera_main{};
 	BasePlayer* localplayer{};
 
-	std::unordered_map<BasePlayer*, CachedPlayer> __cachedPlayers;
+	std::map<BasePlayer*, CachedPlayer> __cachedPlayers;
 	std::unordered_map<std::string, UnityEngine::AssetBundle*> assetbundles;
 
 
@@ -60,7 +61,7 @@ namespace cache
 	{
 		return assetbundles;
 	}
-	std::unordered_map<BasePlayer*, CachedPlayer>& cachedPlayers()
+	std::map<BasePlayer*, CachedPlayer>& cachedPlayers()
 	{
 		return __cachedPlayers;
 	}
@@ -94,16 +95,18 @@ namespace cache
 		return localplayer;
 	}
 
-	void validatePlayers()
+	void validatePlayerCache()
 	{
-		auto copiedPlayers = __cachedPlayers;
-		for (auto& player : copiedPlayers) {
-			if (player.first->lifestate() != BaseCombatEntity::LifeState::Alive) {
-				std::cout << std::format("Invalidated Player : {:x}\n", (uintptr_t)player.first);
-				cheat::revert_model_change(player.second);
+		//std::cout << "validating players\n";
+		auto playerList = BasePlayer::visiblePlayerList();
+		auto cacheCopy = __cachedPlayers;
+
+		for (auto player : cacheCopy ) {
+			if (!playerList->Contains(player.first)) {
+				cheat::revert_model_change(__cachedPlayers[player.first]);
 				__cachedPlayers.erase(player.first);
+				std::cout << "invalidated Cached Player\n";
 			}
 		}
-		//std::cout << "{ + } validated players\n";
 	}
 }
