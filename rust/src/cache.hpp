@@ -55,7 +55,6 @@ namespace cache
 
 	bool check(BasePlayer* bp);
 
-
 	UnityEngine::AssetBundle* bundle(std::string path);
 	std::unordered_map<std::string, UnityEngine::AssetBundle*>& bundles();
 	std::map<BasePlayer*, CachedPlayer>& cachedPlayers();

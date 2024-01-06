@@ -158,6 +158,11 @@ namespace cheat
 
 		MH_Initialize();
 
+		std::cout << " GameAssembly.dll : " << (uintptr_t)GetModuleHandleA("GameAssembly.dll") << "\n";
+		void* projectile_shoot_rpc = (void*)((uintptr_t)GetModuleHandleA("GameAssembly.dll") + 0x1147120);
+		hooking::New("projectile_shoot", projectile_shoot_rpc, (void*)hk__projectile_shoot);
+		hooking::Enable("projectile_shoot");
+		
 		//hooking::New("pu_update", Il2cppLib::method_from_signature(hk__FP_PU_Update_sig), (void*)hk__FP_PU_Update);
 		//hooking::Enable("pu_update");
 
@@ -168,11 +173,9 @@ namespace cheat
 		
 		HOOK(BP_OnLand);
 
-
-		std::cout << " GameAssembly.dll : " << (uintptr_t)GetModuleHandleA("GameAssembly.dll") << "\n";
-		void* projectile_shoot_rpc = (void*)((uintptr_t)GetModuleHandleA("GameAssembly.dll") + 0x1147120);
-		hooking::New("projectile_shoot", projectile_shoot_rpc, (void*)hk__projectile_shoot);
-		hooking::Enable("projectile_shoot");
+		//HOOK(BProj_LaunchProjectileClientside);
+		HOOK(Proj_UpdateVelocity);
+		HOOK(Proj_DoHit);
 
 		//HOOK(PVS_Receive);
 		//HOOK(BP_SendVoiceData);

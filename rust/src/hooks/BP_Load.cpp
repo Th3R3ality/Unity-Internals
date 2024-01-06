@@ -19,20 +19,18 @@
 #include "cheat.hpp"
 #include "cache.hpp"
 
+#include "Il2cppLib.h"
 
 void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 {
 	ORIG(hk__BP_Load);
 	orig(instance, info);
 
-	std::cout << "bp_load hook!" << std::endl;
+	//std::cout << "bp_load hook!" << std::endl;
 	
 	auto playerModel = instance->playerModel();
-	std::cout << "playerModel : " << playerModel << std::endl;
+	//std::cout << "playerModel : " << playerModel << std::endl;
 
-	if (!playerModel) {
-		//playerModel = (PlayerModel*)instance->transform()->GetComponent(PlayerModel());
-	}
 	if (!playerModel) {
 		std::cout << "\n--------------------------------\n|        no playerModel        |\n--------------------------------\n\n";
 		return;

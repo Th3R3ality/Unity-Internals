@@ -17,6 +17,23 @@ hooking::Enable( #sig )
 #include "hkPresent.h"
 #include "hkResizeBuffers.h"
 
+//BaseProjectile.LaunchProjectileClientSide
+#include "rust/classes/BaseProjectile/BaseProjectile.hpp"
+#include "rust/classes/ItemDefinition/ItemDefinition.hpp"
+const static std::string hk__BProj_LaunchProjectileClientside_sig = "BaseProjectile.LaunchProjectileClientside(ItemDefinition, int, float)";
+void hk__BProj_LaunchProjectileClientside(BaseProjectile* instance, ItemDefinition* ammo, int projectileCount, float projSpreadaimCone);
+
+//Projectile.UpdateVelocity
+#include "rust/classes/Projectile/Projectile.hpp"
+const static std::string hk__Proj_UpdateVelocity_sig = "Projectile.UpdateVelocity(float)";
+void hk__Proj_UpdateVelocity(Projectile* instance, float deltaTime);
+
+//Projectile.DoHit
+#include "rust/classes/Projectile/Projectile.hpp"
+#include "rust/classes/HitTest/HitTest.hpp"
+const static std::string hk__Proj_DoHit_sig = "Projectile.DoHit(HitTest, Vector3, Vector3)";
+bool hk__Proj_DoHit(Projectile* instance, HitTest* test, UnityEngine::Vector3 point, UnityEngine::Vector3 normal);
+
 //projectile_shoot
 #include "rust/classes/BaseEntity/BaseEntity.hpp"
 #include "mscorlib/System/String/String.hpp"

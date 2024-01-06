@@ -37,6 +37,8 @@ typedef struct MethodInfo
 
 void hk__projectile_shoot(BaseEntity* instance, mscorlib::System::String* funcName, uint64_t arg1, const MethodInfo* method)
 {
+    std::cout << "projectile shoot\n";
+
 	ORIG(hk__projectile_shoot);
 	orig(instance, funcName, arg1, method);
 

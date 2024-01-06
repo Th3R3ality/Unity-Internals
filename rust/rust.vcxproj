@@ -112,7 +112,13 @@
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\constraints.hpp" />
+    <ClInclude Include="src\hooks\sex.h" />
+    <ClInclude Include="src\rust\classes\AttackEntity\AttackEntity.hpp" />
+    <ClInclude Include="src\rust\classes\BaseProjectile\BaseProjectile.hpp" />
     <ClInclude Include="src\rust\classes\BufferList\BufferList.hpp" />
+    <ClInclude Include="src\rust\classes\HitTest\HitTest.hpp" />
+    <ClInclude Include="src\rust\classes\ItemDefinition\ItemDefinition.hpp" />
+    <ClInclude Include="src\rust\classes\Projectile\Projectile.hpp" />
     <ClInclude Include="src\rust\Render\Players.h" />
     <ClInclude Include="src\global.h" />
     <ClInclude Include="src\hooks\D3D_VMT_Indices.h" />
@@ -210,7 +216,12 @@
     <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\constraints.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\hooks\BProj_LaunchProjectileClientSide.cpp" />
+    <ClCompile Include="src\hooks\Proj_DoHit.cpp" />
+    <ClCompile Include="src\hooks\Proj_UpdateVelocity.cpp" />
+    <ClCompile Include="src\rust\classes\AttackEntity\AttackEntity.cpp" />
     <ClCompile Include="src\rust\classes\BufferList\BufferList.cpp" />
+    <ClCompile Include="src\rust\classes\Projectile\Projectile.cpp" />
     <ClCompile Include="src\rust\Render\Players.cpp" />
     <ClCompile Include="src\hooks\BP_Load.cpp" />
     <ClCompile Include="src\hooks\BP_OnLand.cpp" />
