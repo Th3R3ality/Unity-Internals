@@ -200,6 +200,7 @@
     <ClInclude Include="src\UnityEngine\Physics\Physics.hpp" />
     <ClInclude Include="src\UnityEngine\Quaternion\Quaternion.hpp" />
     <ClInclude Include="src\UnityEngine\RaycastHit\RaycastHit.hpp" />
+    <ClInclude Include="src\UnityEngine\Ray\Ray.hpp" />
     <ClInclude Include="src\UnityEngine\Renderer\Renderer.hpp" />
     <ClInclude Include="src\UnityEngine\ResourceRequest\ResourceRequest.hpp" />
     <ClInclude Include="src\UnityEngine\Shader\Shader.hpp" />

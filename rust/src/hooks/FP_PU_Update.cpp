@@ -8,6 +8,8 @@
 
 #include "UnityEngine/Physics/Physics.hpp"
 
+std::vector<uintptr_t> doors;
+
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
 
@@ -44,26 +46,23 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			UnityEngine::RaycastHit hitInfo;
 
 			bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
+			auto hitTransform = hitInfo.transform();
 
-			if (res) {
+			if (res && hitTransform) {
 
-				auto hitObject = (UnityEngine::Component*)UnityEngine::Object::FindObjectFromInstanceID(hitInfo.m_Collider);
+				auto hitObjectPos = hitTransform->position();
 
-				if (hitObject != nullptr) {
-					std::cout << "hitObject valid\n";
 
-					auto hitObjectPos = hitObject->transform()->position();
+				std::wcout << hitTransform->name() << "\n";
+				std::cout << "Pos : " << hitObjectPos << "\n";
+				cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitObjectPos, 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
 
-					std::wcout << hitObject->name() << "\n";
-					std::cout << "Pos : " << hitObjectPos << "\n";
-					cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitObjectPos, 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
+				if (*hitTransform->name() == L"hinge") {
+					auto hatchPos = hitTransform->GetChild(1)->position();
 
-					if (*hitObject->name() == L"hinge") {
-						auto hatchPos = hitObject->transform()->GetChild(1)->position();
-
-						cache::debugDraw("hatch", cache::debugDrawable(Lapis::Transform(Lapis::Vec3(hatchPos) + Lapis::Vec3::up*0.1f, 0, 0.1f), "ff005055", Lapis::Shape::Icosahedron));
-					}
+					cache::debugDraw("hatch", cache::debugDrawable(Lapis::Transform(Lapis::Vec3(hatchPos) + Lapis::Vec3::up*0.1f, 0, 0.1f), "ff005055", Lapis::Shape::Icosahedron));
 				}
+				
 			}
 		}
 	}
