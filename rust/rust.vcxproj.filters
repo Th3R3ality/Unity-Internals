@@ -327,6 +327,24 @@
     <ClInclude Include="src\UnityEngine\Ray\Ray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rust\classes\BuildingManager\BuildingManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\ClientBuildingManager\ClientBuildingManager.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\ListHashSet\ListHashSet.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mscorlib\System\Dictionary\Dictionary.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\ListDictionary\ListDictionary.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\DecayEntity\DecayEntity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -594,6 +612,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\BaseProjectile\BaseProjectile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\BuildingManager\BuildingManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

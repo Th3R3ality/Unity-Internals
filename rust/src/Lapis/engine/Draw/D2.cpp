@@ -56,6 +56,7 @@ namespace Lapis
 				Backend::PushVertex(Vertex(xy + Vec2(0.5) * r, rgba, 1, -Vec3::forward));
 			}
 
+			//shitty circle generation
 			void Circle(Vec2 xy, float r, Color rgba, int vertexCount)
 			{
 				if (vertexCount < 6)
@@ -73,7 +74,7 @@ namespace Lapis
 					Backend::PushVertex(Vertex(
 						Vec3(xy.x + r * 2 * _x, xy.y + r * 2 * _y, 0),
 						rgba,
-						{ _x, _y }, -Vec3::forward)); //idk why this works but it makes the uv not inverted
+						{ _x, _y }, -Vec3::forward));
 				}
 			}
 		}
