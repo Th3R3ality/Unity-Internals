@@ -15,5 +15,14 @@ namespace mscorlib::System
     public:
         int length() { return max_length; }
         T* data() { return (T*)vector; }
+
+        T Get(int i)
+        {
+            if (i >= max_length)
+                return nullptr;
+            return ((T*)vector)[i];
+        }
     };
 }
+
+using namespace mscorlib;

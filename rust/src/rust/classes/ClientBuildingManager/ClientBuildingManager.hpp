@@ -1,8 +1,6 @@
 #pragma once
 #include "rust/classes/BuildingManager/BuildingManager.hpp"
-
-class BuildingManager;
-class BuildingManager::Building;
+#include "rust/classes/ListDictionary/ListDictionary.hpp"
 
 class ClientBuildingManager : public BuildingManager
 {

@@ -55,6 +55,10 @@ namespace Lapis
 			rgba(hex2rgba(hex))
 		{}
 
+		constexpr Color(DXGI_RGBA rgba) :
+			rgba(rgba)
+		{}
+
 		operator DXGI_RGBA();
 
 		static Color hex2rgba(const char* hex);

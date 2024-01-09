@@ -285,9 +285,6 @@
     <ClInclude Include="src\UnityEngine\GL\GL.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\rust\Render\Players.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\UnityEngine\Physics\Physics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -321,7 +318,7 @@
     <ClInclude Include="src\mscorlib\System\List\List.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mscorlib\System\Object\Object.hpp">
+    <ClInclude Include="src\mscorlib\System\object\object.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\UnityEngine\Ray\Ray.hpp">
@@ -343,6 +340,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\rust\classes\DecayEntity\DecayEntity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\StabilityEntity\StabilityEntity.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\BuildingBlock\BuildingBlock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\Render\Render.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\BuildingPrivlidge\BuildingPrivlidge.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\StorageContainer\StorageContainer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\AnimatedBuildingBlock\AnimatedBuildingBlock.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\Door\Door.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -615,6 +633,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\BuildingManager\BuildingManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\BuildingBlock\BuildingBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\DecayEntity\DecayEntity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\ClientBuildingManager\ClientBuildingManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\Render\Building.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mscorlib\System\object\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\Door\Door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

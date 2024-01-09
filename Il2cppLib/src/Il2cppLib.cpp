@@ -7,12 +7,16 @@
 
 #include "api/2021.3.21f1.h"
 
-#include <iostream>
-
 namespace Il2cppLib
 {
 	Il2CppClass* class_from_signature(std::string signature);
 	std::string api::get_type_mapping(std::string real);
+
+	std::string _ToString(uintptr_t object)
+	{
+		auto klass = il2cpp_object_get_class((Il2CppObject*)object);
+		return std::string(klass->name);
+	}
 
 	bool initialize()
 	{
@@ -68,6 +72,7 @@ namespace Il2cppLib
 
 			return kl;
 		}
+
 		return 0;
 	}
 

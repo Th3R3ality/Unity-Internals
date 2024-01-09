@@ -6,6 +6,7 @@ namespace mscorlib::System
 	class Dictionary
 	{
 	public:
+		char junkBytes[0xf];
 
 	};
 }

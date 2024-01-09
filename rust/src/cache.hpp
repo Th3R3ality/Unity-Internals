@@ -40,6 +40,20 @@ namespace cache
 		constraints = 1 << 1,
 		CHANGE_THIS_local = 1 << 2
 	};
+	void _ptr(std::string key, uintptr_t value);
+	uintptr_t _ptr(std::string key);
+
+	template<typename T>
+	void ptr(std::string key, T value)
+	{
+		_ptr(key, (uintptr_t)value);
+	}
+	template<typename T>
+	T ptr(std::string key)
+	{
+		return (T)_ptr(key);
+	}
+
 
 	void add(BasePlayer* bp);
 	void add(UnityEngine::AssetBundle* bundle, std::string path);

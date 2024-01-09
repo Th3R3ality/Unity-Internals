@@ -17,6 +17,7 @@
 //#define DO_API_NO_RETURN(r, n, p) IL2CPP_EXPORT NORETURN r n p;
 #define DO_API_NO_RETURN(r, n, p) 
 
+#include <string>
 #include <unordered_map>
 namespace Il2cppLib::api
 {
@@ -45,6 +46,7 @@ namespace Il2cppLib::api
 		TYPE_MAPPING("bool", "System.Boolean");
 		TYPE_MAPPING("string", "System.String");
 		TYPE_MAPPING("int", "System.Int32");
+		TYPE_MAPPING("uint", "System.UInt32");
 		TYPE_MAPPING("object", "System.Object");
 		TYPE_MAPPING("Type", "System.Type");
 		TYPE_MAPPING("byte", "System.Byte");

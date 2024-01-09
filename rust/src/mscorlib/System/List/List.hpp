@@ -14,7 +14,7 @@ namespace mscorlib
 			Array<t>* _items; // 0x10
 			int _size;
 			int _version;
-			Object* _syncRoot;
+			object* _syncRoot;
 
 
 			t Get(int i)

@@ -12,7 +12,10 @@
 
 #include "UnityEngine/GL/GL.hpp"
 
-#include "rust/Render/Players.h"
+#include "rust/Render/Render.h"
+
+#include "rust/classes/BuildingManager/BuildingManager.hpp"
+#include "rust/classes/BuildingBlock/BuildingBlock.hpp"
 
 #include "sex.h"
 bool sexbool = false;
@@ -120,6 +123,8 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 					break;
 				}
 			}
+
+			Render::Building();
 		}
 
 
@@ -127,7 +132,7 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			sexbool = !sexbool;
 		}
 		if (sexbool) {
-			Lapis::Draw::D2::Circle(Lapis::Vec2(30,30), 10, "fff33399");
+			Draw::D2::Circle(Vec2(30,30), 10, "fff33399");
 		}
 
 		RenderFrame();

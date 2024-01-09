@@ -3,6 +3,7 @@
 #include "UnityEngine/Quaternion/Quaternion.hpp"
 
 #include "mscorlib/System/String/String.hpp"
+using namespace mscorlib;
 
 namespace UnityEngine
 {

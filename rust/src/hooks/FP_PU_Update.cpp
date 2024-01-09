@@ -1,14 +1,20 @@
 #include "hooks.hpp"
 
 #include <iostream>
+#include <format>
 #include <Windows.h>
 
 #include "cheat.hpp"
 #include "config.hpp"
+#include "cache.hpp"
 
 #include "UnityEngine/Physics/Physics.hpp"
 
-std::vector<uintptr_t> doors;
+#include "rust/classes/ClientBuildingManager/ClientBuildingManager.hpp"
+#include "rust/classes/BuildingManager/BuildingManager.hpp"
+#include "rust/classes/BuildingBlock/BuildingBlock.hpp"
+
+BuildingManager::Building* selectedBuilding = nullptr;
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -50,19 +56,23 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 			if (res && hitTransform) {
 
-				auto hitObjectPos = hitTransform->position();
+				std::wcout << L"hit > " << hitTransform->name() << "\n";
+				cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitTransform->position(), 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
 
+				auto buildingComponent = (DecayEntity*)hitTransform->root()->GetComponent(DecayEntity::type());
 
-				std::wcout << hitTransform->name() << "\n";
-				std::cout << "Pos : " << hitObjectPos << "\n";
-				cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitObjectPos, 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
+				if (buildingComponent) {
+					auto buildId = buildingComponent->buildingID();
+					std::cout << std::format("Building ID : {}\n", buildId);
+					
+					auto clientBuildingManager = BuildingManager::client();
+					std::cout << std::format("clientBuildingManager : {:x}\n", (uintptr_t)clientBuildingManager);
 
-				if (*hitTransform->name() == L"hinge") {
-					auto hatchPos = hitTransform->GetChild(1)->position();
+					auto building = clientBuildingManager->GetBuilding(buildId);
+					std::cout << std::format("building : {:x}\n", (uintptr_t)building);
 
-					cache::debugDraw("hatch", cache::debugDrawable(Lapis::Transform(Lapis::Vec3(hatchPos) + Lapis::Vec3::up*0.1f, 0, 0.1f), "ff005055", Lapis::Shape::Icosahedron));
+					cache::ptr("building", building);
 				}
-				
 			}
 		}
 	}

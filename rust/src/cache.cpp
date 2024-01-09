@@ -19,6 +19,16 @@ namespace cache
 	std::map<BasePlayer*, CachedPlayer> __cachedPlayers;
 	std::unordered_map<std::string, UnityEngine::AssetBundle*> assetbundles;
 
+	std::unordered_map<std::string, uintptr_t> __arbitraryPointers;
+
+	void _ptr(std::string key, uintptr_t value)
+	{
+		__arbitraryPointers[key] = value;
+	}
+	uintptr_t _ptr(std::string key)
+	{
+		return __arbitraryPointers[key];
+	}
 
 	void add(BasePlayer* bp)
 	{

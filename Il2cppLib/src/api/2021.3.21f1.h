@@ -116,7 +116,8 @@ DO_API(Il2CppClass*, il2cpp_field_get_parent, (FieldInfo* field));
 DO_API(size_t, il2cpp_field_get_offset, (FieldInfo* field));
 DO_API(const Il2CppType*, il2cpp_field_get_type, (FieldInfo* field));
 DO_API(void, il2cpp_field_get_value, (Il2CppObject* obj, FieldInfo* field, void* value));
-DO_API(Il2CppObject*, il2cpp_field_get_value_object, (FieldInfo* field, Il2CppObject* obj));
+DO_API(Il2CppObject*, il2cpp_field_get_value_
+	, (FieldInfo* field, Il2CppObject* obj));
 DO_API(bool, il2cpp_field_has_attribute, (FieldInfo* field, Il2CppClass* attr_class));
 DO_API(void, il2cpp_field_set_value, (Il2CppObject* obj, FieldInfo* field, void* value));
 DO_API(void, il2cpp_field_static_get_value, (FieldInfo* field, void* value));

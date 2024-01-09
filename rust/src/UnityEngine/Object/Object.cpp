@@ -5,6 +5,7 @@
 #include "Il2cppLib.h"
 
 #include "mscorlib/System/String/String.hpp"
+#include "Object.hpp"
 using namespace mscorlib;
 
 namespace UnityEngine

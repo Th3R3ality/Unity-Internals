@@ -7,6 +7,12 @@
 		return ( mscorlib::System::Type* )Il2cppLib::type_object(sig); \
 	}
 
+#define type_fn(sig) \
+	static __forceinline mscorlib::System::Type* type() \
+	{ \
+		return (mscorlib::System::Type*)Il2cppLib::type_object(sig); \
+	}
+
 namespace Il2cppLib
 {
 	bool initialize();
@@ -24,6 +30,14 @@ namespace Il2cppLib
 	void* new_array(std::string class_signature, unsigned int length);
 
 	void* new_object(std::string class_signature);
+
+	std::string _ToString(uintptr_t object);
+	
+	template<typename T>
+	std::string ToString(T object)
+	{
+		return _ToString((uintptr_t)object);
+	}
 
 	namespace api
 	{

@@ -49,4 +49,9 @@ namespace mscorlib::System
 		return other.compare(self->buffer) == 0;
 	}
 
+	bool operator==(String* self, const std::wstring other)
+	{
+		return false;
+	}
+
 }

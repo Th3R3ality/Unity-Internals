@@ -1,13 +1,14 @@
 #pragma once
+#include "mscorlib/System/String/String.hpp"
 
 namespace mscorlib
 {
 	namespace System
 	{
-		class Object
+		class object
 		{
 		public:
-
+			String* ToString();
 		};
 	}
 }
