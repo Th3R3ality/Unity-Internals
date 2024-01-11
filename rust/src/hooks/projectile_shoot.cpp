@@ -57,7 +57,7 @@ void hk__projectile_shoot(BaseEntity* instance, mscorlib::System::String* funcNa
 
                 auto camPos = cam->transform()->position();
                 auto pos = camPos + UnityEngine::Vector3(0, 1, 0);
-                cache::debugDraw("manip", cache::debugDrawable(Lapis::Transform(pos, 0, 0.1), "fff33399", Lapis::Shape::Icosahedron));
+                cache::debugDraw("manip", cache::debugIcosahedron(Lapis::Transform(pos, 0, 0.1), "fff33399"));
 
 
                 std::cout << "did yo crash yet?\n";

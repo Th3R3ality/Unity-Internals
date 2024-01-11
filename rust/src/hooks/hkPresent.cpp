@@ -106,17 +106,14 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			auto& drawCalls = cache::debugDrawables();
 			for (auto& drawCall : drawCalls) {
 				switch (drawCall.second.shape) {
-				case Lapis::Shape::Icosahedron:
+                case Lapis::Shape::Icosahedron:
 					Lapis::Draw::D3::Icosahedron(drawCall.second.transform, drawCall.second.color);
 					break;
 				case Lapis::Shape::Cube:
 					Lapis::Draw::D3::Cube(drawCall.second.transform, drawCall.second.color);
 					break;
-				case Lapis::Shape::Plane:
-					Lapis::Draw::D3::Plane(drawCall.second.transform, drawCall.second.color);
-					break;
-				case Lapis::Shape::Triangle:
-					Lapis::Draw::D3::Triangle(drawCall.second.transform, drawCall.second.color);
+				case Lapis::Shape::Line3d:
+					Lapis::Draw::D3::Line(drawCall.second.from, drawCall.second.to, drawCall.second.color);
 					break;
 				default:
 					std::cout << "no shape\n";
@@ -125,6 +122,8 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			}
 
 			Render::Building();
+
+			Render::Pathing();
 		}
 
 

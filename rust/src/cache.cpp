@@ -47,7 +47,10 @@ namespace cache
 	{
 		__cachedPlayers[bp].pAnimator = animator;
 	}
-
+	void removeDraw(std::string id)
+	{
+		__debugDraws.erase(id);
+	}
 	void debugDraw(std::string id, debugDrawable drawCall)
 	{
 		__debugDraws[id] = drawCall;

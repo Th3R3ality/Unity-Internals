@@ -15,6 +15,6 @@ bool hk__Proj_DoHit(Projectile* instance, HitTest* test, UnityEngine::Vector3 po
 		std::cout << "removed manippedProjectile : " << instance << "\n";
 	}
 
-	cache::debugDraw("LastHit", cache::debugDrawable(Lapis::Transform(point, 0, 0.1f), "#ff9050", Lapis::Shape::Icosahedron));
+	cache::debugDraw("LastHit", cache::debugIcosahedron(Lapis::Transform(point, 0, 0.1f), "#ff9050"));
 	return orig(instance, test, point, normal);
 }

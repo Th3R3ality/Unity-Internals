@@ -18,9 +18,44 @@ namespace cache
 {
 	struct debugDrawable
 	{
+	public:
+		Lapis::Shape shape;
 		Lapis::Transform transform;
 		Lapis::Color color;
-		Lapis::Shape shape;
+		Lapis::Vec3 from;
+		Lapis::Vec3 to;
+	};
+
+	struct debugCube : public debugDrawable
+	{
+	public:
+		debugCube(Lapis::Transform t, Lapis::Color c)
+		{
+			shape = Lapis::Shape::Cube;
+			transform = t;
+			color = c;
+		}
+	};
+
+	struct debugIcosahedron : public debugDrawable
+	{
+		debugIcosahedron(Lapis::Transform t, Lapis::Color c)
+		{
+			shape = Lapis::Shape::Icosahedron;
+			transform = t;
+			color = c;
+		}
+	};
+
+	struct debugLine3d : public debugDrawable
+	{
+		debugLine3d(Lapis::Vec3 f, Lapis::Vec3 t, Lapis::Color c)
+		{
+			shape = Lapis::Shape::Line3d;
+			from = f;
+			to = t;
+			color = c;
+		}
 	};
 
 	class CachedPlayer {
@@ -61,8 +96,10 @@ namespace cache
 	void set(BasePlayer* bp, UnityEngine::Avatar* avatar);
 	void set(BasePlayer* bp, UnityEngine::Animator* animator);
 
+	void removeDraw(std::string id);
 	void debugDraw(std::string id, debugDrawable drawCall);
 	std::unordered_map<std::string, debugDrawable>& debugDrawables();
+
 
 	CachedPlayer& get(BasePlayer* bp);
 

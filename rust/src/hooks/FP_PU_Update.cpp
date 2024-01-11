@@ -14,6 +14,8 @@
 #include "rust/classes/BuildingManager/BuildingManager.hpp"
 #include "rust/classes/BuildingBlock/BuildingBlock.hpp"
 
+#include "AstarPathing/Astar.h"
+
 BuildingManager::Building* selectedBuilding = nullptr;
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
@@ -46,7 +48,48 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 	if (localPlayer && mainCam) {
 		
-		if (GetAsyncKeyState('I') & 0x1) {
+		if (config::PathFinding) {
+			static bool newPath = true;
+			static UnityEngine::Vector3 startPos, endPos;
+			if (GetAsyncKeyState('I') & 0x1) {
+				auto cameraTransform = mainCam->transform();
+
+				UnityEngine::RaycastHit hitInfo;
+
+				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
+
+				if (res) {
+					static bool start = false;
+					start = !start;
+
+					auto hitPoint = hitInfo.m_Point;
+					hitPoint.y += 0.3;
+					if (start) {
+						startPos = hitPoint;
+						std::cout << "start >" << hitPoint << "\n";
+						cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0,0.1 }, "00ff0066"));
+					}
+					else {
+						endPos = hitPoint;
+						std::cout << "end >" << hitPoint << "\n";
+						cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
+					}
+					newPath = true;
+				}
+			}
+
+			if (GetAsyncKeyState(VK_RIGHT)) {
+				if (newPath) {
+					Astar::New(startPos, endPos);
+
+					newPath = false;
+				} else {
+					Astar::Step();
+				}
+			}
+		}
+
+		if (config::BaseAnalyzer && GetAsyncKeyState('I') & 0x1) {
 			auto cameraTransform = mainCam->transform();
 
 			UnityEngine::RaycastHit hitInfo;
@@ -57,7 +100,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			if (res && hitTransform) {
 
 				std::wcout << L"hit > " << hitTransform->name() << "\n";
-				cache::debugDraw("hitObject", cache::debugDrawable(Lapis::Transform(hitTransform->position(), 0, 0.1f), "0050ff55", Lapis::Shape::Icosahedron));
+				cache::debugDraw("hitObject", cache::debugIcosahedron(Lapis::Transform(hitTransform->position(), 0, 0.1f), "0050ff55"));
 
 				auto buildingComponent = (DecayEntity*)hitTransform->root()->GetComponent(DecayEntity::type());
 

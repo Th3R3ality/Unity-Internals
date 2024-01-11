@@ -24,8 +24,6 @@ namespace Render
 
 		auto decayEnts = decayEntitiesListHashSet->vals;
 
-		
-
 		for (int i = 0; i < decayEnts->count; i++) {
 			auto decayEnt = decayEnts->Get(i);
 

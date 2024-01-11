@@ -363,6 +363,9 @@
     <ClInclude Include="src\rust\classes\Door\Door.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AstarPathing\Astar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -651,6 +654,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\Door\Door.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\Render\Pathing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AstarPathing\Astar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

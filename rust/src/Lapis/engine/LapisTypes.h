@@ -15,8 +15,7 @@ namespace Lapis
 	{
 		Icosahedron,
 		Cube,
-		Triangle,
-		Plane
+		Line3d
 	};
 
 	struct Color

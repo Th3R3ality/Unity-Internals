@@ -2,5 +2,6 @@
 
 namespace config
 {
-
+	bool BaseAnalyzer = false;
+	bool PathFinding = true;
 }
