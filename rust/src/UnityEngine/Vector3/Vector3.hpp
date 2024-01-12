@@ -45,6 +45,8 @@ namespace UnityEngine
 			v.z += f;
 			return v;
 		}
+		bool operator==(const Vector3& right);
+
 		Vector3 operator+(const Vector3& other) const
 		{
 			Vector3 res;
