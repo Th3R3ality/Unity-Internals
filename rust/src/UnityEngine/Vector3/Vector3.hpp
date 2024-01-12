@@ -31,23 +31,26 @@ namespace UnityEngine
 			v.z *= f;
 			return v;
 		}
-		friend Vector3& operator*(Vector3& v, const float& f)
+		Vector3 operator*(float f)
 		{
-			v.x *= f;
-			v.y *= f;
-			v.z *= f;
-			return v;
-		}
-		friend Vector3& operator+(Vector3& v, const float& f)
-		{
-			v.x += f;
-			v.y += f;
-			v.z += f;
-			return v;
-		}
-		bool operator==(const Vector3& right);
+			Vector3 res;
 
-		Vector3 operator+(const Vector3& other) const
+			res.x = x * f;
+			res.y = y * f;
+			res.z = z * f;
+
+			return res;
+		}
+		Vector3& operator+(float f)
+		{
+			x += f;
+			y += f;
+			z += f;
+			return *this;
+		}
+		bool operator==(Vector3 right);
+
+		Vector3 operator+(Vector3 other)
 		{
 			Vector3 res;
 
@@ -101,8 +104,8 @@ namespace UnityEngine
 
 		static Vector3 Normalize(Vector3 v)
 		{
-			static auto Normalize_method = (Vector3 * (*)(Vector3*))Il2cppLib::virtual_method_from_signature("UnityEngine::Vector3.Normalize(Vector3)");
-			return *Normalize_method(&v);
+			static auto Normalize_method = (Vector3(*)(Vector3))Il2cppLib::virtual_method_from_signature("UnityEngine::Vector3.Normalize(Vector3)");
+			return Normalize_method(v);
 		}
 
 		static float Magnitude(Vector3 v)
