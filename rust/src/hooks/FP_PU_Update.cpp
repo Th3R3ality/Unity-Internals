@@ -78,7 +78,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				}
 			}
 
-			if (GetAsyncKeyState(VK_RIGHT)) {
+			if (GetAsyncKeyState(VK_RIGHT) & 0x1) {
 				if (newPath) {
 					Astar::New(startPos, endPos);
 

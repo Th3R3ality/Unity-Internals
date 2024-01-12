@@ -54,7 +54,7 @@ namespace Render
 			}
 			else {
 
-				//Lapis::Draw::D3::Cube(Lapis::Transform(entityPos, 0, 0.07), hsl2rgb(fmod((Lapis::elapsedTime * 10 + i * 5), 360), .8f, .5f, .7f));
+				Lapis::Draw::D3::Cube(Lapis::Transform(entityPos, 0, 0.07), hsl2rgb(fmod((Lapis::elapsedTime * 10 + i * 5), 360), .8f, .5f, .7f));
 			}
 		}
 		oldBuilding = building;
