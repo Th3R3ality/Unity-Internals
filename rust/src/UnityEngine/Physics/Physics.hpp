@@ -7,6 +7,7 @@ namespace UnityEngine
 	class Physics
 	{
 	public:
+		static bool Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance);
 		static bool Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo);
 	};
 
