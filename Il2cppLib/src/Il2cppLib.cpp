@@ -91,7 +91,7 @@ namespace Il2cppLib
 			return 0;
 		}
 		auto klass = class_from_signature(klass_signature);
-		if (!klass) return 0;
+		if (!klass) return nullptr;
 
 		pos = signature.find("(");
 		if (pos != std::string::npos) {
@@ -150,6 +150,7 @@ namespace Il2cppLib
 	void* static_field_from_signature(std::string signature)
 	{
 		auto offset = field_offset_from_signature(signature);
+		if (!offset) return nullptr;
 
 		std::string klass_signature;
 		size_t pos = 0;
@@ -163,7 +164,7 @@ namespace Il2cppLib
 			return 0;
 		}
 		auto klass = class_from_signature(klass_signature);
-		if (!klass) return 0;
+		if (!klass) return nullptr;
 
 		auto fields = (uintptr_t)klass->static_fields;
 
