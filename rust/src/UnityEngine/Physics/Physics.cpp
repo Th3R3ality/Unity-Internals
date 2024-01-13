@@ -23,4 +23,22 @@ namespace UnityEngine
 		}
 		return false;
 	}
+	bool Physics::Linecast(Vector3 start, Vector3 end)
+	{
+		RaycastHit hitInfo;
+		return Physics::Linecast(start, end, hitInfo, -5);
+	}
+	bool Physics::Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo)
+	{
+		return Physics::Linecast(start, end, hitInfo, -5);
+	}
+	bool Physics::Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo, int layerMask)
+	{
+		static auto fn = (bool(*)(Vector3, Vector3, RaycastHit&, int))Il2cppLib::method_from_signature("UnityEngine::Physics.Linecast(Vector3, Vector3, UnityEngine.RaycastHit&, int)");
+		if (fn)
+		{
+			return fn(start, end, hitInfo, layerMask);
+		}
+		return false;
+	}
 }
