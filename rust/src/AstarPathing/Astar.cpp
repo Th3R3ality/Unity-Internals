@@ -16,27 +16,39 @@ namespace Astar
 	{
 		findBestOpenNode,
 		processFoundNode,
-		completed
+		completed,
+		invalid
 	};
 
 	Astar::AstarPath path;
 	unsigned int idCounter = 0;
 	std::shared_ptr<Node> currentNode = nullptr;
-	constexpr float stepLength = 0.7;
+	constexpr float stepLength = 0.8;
 	nextAction todo = findBestOpenNode;
-
+	constexpr int rayCount = 6;
+	constexpr float weightH = 5;
+	bool canSubStep = true;
+	float subStepModifier = 0.5f;
+	unsigned int maxNodeCount = 1000;
 
 	void New(v3 start, v3 end)
 	{
 		std::cout << "\n\nAstar ; New...\n";
 
-		for (auto& node : path.openNodes)
+		for (auto node : path.openNodes)
 		{
 			if (node == nullptr)
 				continue;
 			cache::removeDraw(node->id);
 		}
-		for (auto& node : path.closedNodes)
+		for (auto node : path.closedNodes)
+		{
+			if (node == nullptr)
+				continue;
+			cache::removeDraw(node->id);
+		}
+
+		for (auto node : path.foundPath)
 		{
 			if (node == nullptr)
 				continue;
@@ -49,11 +61,12 @@ namespace Astar
 
 		path.openNodes.clear();
 		path.closedNodes.clear();
+		path.foundPath.clear();
 
 		path.start = start;
 		path.end = end;
 		
-		path.openNodes.push_back( std::make_shared<Node>(Node(std::to_string(idCounter), path.start, path.start, path.end, nullptr)));
+		path.openNodes.push_back( std::make_shared<Node>(std::to_string(idCounter), path.start, path.start, path.end, nullptr));
 		idCounter++;
 
 		//cache::debugDraw("pathStart", cache::debugIcosahedron({ start, Lapis::deltaTime * 20,0.2f }, "00ff00bb"));
@@ -62,9 +75,9 @@ namespace Astar
 		std::cout << "Astar ; New [+]\n";
 	}
 
-	void Step()
+	bool Step()
 	{
-		std::cout << "Astar ; stepping...\n";
+		std::cout << "\nAstar ; stepping...\n";
 
 		switch (todo)
 		{
@@ -84,8 +97,20 @@ namespace Astar
 					currentNode = node;
 				}
 			}
-			if (v3::Distance(currentNode->pos, path.end) < stepLength)
+			if (currentNode == nullptr)
 			{
+				std::cout << "Astar ; all nodes explored [!]\n";
+				todo = invalid;
+				break;
+			}
+
+			if (v3::Distance(currentNode->pos, path.end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, path.end)) // add linecast to end to make sure :)
+			{
+				for (auto& node : path.closedNodes)
+					if (node != nullptr)
+						if (node->id == currentNode->id)
+							currentNode = node;
+
 				std::cout << "Astar ; Found End [+++]\n";
 				todo = completed;
 				break;
@@ -93,9 +118,7 @@ namespace Astar
 
 			path.closedNodes.push_back(currentNode);
 			auto it = std::find_if(path.openNodes.begin(), path.openNodes.end(), [&](std::shared_ptr<Node> const& node) {
-				std::cout << "node: " << node->id << " == current: " << currentNode->id << " ?\n";
-				return (node->id == currentNode->id);
-				});
+				return (node->id == currentNode->id); });
 			if (it != path.openNodes.end())
 			{
 				std::cout << "Astar ; removing current node from open nodes [-]\n";
@@ -105,15 +128,14 @@ namespace Astar
 
 			todo = processFoundNode;
 		}
-		std::cout << "Astar ; findBestOpenNode [+]\n";
+			std::cout << "Astar ; findBestOpenNode [+]\n";
 		break;
 
 		case processFoundNode:
 		{
 			std::cout << "Astar ; processFoundNode...\n";
 
-			constexpr int rayCount = 4;
-			constexpr float segmentTheta = (float)(M_PI * 2) / rayCount;
+			
 
 			if (currentNode == nullptr)
 			{
@@ -123,21 +145,45 @@ namespace Astar
 				todo = findBestOpenNode;
 				break;
 			}
+
 			v3 pos = currentNode->pos;
+			constexpr float segmentTheta = (float)(M_PI * 2) / rayCount;
 			for (int i = 0; i < rayCount; i++)
 			{
 				v3 dir = v3(cosf(segmentTheta * i), 0, sinf(segmentTheta * i));
 				auto step = dir * stepLength;
 
-				std::cout << "dir : " << dir << "\n";
-				std::cout << "step : " << step << "\n";
-
-				if (Raycast(pos, dir, stepLength) || IsClosedNode(pos + step))
-					continue;
-
-				if (!IsOpenNode(pos + step))
+				std::shared_ptr<Node> nearbyClosedNode = nullptr;
+				if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
 				{
-					auto newNode = std::make_shared<Node>(Node(std::to_string(idCounter), pos + step, path.start, path.end, currentNode));
+					if (nearbyClosedNode->G < currentNode->parent->G)
+						if (!UnityEngine::Physics::Linecast(currentNode->pos, nearbyClosedNode->pos))
+							currentNode->parent = nearbyClosedNode;
+					continue;
+				}
+
+				bool subStep = false;
+				if (Raycast(pos, dir, stepLength))
+				{
+					if (!canSubStep)
+						continue;
+
+					if (Raycast(pos, dir, stepLength * subStepModifier) || IsClosedNode(pos + step * subStepModifier, subStepModifier))
+					{
+						continue;
+					}
+					else
+					{
+						subStep = true;
+						step = step * subStepModifier;
+					}
+				}
+
+
+				std::shared_ptr<Node> nearbyOpenNode = nullptr;
+				if (!IsOpenNode(pos + step, subStep ? subStepModifier : 1, &nearbyOpenNode))
+				{
+					auto newNode = std::make_shared<Node>(std::to_string(idCounter), pos + step, path.start, path.end, currentNode);
 					path.openNodes.push_back(newNode);
 					idCounter++;
 				}
@@ -146,48 +192,72 @@ namespace Astar
 
 			currentNode = nullptr;
 			todo = findBestOpenNode;
+
+			if (idCounter > maxNodeCount)
+			{
+				std::cout << "Astar ; reached maximum node count [/]\n";
+				todo = invalid;
+			}
 		}
-			std::cout << "Astar ; processFoundNode [+]\n";
 			break;
 
 		case completed:
-		{
-			std::cout << "Astar ; Path Complete [+++]\n";
-		}
-			break;
+			if (currentNode != nullptr)
+			{
+				std::cout << "Astar ; Backtracing Path\n";
+				path.foundPath.push_back(currentNode);
+				currentNode = currentNode->parent;
+				break;
+			}
+			else
+			{
+				std::cout << "Astar ; Path Complete [+++]\n";
+				return false;
+			}
+		case invalid:
+			std::cout << "Astar ; Couldn't Find Path [XXX]\n";
+			return false;
 		}
 
 		std::cout << "Astar ; stepping [+]\n";
 
 		UpdateRender();
+		return true;
 	}
 
 	void UpdateRender()
 	{
 		std::cout << "Astar ; UpdateRender...\n";
 
-		for (auto& node : path.closedNodes)
+		for (auto node : path.closedNodes)
 			if (node != nullptr)
-				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.1f), "00000099"));
+				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "00000099"));
 
-		for (auto& node : path.openNodes)
+		for (auto node : path.openNodes)
 			if (node != nullptr)
-				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.1f), "ffff0099"));
+				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
 		
 		if (currentNode != nullptr)
-			cache::debugDraw(currentNode->id, cache::debugIcosahedron(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
+			cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
+
+		for (auto node : path.foundPath)
+			if (node != nullptr)
+				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.17f), "0000aa99"));
+
 
 		std::cout << "Astar ; UpdateRender [+]\n";
 	}
 
-	bool IsClosedNode(v3 nodePos)
+	bool IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
 	{
-		for (auto& node : path.closedNodes)
+		for (auto node : path.closedNodes)
 		{
 			if (node == nullptr)
 				continue;
-			if (v3::Distance(node->pos, nodePos) < (stepLength / 2))
+			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.7 * leniency))
 			{
+				if (nearbyClosedNode != nullptr)
+					*nearbyClosedNode = node;
 				std::cout << "Astar ; Closed Node [-]\n";
 				return true;
 			}
@@ -195,15 +265,17 @@ namespace Astar
 		return false;
 	}
 
-	bool IsOpenNode(v3 nodePos)
+	bool IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyOpenNode)
 	{
-		for (auto& node : path.openNodes)
+		for (auto node : path.openNodes)
 		{
 			if (node == nullptr)
 				continue;
-			if (v3::Distance(node->pos, nodePos) < (stepLength / 2))
+			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.7 * leniency))
 			{
 				std::cout << "Astar ; Open Node [+]\n";
+				if (nearbyOpenNode != nullptr)
+					*nearbyOpenNode = node;
 				return true;
 			}
 		}
@@ -220,6 +292,6 @@ namespace Astar
 
 	float Node::F()
 	{
-		return H + G;
+		return weightH * H + G;
 	}
 }

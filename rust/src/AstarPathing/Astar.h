@@ -18,7 +18,6 @@ namespace Astar
 		std::string id;
 		v3 pos{};
 		std::shared_ptr<Node> parent;
-		std::vector<std::shared_ptr<Node>> childNodes;
 		float G = 0, H = 0;
 		union
 		{
@@ -28,7 +27,7 @@ namespace Astar
 		float F();
 
 		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent) :
-			id(id), pos(nodePos)
+			id(id), pos(nodePos), parent(parent)
 		{
 			G = v3::Distance(nodePos, startPos);
 			H = v3::Distance(nodePos, endPos);
@@ -42,12 +41,13 @@ namespace Astar
 		v3 start, end;
 		std::vector<std::shared_ptr<Node>> openNodes;
 		std::vector<std::shared_ptr<Node>> closedNodes;
+		std::vector<std::shared_ptr<Node>> foundPath;
 	};
 
 	void New(v3 start, v3 end);
-	void Step();
+	bool Step();
 	void UpdateRender();
-	bool IsClosedNode(v3 nodePos);
-	bool IsOpenNode(v3 nodePos);
+	bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyClosedNode = nullptr);
+	bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyOpenNode = nullptr);
 	bool Raycast(v3 from, v3 dir, float maxDist);
 }
