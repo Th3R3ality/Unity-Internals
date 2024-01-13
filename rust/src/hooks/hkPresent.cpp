@@ -103,7 +103,7 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 			Render::Players();
 
 
-			auto& drawCalls = cache::debugDrawables();
+			auto drawCalls = cache::debugDrawables();
 			for (auto& drawCall : drawCalls) {
 				switch (drawCall.second.shape) {
                 case Lapis::Shape::Icosahedron:
