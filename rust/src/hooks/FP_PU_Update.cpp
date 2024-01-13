@@ -49,13 +49,14 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 	if (localPlayer && mainCam) {
 		
 		if (config::PathFinding) {
+			static bool pathing = false;
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
 			if (GetAsyncKeyState('I') & 0x1) {
+				std::cout << "pressed I\n";
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-
 				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
 
 				if (res) {
@@ -63,7 +64,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					start = !start;
 
 					auto hitPoint = hitInfo.m_Point;
-					hitPoint.y += 0.3;
+					hitPoint -= mainCam->transform()->forward() * 0.1;
 					if (start) {
 						startPos = hitPoint;
 						std::cout << "start >" << hitPoint << "\n";
@@ -71,21 +72,32 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					}
 					else {
 						endPos = hitPoint;
+						endPos.y = startPos.y;
 						std::cout << "end >" << hitPoint << "\n";
 						cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
 					}
 					newPath = true;
+					pathing = false;
 				}
 			}
 
 			if (GetAsyncKeyState(VK_RIGHT) & 0x1) {
 				if (newPath) {
 					Astar::New(startPos, endPos);
-
+					pathing = true;
 					newPath = false;
-				} else {
+				} 
+				else
+				{
 					Astar::Step();
 				}
+
+			}
+
+			constexpr bool autoPathing = false;
+			if (autoPathing && pathing)
+			{
+				pathing = Astar::Step();
 			}
 		}
 
