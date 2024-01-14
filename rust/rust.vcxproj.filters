@@ -366,6 +366,12 @@
     <ClInclude Include="src\AstarPathing\Astar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\AstarPathing\NodeHeap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AstarPathing\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">

@@ -109,6 +109,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\AstarPathing\Astar.h" />
+    <ClInclude Include="src\AstarPathing\NodeHeap.h" />
+    <ClInclude Include="src\AstarPathing\Node.h" />
     <ClInclude Include="src\cache.hpp" />
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />

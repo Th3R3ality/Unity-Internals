@@ -8,7 +8,9 @@
 #include "Lapis/engine/LapisEngine.h"
 
 #include "UnityEngine/Physics/Physics.hpp"
+#include <array>
 
+#define deborg(x) //x
 
 namespace Astar
 {
@@ -26,19 +28,19 @@ namespace Astar
 	nextAction todo = findBestOpenNode;
 
 	// settings
-	constexpr float stepLength = 2;
+	constexpr float stepLength = 1;
 	constexpr int rayCount = 6;
 	constexpr float weightH = 4;
-	bool canSubStep = true;
+	bool canSubStep = false;
 	float subStepModifier = 0.25f;
-	unsigned int maxNodeCount = 1000;
+	unsigned int maxNodeCount = 5000;
 
 	void New(v3 start, v3 end)
 	{
 		end.y = start.y;
-		//std::cout << "\n\nAstar ; New...\n";
+		deborg(std::cout << "\n\nAstar ; New...\n";)
 
-		for (auto node : path.openNodes)
+		for (auto node : path.openNodes.items)
 		{
 			if (node == nullptr)
 				continue;
@@ -62,81 +64,63 @@ namespace Astar
 		currentNode = nullptr;
 		todo = findBestOpenNode;
 
-		path.openNodes.clear();
+		path.openNodes.items.clear();
 		path.closedNodes.clear();
 		path.foundPath.clear();
 
 		path.start = start;
 		path.end = end;
 		
-		path.openNodes.push_back( std::make_shared<Node>(std::to_string(idCounter), path.start, path.start, path.end, nullptr));
+		path.openNodes.Add( std::make_shared<Node>(std::to_string(idCounter), path.start, path.start, path.end, nullptr, weightH));
 		idCounter++;
 
 		//cache::debugDraw("pathStart", cache::debugIcosahedron({ start, Lapis::deltaTime * 20,0.2f }, "00ff00bb"));
 		cache::debugDraw("pathEnd", cache::debugIcosahedron({end, Lapis::deltaTime * 20, 0.2f}, "ff0000bb"));
 
-		//std::cout << "Astar ; New [+]\n";
+		deborg(std::cout << "Astar ; New [+]\n";)
 	}
 
 	bool Step()
 	{
-		//std::cout << "\nAstar ; stepping...\n";
+		deborg(std::cout << "\nAstar ; stepping...\n";)
 
 		switch (todo)
 		{
 		case findBestOpenNode:
 		{
-			//std::cout << "Astar ; findBestOpenNode...\n";
+			deborg(std::cout << "Astar ; findBestOpenNode...\n";)
 
-			float lowest_f = 9999999.9f;
-			for (auto& node : path.openNodes)
-			{
-				if (node == nullptr)
-					continue;
-
-				if (node->F() < lowest_f)
-				{
-					lowest_f = node->F();
-					currentNode = node;
-				}
-			}
+			currentNode = path.openNodes.RemoveFirst();
+			
 			if (currentNode == nullptr)
 			{
-				//std::cout << "Astar ; all nodes explored [!]\n";
+				deborg(std::cout << "Astar ; all nodes explored [!]\n";)
 				todo = invalid;
 				break;
 			}
 
-			if (v3::Distance(currentNode->pos, path.end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, path.end)) // add linecast to end to make sure :)
+			if (v3::Distance(currentNode->pos, path.end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, path.end))
 			{
 				for (auto& node : path.closedNodes)
 					if (node != nullptr)
 						if (node->id == currentNode->id)
 							currentNode = node;
 
-				//std::cout << "Astar ; Found End [+++]\n";
+				deborg(std::cout << "Astar ; Found End [+++]\n";)
 				todo = completed;
 				break;
 			}
 
 			path.closedNodes.push_back(currentNode);
-			auto it = std::find_if(path.openNodes.begin(), path.openNodes.end(), [&](std::shared_ptr<Node> const& node) {
-				return (node->id == currentNode->id); });
-			if (it != path.openNodes.end())
-			{
-				//std::cout << "Astar ; removing current node from open nodes [-]\n";
-				path.openNodes.erase(it);
-			}
-
-
+			
 			todo = processFoundNode;
 		}
-			//std::cout << "Astar ; findBestOpenNode [+]\n";
+			deborg(std::cout << "Astar ; findBestOpenNode [+]\n";)
 		break;
 
 		case processFoundNode:
 		{
-			//std::cout << "Astar ; processFoundNode...\n";
+			deborg(std::cout << "Astar ; processFoundNode...\n";)
 
 			v3 pos = currentNode->pos;
 			constexpr float segmentTheta = (float)(M_PI * 2) / rayCount;
@@ -157,14 +141,14 @@ namespace Astar
 					continue;
 				}
 				if (Raycast(pos, dir, stepLength))
-						continue;
+					continue;
 
 
 				std::shared_ptr<Node> nearbyOpenNode = nullptr;
 				if (!IsOpenNode(pos + step, 1, &nearbyOpenNode))
 				{
-					auto newNode = std::make_shared<Node>(std::to_string(idCounter), pos + step, path.start, path.end, currentNode);
-					path.openNodes.push_back(newNode);
+					auto newNode = std::make_shared<Node>(std::to_string(idCounter), pos + step, path.start, path.end, currentNode, weightH);
+					path.openNodes.Add(newNode);
 					idCounter++;
 				}
 			}
@@ -175,7 +159,7 @@ namespace Astar
 
 			if (idCounter > maxNodeCount)
 			{
-				//std::cout << "Astar ; reached maximum node count [/]\n";
+				std::cout << "Astar ; reached maximum node count [/]\n";
 				todo = invalid;
 			}
 		}
@@ -184,7 +168,7 @@ namespace Astar
 		case completed:
 			if (currentNode != nullptr)
 			{
-				//std::cout << "Astar ; Backtracing Path\n";
+				deborg(std::cout << "Astar ; Backtracing Path\n";)
 				path.foundPath.push_back(currentNode);
 				currentNode = currentNode->parent;
 				break;
@@ -200,9 +184,9 @@ namespace Astar
 			return false;
 		}
 
-		//std::cout << "Astar ; stepping [+]\n";
+		deborg(std::cout << "Astar ; stepping [+]\n";)
 
-		//UpdateRender();
+		deborg(UpdateRender();)
 		if (currentNode != nullptr)
 			UpdateRenderPath();
 
@@ -229,30 +213,33 @@ namespace Astar
 			_currentNode = _currentNode->parent;
 		}
 	}
-
 	void UpdateRender()
 	{
-		//std::cout << "Astar ; UpdateRender...\n";
 
-		/*
+		deborg(std::cout << "Astar ; UpdateRender...\n");
+
+		
+		deborg(
 		for (auto node : path.closedNodes)
 			if (node != nullptr)
 				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "00000099"));
-		/*
-		for (auto node : path.openNodes)
-			if (node != nullptr)
-				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
-		
+		);
+		deborg(
+			for (auto node : path.openNodes.items)
+				if (node != nullptr)
+					cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
+		);
+		deborg(
 		if (currentNode != nullptr)
 			cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
-
-		*/
+		);
+		
 		for (auto node : path.foundPath)
 			if (node != nullptr)
 				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.17f), "0000aa99"));
 
 
-		//std::cout << "Astar ; UpdateRender [+]\n";
+		std::cout << "Astar ; UpdateRender [+]\n";
 	}
 
 	bool IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
@@ -265,7 +252,7 @@ namespace Astar
 			{
 				if (nearbyClosedNode != nullptr)
 					*nearbyClosedNode = node;
-				//std::cout << "Astar ; Closed Node [-]\n";
+				deborg(std::cout << "Astar ; Closed Node [-]\n";)
 				return true;
 			}
 		}
@@ -274,13 +261,13 @@ namespace Astar
 
 	bool IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyOpenNode)
 	{
-		for (auto node : path.openNodes)
+		for (auto node : path.openNodes.items)
 		{
 			if (node == nullptr)
 				continue;
 			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.7 * leniency))
 			{
-				//std::cout << "Astar ; Open Node [+]\n";
+				deborg(std::cout << "Astar ; Open Node [+]\n";)
 				if (nearbyOpenNode != nullptr)
 					*nearbyOpenNode = node;
 				return true;
@@ -293,12 +280,7 @@ namespace Astar
 	{
 		UnityEngine::RaycastHit hitInfo;
 		bool res = UnityEngine::Physics::Raycast(from, dir, hitInfo, maxDist);
-		//std::cout << std::format("Astar ; Raycast [ {} ]\n", res);
+		deborg(std::cout << std::format("Astar ; Raycast [ {} ]\n", res);)
 		return res;
-	}
-
-	float Node::F()
-	{
-		return weightH * H + G;
 	}
 }

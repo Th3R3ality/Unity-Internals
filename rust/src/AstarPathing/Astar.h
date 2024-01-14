@@ -6,40 +6,20 @@
 #include "UnityEngine/Vector3/Vector3.hpp"
 #include "cache.hpp"
 
+#include "Node.h"
+#include "NodeHeap.h"
+
 namespace Astar
 {
 
 	using v3 = UnityEngine::Vector3;
 
-
-	class Node
-	{
-	public:
-		std::string id;
-		v3 pos{};
-		std::shared_ptr<Node> parent;
-		float G = 0, H = 0;
-		union
-		{
-			bool closed = false;
-			bool unreachable;
-		};
-		float F();
-
-		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent) :
-			id(id), pos(nodePos), parent(parent)
-		{
-			G = (parent != nullptr) ? parent->G + v3::Distance(nodePos, parent->pos) : 0;
-			H = v3::Distance(nodePos, endPos);
-		}
-
-	};
-
 	class AstarPath
 	{
 	public:
 		v3 start, end;
-		std::vector<std::shared_ptr<Node>> openNodes;
+		NodeHeap openNodes;
+		//std::vector<std::shared_ptr<Node>> openNodes;
 		std::vector<std::shared_ptr<Node>> closedNodes;
 		std::vector<std::shared_ptr<Node>> foundPath;
 	};

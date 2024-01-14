@@ -81,8 +81,9 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 				auto viewMat = mainCam->worldToCameraMatrix();
 				Lapis::PushViewMatrix(viewMat);
 
-				constexpr bool renderIntoTexture = false;
+				constexpr bool renderIntoTexture = true;
 				UnityEngine::Matrix4x4 projMat = UnityEngine::GL::GetGPUProjectionMatrix(mainCam->nonJitteredProjectionMatrix(), renderIntoTexture);
+				//UnityEngine::Matrix4x4 projMat = UnityEngine::GL::GetGPUProjectionMatrix(mainCam->projectionMatrix(), renderIntoTexture);
 				if (renderIntoTexture) {
 					for (int i = 0; i < 4; i++) {
 						projMat.m[i][1] = -projMat.m[i][1];

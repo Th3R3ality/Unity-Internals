@@ -44,8 +44,11 @@ void hk__projectile_shoot(BaseEntity* instance, mscorlib::System::String* funcNa
     //std::cout << "projectile shoot\n";
 
 	ORIG(hk__projectile_shoot);
+    return orig(instance, funcName, arg1, method);
+
 
     try {
+
         std::wcout << "funcName : " << funcName << std::endl;
         if (funcName->equals(L"CLProject")) {
             std::cout << "instance : " << instance << "\n";

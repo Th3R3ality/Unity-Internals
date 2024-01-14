@@ -100,12 +100,21 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				} 
 				else
 				{
-					Astar::Step();
+					for (int i = 0; i < frameStepCount; i++)
+					{
+						pathing = Astar::Step();
+					}
 				}
 
 			}
+			
+			static bool autoPathing = false;
 
-			constexpr bool autoPathing = true;
+			if (GetAsyncKeyState(VK_RETURN) & 0x1)
+			{
+				autoPathing = !autoPathing;
+				std::cout << "Toggled Auto Pathing : " << autoPathing << "\n";
+			}
 			if (autoPathing && pathing)
 			{
 				for (int i = 0; i < frameStepCount; i++)
