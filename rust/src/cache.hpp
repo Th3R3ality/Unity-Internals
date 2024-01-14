@@ -98,7 +98,7 @@ namespace cache
 
 	void removeDraw(std::string id);
 	void debugDraw(std::string id, debugDrawable drawCall);
-	std::unordered_map<std::string, debugDrawable>& debugDrawables();
+	std::unordered_map<std::string, debugDrawable> debugDrawables();
 
 
 	CachedPlayer& get(BasePlayer* bp);

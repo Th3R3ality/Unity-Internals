@@ -52,7 +52,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool pathing = false;
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
-			if (GetAsyncKeyState('I') & 0x1) {
+			if (GetAsyncKeyState(VK_XBUTTON1) & 0x1) {
 				std::cout << "pressed I\n";
 				auto cameraTransform = mainCam->transform();
 
@@ -80,6 +80,17 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					pathing = false;
 				}
 			}
+			static int frameStepCount = 1;
+			if (GetAsyncKeyState(VK_UP) & 0x1)
+			{
+				frameStepCount++; std::cout << "new steps/frame : " << frameStepCount << "\n";
+			}
+
+
+			if (GetAsyncKeyState(VK_DOWN) & 0x1)
+			{
+				frameStepCount--; std::cout << "new steps/frame : " << frameStepCount << "\n";
+			}
 
 			if (GetAsyncKeyState(VK_RIGHT) & 0x1) {
 				if (newPath) {
@@ -94,10 +105,13 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 			}
 
-			constexpr bool autoPathing = false;
+			constexpr bool autoPathing = true;
 			if (autoPathing && pathing)
 			{
-				pathing = Astar::Step();
+				for (int i = 0; i < frameStepCount; i++)
+				{
+					pathing = Astar::Step();
+				}
 			}
 		}
 

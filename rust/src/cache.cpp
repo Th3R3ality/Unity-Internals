@@ -5,13 +5,15 @@
 #include <unordered_map>
 #include <map>
 #include <vector>
+#include <shared_mutex>
 
 #include "cheat.hpp"
 
 namespace cache
 {
-	
+
 	std::unordered_map<std::string, debugDrawable> __debugDraws;
+	std::shared_timed_mutex debugDrawMutex;
 
 	UnityEngine::Camera* camera_main{};
 	BasePlayer* localplayer{};
@@ -49,14 +51,17 @@ namespace cache
 	}
 	void removeDraw(std::string id)
 	{
+		std::unique_lock<std::shared_timed_mutex> lock(debugDrawMutex);
 		__debugDraws.erase(id);
 	}
 	void debugDraw(std::string id, debugDrawable drawCall)
 	{
+		std::unique_lock<std::shared_timed_mutex> lock(debugDrawMutex);
 		__debugDraws[id] = drawCall;
 	}
-	std::unordered_map<std::string, debugDrawable>& debugDrawables()
+	std::unordered_map<std::string, debugDrawable> debugDrawables()
 	{
+		std::unique_lock<std::shared_timed_mutex> lock(debugDrawMutex);
 		return __debugDraws;
 	}
 

@@ -29,7 +29,7 @@ namespace Astar
 		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent) :
 			id(id), pos(nodePos), parent(parent)
 		{
-			G = v3::Distance(nodePos, startPos);
+			G = (parent != nullptr) ? parent->G + v3::Distance(nodePos, parent->pos) : 0;
 			H = v3::Distance(nodePos, endPos);
 		}
 
@@ -46,6 +46,7 @@ namespace Astar
 
 	void New(v3 start, v3 end);
 	bool Step();
+	void UpdateRenderPath();
 	void UpdateRender();
 	bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyClosedNode = nullptr);
 	bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyOpenNode = nullptr);
