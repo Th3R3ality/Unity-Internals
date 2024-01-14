@@ -3,6 +3,8 @@
 #include <iostream>
 #include <format>
 #include <Windows.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include "cheat.hpp"
 #include "config.hpp"
@@ -17,6 +19,8 @@
 #include "AstarPathing/Astar.h"
 
 BuildingManager::Building* selectedBuilding = nullptr;
+
+Astar::AstarPath pathfinder(1, true);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -53,33 +57,42 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
 			if (GetAsyncKeyState(VK_XBUTTON1) & 0x1) {
-				std::cout << "pressed I\n";
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
 				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
-
 				if (res) {
-					static bool start = false;
-					start = !start;
-
 					auto hitPoint = hitInfo.m_Point;
 					hitPoint -= mainCam->transform()->forward() * 0.1;
-					if (start) {
-						startPos = hitPoint;
-						std::cout << "start >" << hitPoint << "\n";
-						cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0,0.1 }, "00ff0066"));
-					}
-					else {
-						endPos = hitPoint;
-						endPos.y = startPos.y;
-						std::cout << "end >" << hitPoint << "\n";
-						cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
-					}
+					startPos = hitPoint;
+					std::cout << "start >" << hitPoint << "\n";
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0,0.1 }, "00ff0066"));
+
 					newPath = true;
 					pathing = false;
 				}
 			}
+
+			if (GetAsyncKeyState(VK_XBUTTON2) & 0x1)
+			{
+				auto cameraTransform = mainCam->transform();
+
+				UnityEngine::RaycastHit hitInfo;
+				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
+				if (res)
+				{
+					auto hitPoint = hitInfo.m_Point;
+					hitPoint -= mainCam->transform()->forward() * 0.1;
+
+					endPos = hitPoint;
+					std::cout << "end >" << hitPoint << "\n";
+					cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
+
+					newPath = true;
+					pathing = false;
+				}
+			}
+
 			static int frameStepCount = 1;
 			if (GetAsyncKeyState(VK_UP) & 0x1)
 			{
@@ -92,23 +105,37 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				frameStepCount--; std::cout << "new steps/frame : " << frameStepCount << "\n";
 			}
 
-			if (GetAsyncKeyState(VK_RIGHT) & 0x1) {
+
+			static bool autoPathing = false;
+			static int framesTaken = 0;
+
+			static bool didPrintFramesTaken = true;
+			if (pathing == false && newPath == false && didPrintFramesTaken == false)
+			{
+				std::cout << "pathing took [ " << framesTaken << " ] frames\n";
+				didPrintFramesTaken = true;
+			}
+
+			if ((autoPathing && newPath) || GetAsyncKeyState(VK_RIGHT) & 0x1) {
 				if (newPath) {
-					Astar::New(startPos, endPos);
+					pathfinder.New(startPos, endPos);
 					pathing = true;
 					newPath = false;
+					framesTaken = 0;
+					didPrintFramesTaken = false;
 				} 
 				else
 				{
+					framesTaken++;
 					for (int i = 0; i < frameStepCount; i++)
 					{
-						pathing = Astar::Step();
+						pathing = pathfinder.Step();
+						if (!pathing) break;
 					}
 				}
 
 			}
 			
-			static bool autoPathing = false;
 
 			if (GetAsyncKeyState(VK_RETURN) & 0x1)
 			{
@@ -117,9 +144,11 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			}
 			if (autoPathing && pathing)
 			{
+				framesTaken++;
 				for (int i = 0; i < frameStepCount; i++)
 				{
-					pathing = Astar::Step();
+					pathing = pathfinder.Step();
+					if (!pathing) break;
 				}
 			}
 		}

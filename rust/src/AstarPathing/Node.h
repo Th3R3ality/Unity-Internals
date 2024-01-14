@@ -27,14 +27,14 @@ namespace Astar
 
 		float F()
 		{
-			return weightH * H + G;
+			return H + G;
 		}
 
 		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent, float weightH) :
 			id(id), pos(nodePos), parent(parent), weightH(weightH)
 		{
 			G = (parent != nullptr) ? parent->G + v3::Distance(nodePos, parent->pos) : 0;
-			H = v3::Distance(nodePos, endPos);
+			H = weightH * v3::Distance(nodePos, endPos);
 		}
 
 		int GetHeapIndex()
