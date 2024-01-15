@@ -20,7 +20,7 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-Astar::AstarPath pathfinder(1, true);
+Astar::AstarPath pathfinder(1, 256, false, false, false, 1, 4, 10, 2500);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -34,18 +34,25 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		return;
 	}
 	orig(instance);
+	
 
-	static bool actually_unloading = false;
-	if (!actually_unloading && cheat::state() == cheat::status::unloading) {
-		actually_unloading = true;
-		cheat::revert_all_models();
-		cheat::unload_assetbundles();
-		cheat::has_unloaded(true);
+	if (cheat::state() == cheat::status::unloading || cheat::state() == cheat::status::none)
+	{
+		static bool actually_unloading = false;
+		if (!actually_unloading) {
+			std::cout << "FP_PU unloading\n";
+			actually_unloading = true;
+			cheat::revert_all_models();
+			cheat::unload_assetbundles();
+			cheat::has_unloaded(true);
+		}
+		else
+			std::cout << "FP_PU Already Unloaded\n";
+
 		return;
 	}
 
 	cache::validatePlayerCache();
-
 
 	auto localPlayer = cache::local();
 	auto mainCam = cache::cameraMain();
@@ -53,6 +60,37 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 	if (localPlayer && mainCam) {
 		
 		if (config::PathFinding) {
+			///////////////////////////////// WALKER
+			static int walkPathIdx = 0;
+			static bool hasWalkPoints = false;
+			static std::vector<UnityEngine::Vector3> walkPoints;
+			static BaseMovement* movement = localPlayer->movement();
+			if (!hasWalkPoints)
+			{
+				hasWalkPoints = pathfinder.GrabPath(walkPoints);
+			}
+			else
+			{
+				if (walkPathIdx < walkPoints.size() - 1)
+				{
+					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position(), walkPoints.at(walkPathIdx)) < 1.0f)
+					{
+						walkPathIdx++;
+					}
+					std::cout << "walkPoints.at(walkPathIdx) >> " << walkPoints.at(walkPathIdx) << "\n";
+					std::cout << "localPlayer->position() >> " << localPlayer->transform()->position() << "\n";
+
+					auto targetMove = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - localPlayer->transform()->position()) * 3;
+					
+					std::cout << "targetMove >> " << targetMove << "\n";
+					cache::debugDraw("targetMove", cache::debugLine3d(
+						localPlayer->transform()->position(), 
+						localPlayer->transform()->position() + targetMove * 0.25, "00ffff"));
+					movement->TargetMovement(targetMove);
+				}
+			}
+
+			///////////////////////////////// PATH GEN
 			static bool pathing = false;
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
@@ -68,8 +106,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					std::cout << "start >" << hitPoint << "\n";
 					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0,0.1 }, "00ff0066"));
 
+					pathfinder.New(startPos, endPos);
 					newPath = true;
 					pathing = false;
+					hasWalkPoints = false;
 				}
 			}
 
@@ -88,8 +128,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					std::cout << "end >" << hitPoint << "\n";
 					cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
 
+					pathfinder.New(startPos, endPos);
 					newPath = true;
 					pathing = false;
+					hasWalkPoints = false;
 				}
 			}
 
@@ -99,7 +141,6 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				frameStepCount++; std::cout << "new steps/frame : " << frameStepCount << "\n";
 			}
 
-
 			if (GetAsyncKeyState(VK_DOWN) & 0x1)
 			{
 				frameStepCount--; std::cout << "new steps/frame : " << frameStepCount << "\n";
@@ -108,9 +149,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 			static bool autoPathing = false;
 			static int framesTaken = 0;
-
 			static bool didPrintFramesTaken = true;
-			if (pathing == false && newPath == false && didPrintFramesTaken == false)
+			if (pathing == false && pathing == false && didPrintFramesTaken == false)
 			{
 				std::cout << "pathing took [ " << framesTaken << " ] frames\n";
 				didPrintFramesTaken = true;
@@ -118,18 +158,17 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 			if ((autoPathing && newPath) || GetAsyncKeyState(VK_RIGHT) & 0x1) {
 				if (newPath) {
-					pathfinder.New(startPos, endPos);
 					pathing = true;
 					newPath = false;
 					framesTaken = 0;
 					didPrintFramesTaken = false;
 				} 
-				else
+				if (!newPath)
 				{
 					framesTaken++;
 					for (int i = 0; i < frameStepCount; i++)
 					{
-						pathing = pathfinder.Step();
+						pathing = pathfinder.Step(true);
 						if (!pathing) break;
 					}
 				}

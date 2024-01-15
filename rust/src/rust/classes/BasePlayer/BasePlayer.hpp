@@ -1,6 +1,7 @@
 #pragma once
 #include "rust/classes/BaseCombatEntity/BaseCombatEntity.hpp"
 #include "rust/classes/PlayerModel/PlayerModel.hpp"
+#include "rust/classes/BaseMovement/BaseMovement.hpp"
 
 #include "mscorlib/System/String/String.hpp"
 #include "mscorlib/System/Array/Array.hpp"
@@ -26,6 +27,7 @@ public:
 	void SendVoiceData(System::Array<System::Byte*>* data, int len);
 
 	PlayerModel* playerModel();
+	BaseMovement* movement();
 
 	static BufferList<BasePlayer*>* visiblePlayerList();
 

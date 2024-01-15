@@ -33,6 +33,15 @@ PlayerModel* BasePlayer::playerModel()
 	return nullptr;
 }
 
+BaseMovement* BasePlayer::movement()
+{
+	static auto offset = Il2cppLib::field_offset_from_signature("BasePlayer.movement");
+	if (offset)
+		return *(BaseMovement**)((std::uintptr_t)this + offset);
+
+	return nullptr;
+}
+
 BufferList<BasePlayer*>* BasePlayer::visiblePlayerList()
 {
 	static auto fn = (BufferList<BasePlayer*>*(*)())Il2cppLib::method_from_signature("BasePlayer.get_VisiblePlayerList()");

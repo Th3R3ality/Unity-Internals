@@ -4,6 +4,7 @@
 #include <math.h>
 #include <iostream>
 #include <format>
+#include <algorithm>
 
 #include "Lapis/engine/LapisEngine.h"
 
@@ -61,7 +62,8 @@ namespace Astar
 
 	}
 
-	bool AstarPath::Step()
+#pragma warning disable 26819 // switch fallthrough warning
+	bool AstarPath::Step(bool processSameStep)
 	{
 		switch (todo)
 		{
@@ -75,25 +77,26 @@ namespace Astar
 				break;
 			}
 
-			if (v3::Distance(currentNode->pos, this->end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, this->end))
+			if ((v3::Distance(currentNode->pos, this->end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, this->end))
+				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
 				for (auto& node : this->closedNodes)
 					if (node != nullptr)
 						if (node->id == currentNode->id)
 							currentNode = node;
 
-				todo = completed;
+				todo = backtracing;
 				break;
 			}
 
 			this->closedNodes.push_back(currentNode);
 			
 			todo = processFoundNode;
-			break;
+			if (!processSameStep)
+				break;
 		}
 		case processFoundNode:
 		{
-
 			v3 pos = currentNode->pos;
 			const float segmentTheta = (float)(M_PI * 2) / rayCount;
 			constexpr float segmentThetaVertical = (float)(M_PI * 2) / 12;
@@ -123,6 +126,7 @@ namespace Astar
 							if (!UnityEngine::Physics::Linecast(currentNode->pos, nearbyClosedNode->pos))
 							{
 								currentNode->parent = nearbyClosedNode;
+								currentNode->depth = nearbyClosedNode->depth + 1;
 								currentNode->G = nearbyClosedNode->G + v3::Distance(currentNode->pos, nearbyClosedNode->pos);
 							}
 						}
@@ -152,7 +156,7 @@ namespace Astar
 			}
 			break;
 		}
-		case completed:
+		case backtracing:
 			if (currentNode != nullptr)
 			{
 				this->foundPath.push_back(currentNode);
@@ -161,11 +165,14 @@ namespace Astar
 				break;
 			}
 			else
+				todo = completed;
+		case completed:
 			{
 				std::cout << "Astar ; Path Complete [+++]\n";
 				UpdateRender();
 				return false;
 			}
+			break;
 		case invalid:
 			std::cout << "Astar ; Couldn't Find Path [XXX]\n";
 			UpdateRenderPath("000000");
@@ -178,6 +185,8 @@ namespace Astar
 		UpdateRender();
 		return true;
 	}
+#pragma warning restore 26819
+
 	void AstarPath::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{
 		if (currentNode == nullptr)
@@ -201,6 +210,7 @@ namespace Astar
 			_currentNode = _currentNode->parent;
 		}
 	}
+
 	void AstarPath::UpdateRender()
 	{
 		//for (auto node : this->closedNodes)
@@ -255,6 +265,23 @@ namespace Astar
 			}
 		}
 		return false;
+	}
+
+
+	bool AstarPath::GrabPath(std::vector<v3>& points)
+	{
+		if (todo != completed && todo != invalid)
+			return false;
+
+		points.clear();
+		for (auto node : foundPath)
+		{
+			if (node != nullptr)
+				points.push_back(node->pos);
+		}
+
+		std::reverse(points.begin(), points.end());
+		return true;
 	}
 
 	bool Raycast(v3 from, v3 dir, float maxDist)

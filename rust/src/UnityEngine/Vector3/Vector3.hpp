@@ -41,13 +41,23 @@ namespace UnityEngine
 
 			return res;
 		}
-		Vector3& operator+(float f)
+		Vector3 operator+(float f)
 		{
-			x += f;
-			y += f;
-			z += f;
-			return *this;
+			Vector3 res;
+			 res.x = x + f;
+			 res.y = y + f;
+			 res.z = z + f;
+			return res;
 		}
+		Vector3 operator-(const Vector3& right)
+		{
+			Vector3 res;
+			res.x = x - right.x;
+			res.y = y - right.y;
+			res.z = z - right.z;
+			return res;
+		}
+
 		bool operator==(Vector3 right);
 
 		Vector3 operator+(Vector3 other)
@@ -68,20 +78,6 @@ namespace UnityEngine
 			return v1;
 		}
 		friend Vector3& operator-=(Vector3& v1, const Vector3& v2)
-		{
-			v1.x -= v2.x;
-			v1.y -= v2.y;
-			v1.z -= v2.z;
-			return v1;
-		}
-		friend Vector3& operator-(Vector3& v1, const Vector3& v2)
-		{
-			v1.x -= v2.x;
-			v1.y -= v2.y;
-			v1.z -= v2.z;
-			return v1;
-		}
-		friend Vector3& operator-(Vector3 v1, Vector3 v2)
 		{
 			v1.x -= v2.x;
 			v1.y -= v2.y;

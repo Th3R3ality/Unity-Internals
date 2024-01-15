@@ -18,6 +18,7 @@ namespace Astar
 		std::string id;
 		v3 pos{};
 		std::shared_ptr<Node> parent;
+		unsigned int depth = 0;
 		float G = 0, H = 0;
 		union
 		{
@@ -33,7 +34,11 @@ namespace Astar
 		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent, float weightH) :
 			id(id), pos(nodePos), parent(parent), weightH(weightH)
 		{
-			G = (parent != nullptr) ? parent->G + v3::Distance(nodePos, parent->pos) : 0;
+			if (parent != nullptr)
+			{
+				G = parent->G + v3::Distance(nodePos, parent->pos);
+				depth = parent->depth + 1;
+			}
 			H = weightH * v3::Distance(nodePos, endPos);
 		}
 
