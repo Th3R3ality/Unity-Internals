@@ -20,7 +20,7 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-Astar::AstarPath pathfinder(1, 256, false, false, false, 1, 4, 10, 2500);
+Astar::AstarPath pathfinder(1, 256, false, false, false, 1, 6, 10, 2500);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -67,26 +67,31 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static BaseMovement* movement = localPlayer->movement();
 			if (!hasWalkPoints)
 			{
+				walkPathIdx = 0;
 				hasWalkPoints = pathfinder.GrabPath(walkPoints);
 			}
 			else
 			{
-				if (walkPathIdx < walkPoints.size() - 1)
+				if (walkPathIdx < walkPoints.size())
 				{
-					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position(), walkPoints.at(walkPathIdx)) < 1.0f)
-					{
-						walkPathIdx++;
-					}
+					
 					std::cout << "walkPoints.at(walkPathIdx) >> " << walkPoints.at(walkPathIdx) << "\n";
 					std::cout << "localPlayer->position() >> " << localPlayer->transform()->position() << "\n";
 
-					auto targetMove = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - localPlayer->transform()->position()) * 3;
+					auto deltaPos = (walkPoints.at(walkPathIdx) - localPlayer->transform()->position());
+					//deltaPos.y = 0;
+					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 3;
 					
 					std::cout << "targetMove >> " << targetMove << "\n";
 					cache::debugDraw("targetMove", cache::debugLine3d(
 						localPlayer->transform()->position(), 
 						localPlayer->transform()->position() + targetMove * 0.25, "00ffff"));
 					movement->TargetMovement(targetMove);
+
+					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position(), walkPoints.at(walkPathIdx)) < 1.0f)
+					{
+						walkPathIdx++;
+					}
 				}
 			}
 
@@ -124,6 +129,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					auto hitPoint = hitInfo.m_Point;
 					hitPoint -= mainCam->transform()->forward() * 0.1;
 
+					startPos = localPlayer->transform()->position();
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
 					cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
