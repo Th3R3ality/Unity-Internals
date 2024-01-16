@@ -6,6 +6,15 @@
 
 namespace UnityEngine
 {
+	bool UnityEngine::Physics::Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
+	{
+		static auto fn = (bool(*)(Vector3, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.Raycast(Vector3, Vector3, UnityEngine.RaycastHit&, float, int)");
+		if (fn)
+		{
+			return fn(origin, direction, hitInfo, maxDistance, layerMask);
+		}
+		return false;
+	}
 	bool Physics::Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance)
 	{
 		static auto fn = (bool(*)(Vector3, Vector3, RaycastHit&, float))Il2cppLib::method_from_signature("UnityEngine::Physics.Raycast(Vector3, Vector3, UnityEngine.RaycastHit&, float)");
@@ -27,6 +36,11 @@ namespace UnityEngine
 	{
 		RaycastHit hitInfo;
 		return Physics::Linecast(start, end, hitInfo, -5);
+	}
+	bool UnityEngine::Physics::Linecast(Vector3 start, Vector3 end, int layerMask)
+	{
+		RaycastHit hitInfo;
+		return Physics::Linecast(start, end, hitInfo, layerMask);
 	}
 	bool Physics::Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo)
 	{

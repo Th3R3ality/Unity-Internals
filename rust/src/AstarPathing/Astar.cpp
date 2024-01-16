@@ -77,7 +77,7 @@ namespace Astar
 				break;
 			}
 
-			if ((v3::Distance(currentNode->pos, this->end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, this->end))
+			if ((v3::Distance(currentNode->pos, this->end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, this->end, layerMask))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
 				for (auto& node : this->closedNodes)
@@ -123,7 +123,7 @@ namespace Astar
 					{
 						if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 						{
-							if (!UnityEngine::Physics::Linecast(currentNode->pos, nearbyClosedNode->pos))
+							if (!UnityEngine::Physics::Linecast(currentNode->pos, nearbyClosedNode->pos, layerMask))
 							{
 								currentNode->parent = nearbyClosedNode;
 								currentNode->depth = nearbyClosedNode->depth + 1;
@@ -132,7 +132,7 @@ namespace Astar
 						}
 						continue;
 					}
-					if (Raycast(pos, dir, stepLength) || ( !allowFlight && (!Raycast(pos, { 0,-1,0 }, flightCheckHeight)/* && vertical != 1*/)))
+					if (Raycast(pos, dir, stepLength, layerMask) || (!allowFlight && (!Raycast(pos, {0,-1,0}, flightCheckHeight, layerMask)/* && vertical != 1*/)))
 						continue;
 
 
@@ -284,10 +284,10 @@ namespace Astar
 		return true;
 	}
 
-	bool Raycast(v3 from, v3 dir, float maxDist)
+	bool Raycast(v3 from, v3 dir, float maxDist, int layerMask)
 	{
 		UnityEngine::RaycastHit hitInfo;
-		bool res = UnityEngine::Physics::Raycast(from, dir, hitInfo, maxDist);
+		bool res = UnityEngine::Physics::Raycast(from, dir, hitInfo, maxDist, layerMask);
 		return res;
 	}
 }

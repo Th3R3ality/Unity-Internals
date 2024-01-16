@@ -48,11 +48,14 @@ namespace Astar
 		bool preferFlight = false;
 		unsigned int maxNodeCount = 2000;
 		unsigned int maxPathDepth = 0;
-		
+		float radius = 0;
+		int layerMask = -5;
+
 		/// <summary>
 		/// Constructor With Pather Settings
 		/// </summary>
 		/// <param name="stepLength"> - meters from node to node (horizontally)</param>
+		/// <param name="radius"> - if above 2 this will be the radius of the spherecast</param>
 		/// <param name="maxPathDepth"> - max amount of nodes away from start (if reached path is set to complete)</param>
 		/// <param name="allowFlight"> - allow the path to step on air</param>
 		/// <param name="preferFlight"> - path will prefer staying or going up in the air</param>
@@ -62,7 +65,7 @@ namespace Astar
 		/// <param name="weightH"> - weight that gets multiplied on the H value (distance from start), higher means more commitment to a path</param>
 		/// <param name="maxNodeCount"> - the max amount of nodes allowed to spawn</param>
 		AstarPath(
-			float stepLength = 1, unsigned int maxPathDepth = 0, bool allowFlight = false,
+			float stepLength = 1, float radius = 0, int layerMask = -5, unsigned int maxPathDepth = 0, bool allowFlight = false,
 			bool preferFlight = false, bool disableVertical = false, float flightCheckHeight = 1,
 			int rayCount = 6, float weightH = 5, unsigned int maxNodeCount = 2000) :
 			stepLength(stepLength),	maxPathDepth(maxPathDepth),	disableVertical(disableVertical),
@@ -81,5 +84,5 @@ namespace Astar
 		void UpdateRender();
 	};
 
-	bool Raycast(v3 from, v3 dir, float maxDist);
+	bool Raycast(v3 from, v3 dir, float maxDist, int layerMask);
 }

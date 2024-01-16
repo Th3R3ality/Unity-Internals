@@ -207,6 +207,7 @@
     <ClInclude Include="src\UnityEngine\enums\PrimitiveType.hpp" />
     <ClInclude Include="src\UnityEngine\GameObject\GameObject.hpp" />
     <ClInclude Include="src\UnityEngine\GL\GL.hpp" />
+    <ClInclude Include="src\UnityEngine\LayerMask\LayerMask.hpp" />
     <ClInclude Include="src\UnityEngine\Material\Material.hpp" />
     <ClInclude Include="src\UnityEngine\Matrix4x4\Matrix4x4.hpp" />
     <ClInclude Include="src\UnityEngine\MeshRenderer\MeshRenderer.hpp" />
@@ -309,6 +310,7 @@
     <ClCompile Include="src\UnityEngine\Component\Component.cpp" />
     <ClCompile Include="src\UnityEngine\GameObject\GameObject.cpp" />
     <ClCompile Include="src\UnityEngine\GL\GL.cpp" />
+    <ClCompile Include="src\UnityEngine\LayerMask\LayerMask.cpp" />
     <ClCompile Include="src\UnityEngine\Material\Material.cpp" />
     <ClCompile Include="src\UnityEngine\Matrix4x4\Matrix4x4.cpp" />
     <ClCompile Include="src\UnityEngine\MeshRenderer\MeshRenderer.cpp" />

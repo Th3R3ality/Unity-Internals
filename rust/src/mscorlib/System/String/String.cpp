@@ -12,7 +12,7 @@ namespace mscorlib::System
 		for (int idx = 0; idx < size; idx++) {
 			buffer[idx] = str.at(idx);
 		}
-		buffer[size] = 0;
+		buffer[size] = '\0';
 	}
 
 	bool String::startsWith(std::string comparison)

@@ -11,6 +11,7 @@
 #include "cache.hpp"
 
 #include "UnityEngine/Physics/Physics.hpp"
+#include "UnityEngine/LayerMask/LayerMask.hpp"
 
 #include "rust/classes/ClientBuildingManager/ClientBuildingManager.hpp"
 #include "rust/classes/BuildingManager/BuildingManager.hpp"
@@ -20,7 +21,7 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-Astar::AstarPath pathfinder(1, 256, false, false, false, 1, 6, 10, 2500);
+Astar::AstarPath pathfinder(1, 0, -5, 256, false, false, false, 1, 8, 10, 2500);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -58,7 +59,18 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 	auto mainCam = cache::cameraMain();
 
 	if (localPlayer && mainCam) {
-		
+		static int layerMask = (
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Terrain")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Prevent Movement")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"World")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Default")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Construction")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Deployed")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Tree")) |
+			(1 << UnityEngine::LayerMask::NameToLayer(L"Clutter")) );
+
+		pathfinder.layerMask = layerMask;
+
 		if (config::PathFinding) {
 			///////////////////////////////// WALKER
 			static int walkPathIdx = 0;
@@ -74,18 +86,14 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			{
 				if (walkPathIdx < walkPoints.size())
 				{
-					
-					std::cout << "walkPoints.at(walkPathIdx) >> " << walkPoints.at(walkPathIdx) << "\n";
-					std::cout << "localPlayer->position() >> " << localPlayer->transform()->position() << "\n";
-
 					auto deltaPos = (walkPoints.at(walkPathIdx) - localPlayer->transform()->position());
 					//deltaPos.y = 0;
 					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 3;
-					
-					std::cout << "targetMove >> " << targetMove << "\n";
+
 					cache::debugDraw("targetMove", cache::debugLine3d(
 						localPlayer->transform()->position(), 
 						localPlayer->transform()->position() + targetMove * 0.25, "00ffff"));
+
 					movement->TargetMovement(targetMove);
 
 					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position(), walkPoints.at(walkPathIdx)) < 1.0f)
@@ -103,7 +111,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
+				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo, 999.9f, layerMask);
 				if (res) {
 					auto hitPoint = hitInfo.m_Point;
 					hitPoint -= mainCam->transform()->forward() * 0.1;
@@ -123,7 +131,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo);
+				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo, 999.9f, layerMask);
 				if (res)
 				{
 					auto hitPoint = hitInfo.m_Point;
@@ -156,7 +164,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool autoPathing = false;
 			static int framesTaken = 0;
 			static bool didPrintFramesTaken = true;
-			if (pathing == false && pathing == false && didPrintFramesTaken == false)
+			if (pathing == false && didPrintFramesTaken == false)
 			{
 				std::cout << "pathing took [ " << framesTaken << " ] frames\n";
 				didPrintFramesTaken = true;

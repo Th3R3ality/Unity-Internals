@@ -41,6 +41,11 @@ namespace Il2cppLib
 		return il2cpp_object_new(class_from_signature(class_signature));
 	}
 
+	void* Il2cppLib::new_string(std::string string)
+	{
+		return il2cpp_string_new(string.c_str());
+	}
+
 	void* resolve_icall(const char* name)
 	{
 		return (void*)il2cpp_resolve_icall(name);

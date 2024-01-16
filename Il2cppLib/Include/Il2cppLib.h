@@ -31,6 +31,8 @@ namespace Il2cppLib
 
 	void* new_object(std::string class_signature);
 
+	void* new_string(std::string string);
+
 	std::string _ToString(uintptr_t object);
 	
 	template<typename T>
