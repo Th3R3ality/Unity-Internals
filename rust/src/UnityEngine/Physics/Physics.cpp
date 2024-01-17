@@ -6,6 +6,15 @@
 
 namespace UnityEngine
 {
+	bool Physics::AutoCast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, int layerMask, float maxDistance, float radius, Vector3 capsuleTop)
+	{
+		if (radius == 0)
+			return Physics::Raycast(origin, direction, hitInfo, maxDistance, layerMask);
+		if (capsuleTop == 0)
+			return Physics::SphereCast(origin, radius, direction, hitInfo, maxDistance, layerMask);
+
+		return Physics::CapsuleCast(origin, capsuleTop, radius, direction, hitInfo, maxDistance, layerMask);
+	}
 	bool UnityEngine::Physics::Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
 	{
 		static auto fn = (bool(*)(Vector3, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.Raycast(Vector3, Vector3, UnityEngine.RaycastHit&, float, int)");
@@ -52,6 +61,24 @@ namespace UnityEngine
 		if (fn)
 		{
 			return fn(start, end, hitInfo, layerMask);
+		}
+		return false;
+	}
+	bool UnityEngine::Physics::SphereCast(Vector3 origin, float radius, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
+	{
+		static auto fn = (bool(*)(Vector3, float, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.SphereCast(Vector3, float, Vector3, UnityEngine.RaycastHit&, float, int)");
+		if (fn)
+		{
+			return fn(origin, radius, direction, hitInfo, maxDistance, layerMask);
+		}
+		return false;
+	}
+	bool UnityEngine::Physics::CapsuleCast(Vector3 point1, Vector3 point2, float radius, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
+	{
+		static auto fn = (bool(*)(Vector3, Vector3, float, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.SphereCast(Vector3, float, Vector3, UnityEngine.RaycastHit&, float, int)");
+		if (fn)
+		{
+			return fn(point1, point2, radius, direction, hitInfo, maxDistance, layerMask);
 		}
 		return false;
 	}

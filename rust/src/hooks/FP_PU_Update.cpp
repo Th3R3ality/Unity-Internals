@@ -21,7 +21,7 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-Astar::AstarPath pathfinder(1, 0, -5, 256, false, false, false, 1, 8, 10, 2500);
+Astar::AstarPath pathfinder(1.f, 0.f, -5, 256u, false, false, false, 1.f, 8, 10.f, 2500u);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {

@@ -2,12 +2,16 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <functional>
 
 #include "UnityEngine/Vector3/Vector3.hpp"
+#include "UnityEngine/RaycastHit/RaycastHit.hpp"
 #include "cache.hpp"
 
 #include "Node.h"
 #include "NodeHeap.h"
+
+using namespace UnityEngine;
 
 namespace Astar
 {
@@ -38,6 +42,7 @@ namespace Astar
 
 		unsigned int idCounter = 0;
 
+		
 		// settings
 		float stepLength = 1;
 		float flightCheckHeight = 1;
@@ -56,6 +61,7 @@ namespace Astar
 		/// </summary>
 		/// <param name="stepLength"> - meters from node to node (horizontally)</param>
 		/// <param name="radius"> - if above 2 this will be the radius of the spherecast</param>
+		/// <param name="layerMask"> - what layers to check collisions on</param>
 		/// <param name="maxPathDepth"> - max amount of nodes away from start (if reached path is set to complete)</param>
 		/// <param name="allowFlight"> - allow the path to step on air</param>
 		/// <param name="preferFlight"> - path will prefer staying or going up in the air</param>
@@ -65,12 +71,14 @@ namespace Astar
 		/// <param name="weightH"> - weight that gets multiplied on the H value (distance from start), higher means more commitment to a path</param>
 		/// <param name="maxNodeCount"> - the max amount of nodes allowed to spawn</param>
 		AstarPath(
-			float stepLength = 1, float radius = 0, int layerMask = -5, unsigned int maxPathDepth = 0, bool allowFlight = false,
+			float stepLength = 1, float radius = 0, int layerMask = -5,
+			unsigned int maxPathDepth = 0, bool allowFlight = false,
 			bool preferFlight = false, bool disableVertical = false, float flightCheckHeight = 1,
 			int rayCount = 6, float weightH = 5, unsigned int maxNodeCount = 2000) :
-			stepLength(stepLength),	maxPathDepth(maxPathDepth),	disableVertical(disableVertical),
-			allowFlight(allowFlight), preferFlight(preferFlight), rayCount(rayCount),
-			weightH(weightH), maxNodeCount(maxNodeCount)
+			stepLength(stepLength), radius(radius), layerMask(layerMask),
+			maxPathDepth(maxPathDepth),	allowFlight(allowFlight),
+			preferFlight(preferFlight), disableVertical(disableVertical), flightCheckHeight(flightCheckHeight),
+			rayCount(rayCount),	weightH(weightH), maxNodeCount(maxNodeCount)
 		{}
 
 		void New(v3 start, v3 end);
