@@ -5,13 +5,15 @@ using namespace mscorlib;
 
 namespace UnityEngine
 {
+
+    /// <returns>int Mask</returns>
     int LayerMask::NameToLayer(std::wstring layer)
     {
         static auto fn = (int(*)(System::String*))Il2cppLib::method_from_signature("UnityEngine::LayerMask.NameToLayer(string)");
         if (fn)
         {
             auto sstr = System::String(layer);
-            return fn(&sstr);
+            return (1 << fn(&sstr));
         }
         return 0;
     }

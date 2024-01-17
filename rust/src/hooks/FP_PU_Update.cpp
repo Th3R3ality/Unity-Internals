@@ -59,15 +59,15 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 	auto mainCam = cache::cameraMain();
 
 	if (localPlayer && mainCam) {
-		static int layerMask = (
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Terrain")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Prevent Movement")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"World")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Default")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Construction")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Deployed")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Tree")) |
-			(1 << UnityEngine::LayerMask::NameToLayer(L"Clutter")) );
+		static int layerMask  (
+			UnityEngine::LayerMask::NameToLayer(L"Terrain") |
+			UnityEngine::LayerMask::NameToLayer(L"Prevent Movement") |
+			UnityEngine::LayerMask::NameToLayer(L"World") |
+			UnityEngine::LayerMask::NameToLayer(L"Default") |
+			UnityEngine::LayerMask::NameToLayer(L"Construction") |
+			UnityEngine::LayerMask::NameToLayer(L"Deployed") |
+			UnityEngine::LayerMask::NameToLayer(L"Tree") |
+			UnityEngine::LayerMask::NameToLayer(L"Clutter") );
 
 		pathfinder.layerMask = layerMask;
 
