@@ -21,13 +21,11 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-Astar::AstarPath pathfinder(1.f, 0.f, -5, 256u, false, false, false, 1.f, 8, 10.f, 2500u);
+constexpr float pathRadius = 0.4f;
+Astar::AstarPath pathfinder(1.f, pathRadius, -5, 256u, false, false, false, 1.f, 8, 10.f, 2500u, 1);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
-
-	//static int counter = -1; ++counter;
-
 	ORIG(hk__FP_PU_Update);
 
 	if (!orig) {
@@ -67,11 +65,15 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			UnityEngine::LayerMask::NameToLayer(L"Construction") |
 			UnityEngine::LayerMask::NameToLayer(L"Deployed") |
 			UnityEngine::LayerMask::NameToLayer(L"Tree") |
-			UnityEngine::LayerMask::NameToLayer(L"Clutter") );
+			UnityEngine::LayerMask::NameToLayer(L"Clutter") |
+			UnityEngine::LayerMask::NameToLayer(L"Transparent"));
 
 		pathfinder.layerMask = layerMask;
 
 		if (config::PathFinding) {
+			if (GetAsyncKeyState('P') & 0x1)
+				pathfinder.debugLevel++; pathfinder.debugLevel %= 3;
+
 			///////////////////////////////// WALKER
 			static int walkPathIdx = 0;
 			static bool hasWalkPoints = false;
@@ -87,8 +89,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				if (walkPathIdx < walkPoints.size())
 				{
 					auto deltaPos = (walkPoints.at(walkPathIdx) - localPlayer->transform()->position());
-					//deltaPos.y = 0;
-					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 3;
+					deltaPos.y = 0;
+					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 2.7;
 
 					cache::debugDraw("targetMove", cache::debugLine3d(
 						localPlayer->transform()->position(), 
@@ -96,7 +98,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 					movement->TargetMovement(targetMove);
 
-					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position(), walkPoints.at(walkPathIdx)) < 1.0f)
+					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0,pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx)) < pathRadius*2)
 					{
 						walkPathIdx++;
 					}
@@ -111,13 +113,13 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo, 999.9f, layerMask);
-				if (res) {
+				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
+				{
 					auto hitPoint = hitInfo.m_Point;
-					hitPoint -= mainCam->transform()->forward() * 0.1;
+					hitPoint -= mainCam->transform()->forward() * (pathRadius+0.1);
 					startPos = hitPoint;
 					std::cout << "start >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0,0.1 }, "00ff0066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathRadius + 0.1) }, "00ff0066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
@@ -131,16 +133,16 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				bool res = UnityEngine::Physics::Raycast(cameraTransform->position(), cameraTransform->forward(), hitInfo, 999.9f, layerMask);
-				if (res)
+				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
 				{
 					auto hitPoint = hitInfo.m_Point;
 					hitPoint -= mainCam->transform()->forward() * 0.1;
 
-					startPos = localPlayer->transform()->position();
+					startPos = localPlayer->transform()->position() + Vector3(0, (pathRadius + 0.1), 0);
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
-					cache::debugDraw("pathEnd", cache::debugIcosahedron({ hitPoint, 0, 0.1 }, "ff000066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathRadius + 0.1) }, "00ff0066"));
+					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathRadius + 0.1) }, "ff000066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;

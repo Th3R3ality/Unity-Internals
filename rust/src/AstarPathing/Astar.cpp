@@ -77,7 +77,9 @@ namespace Astar
 				break;
 			}
 
-			if ((v3::Distance(currentNode->pos, this->end) < stepLength && !UnityEngine::Physics::Linecast(currentNode->pos, this->end, layerMask))
+			float endDist = v3::Distance(currentNode->pos, this->end);
+			static RaycastHit hitInfo{};
+			if ((endDist < stepLength && !UnityEngine::Physics::AutoCast(currentNode->pos, this->end, hitInfo, layerMask, endDist, this->radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
 				for (auto& node : this->closedNodes)
@@ -123,7 +125,9 @@ namespace Astar
 					{
 						if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 						{
-							if (!UnityEngine::Physics::Linecast(currentNode->pos, nearbyClosedNode->pos, layerMask))
+							float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
+							static RaycastHit hitInfo{};
+							if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), hitInfo, layerMask, dist, this->radius))
 							{
 								currentNode->parent = nearbyClosedNode;
 								currentNode->depth = nearbyClosedNode->depth + 1;
@@ -132,7 +136,9 @@ namespace Astar
 						}
 						continue;
 					}
-					if (Raycast(pos, dir, stepLength, layerMask) || (!allowFlight && (!Raycast(pos, {0,-1,0}, flightCheckHeight, layerMask)/* && vertical != 1*/)))
+
+					static RaycastHit hitInfo;
+					if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius) || (!allowFlight && (!UnityEngine::Physics::AutoCast(pos, {0,-1,0}, hitInfo, layerMask, max(0, flightCheckHeight - radius), radius/2))))
 						continue;
 
 
@@ -189,6 +195,8 @@ namespace Astar
 
 	void AstarPath::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{
+		if (debugLevel < 1)
+			return;
 		if (currentNode == nullptr)
 			return;
 	
@@ -213,17 +221,10 @@ namespace Astar
 
 	void AstarPath::UpdateRender()
 	{
-		//for (auto node : this->closedNodes)
-		//	if (node != nullptr)
-		//		cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "00000099"));
+		if (debugLevel < 1)
+			return;
 
-		//for (auto node : this->openNodes.items)
-		//	if (node != nullptr)
-		//		cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
-
-		//if (currentNode != nullptr)
-		//	cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
-		//
+		////////// visualise path
 		for (auto node : this->foundPath)
 		{
 			if (node != nullptr)
@@ -233,6 +234,24 @@ namespace Astar
 				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.04f), "00aa0099"));
 			}
 		}
+		
+
+		////////// Verbose debugging
+		if (debugLevel < 2)
+			return;
+		
+		for (auto node : this->closedNodes)
+			if (node != nullptr)
+				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "00000099"));
+
+		for (auto node : this->openNodes.items)
+			if (node != nullptr)
+				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
+
+		if (currentNode != nullptr)
+			cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
+		
+		
 	}
 
 	bool AstarPath::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
@@ -281,6 +300,7 @@ namespace Astar
 		}
 
 		std::reverse(points.begin(), points.end());
+		//points.push_back(this->end);
 		return true;
 	}
 

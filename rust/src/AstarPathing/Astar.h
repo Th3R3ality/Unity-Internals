@@ -55,6 +55,7 @@ namespace Astar
 		unsigned int maxPathDepth = 0;
 		float radius = 0;
 		int layerMask = -5;
+		int debugLevel = 0;
 
 		/// <summary>
 		/// Constructor With Pather Settings
@@ -70,15 +71,16 @@ namespace Astar
 		/// <param name="rayCount"> - how many raycasts each node should send (horizontal count, vertical rays multiply this by 3)</param>
 		/// <param name="weightH"> - weight that gets multiplied on the H value (distance from start), higher means more commitment to a path</param>
 		/// <param name="maxNodeCount"> - the max amount of nodes allowed to spawn</param>
+		/// <param name="debugLevel"> - level of debug drawing, 0 = none, 1 = simple, 2 = verbose</param>
 		AstarPath(
 			float stepLength = 1, float radius = 0, int layerMask = -5,
 			unsigned int maxPathDepth = 0, bool allowFlight = false,
 			bool preferFlight = false, bool disableVertical = false, float flightCheckHeight = 1,
-			int rayCount = 6, float weightH = 5, unsigned int maxNodeCount = 2000) :
+			int rayCount = 6, float weightH = 5, unsigned int maxNodeCount = 2000, int debugLevel = 0) :
 			stepLength(stepLength), radius(radius), layerMask(layerMask),
 			maxPathDepth(maxPathDepth),	allowFlight(allowFlight),
 			preferFlight(preferFlight), disableVertical(disableVertical), flightCheckHeight(flightCheckHeight),
-			rayCount(rayCount),	weightH(weightH), maxNodeCount(maxNodeCount)
+			rayCount(rayCount),	weightH(weightH), maxNodeCount(maxNodeCount), debugLevel(debugLevel)
 		{}
 
 		void New(v3 start, v3 end);
