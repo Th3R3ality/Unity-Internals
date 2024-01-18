@@ -10,6 +10,8 @@
 #include "config.hpp"
 #include "cache.hpp"
 
+#include "globalSM.h"
+
 #include "UnityEngine/Physics/Physics.hpp"
 #include "UnityEngine/LayerMask/LayerMask.hpp"
 
@@ -22,7 +24,7 @@
 BuildingManager::Building* selectedBuilding = nullptr;
 
 constexpr float pathRadius = 0.4f;
-Astar::AstarPath pathfinder(1.f, pathRadius, -5, 256u, false, false, false, 1.f, 8, 10.f, 2500u, 1);
+Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 256u, false, .5f, 3.f, 8, 10.f, 2500u, 1, false, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -88,13 +90,14 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			{
 				if (walkPathIdx < walkPoints.size())
 				{
-					auto deltaPos = (walkPoints.at(walkPathIdx) - localPlayer->transform()->position());
+					auto deltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1,0)));
+					if (deltaPos.y > 0.6) StateMachine::doJump = true;
 					deltaPos.y = 0;
 					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 2.7;
 
 					cache::debugDraw("targetMove", cache::debugLine3d(
-						localPlayer->transform()->position(), 
-						localPlayer->transform()->position() + targetMove * 0.25, "00ffff"));
+						localPlayer->transform()->position()+ Vector3(0, pathRadius + 0.1f, 0),
+						localPlayer->transform()->position()+ Vector3(0, pathRadius + 0.1f, 0) + targetMove * 0.25, "00ffff"));
 
 					movement->TargetMovement(targetMove);
 
@@ -115,11 +118,11 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				UnityEngine::RaycastHit hitInfo;
 				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
 				{
-					auto hitPoint = hitInfo.m_Point;
+					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathRadius;
 					hitPoint -= mainCam->transform()->forward() * (pathRadius+0.1);
 					startPos = hitPoint;
 					std::cout << "start >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathRadius + 0.1) }, "00ff0066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathRadius) }, "00ff0066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
@@ -135,14 +138,14 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				UnityEngine::RaycastHit hitInfo;
 				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
 				{
-					auto hitPoint = hitInfo.m_Point;
+					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathRadius;
 					hitPoint -= mainCam->transform()->forward() * 0.1;
 
 					startPos = localPlayer->transform()->position() + Vector3(0, (pathRadius + 0.1), 0);
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathRadius + 0.1) }, "00ff0066"));
-					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathRadius + 0.1) }, "ff000066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathRadius) }, "00ff0066"));
+					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathRadius) }, "ff000066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;

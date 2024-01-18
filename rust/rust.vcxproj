@@ -115,6 +115,7 @@
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />
     <ClInclude Include="src\constraints.hpp" />
+    <ClInclude Include="src\globalSM.h" />
     <ClInclude Include="src\hooks\sex.h" />
     <ClInclude Include="src\mscorlib\System\Dictionary\Dictionary.hpp" />
     <ClInclude Include="src\mscorlib\System\object\object.hpp" />
@@ -236,6 +237,7 @@
     <ClCompile Include="src\config.cpp" />
     <ClCompile Include="src\constraints.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\globalSM.cpp" />
     <ClCompile Include="src\hooks\BProj_LaunchProjectileClientSide.cpp" />
     <ClCompile Include="src\hooks\Proj_DoHit.cpp" />
     <ClCompile Include="src\hooks\Proj_UpdateVelocity.cpp" />
