@@ -14,8 +14,6 @@
 
 namespace Astar
 {
-
-
 	void AstarPath::New(v3 start, v3 end)
 	{
 		for (auto node : this->openNodes.items)
@@ -57,8 +55,8 @@ namespace Astar
 		this->openNodes.Add( std::make_shared<Node>(std::to_string(idCounter), this->start, this->start, this->end, nullptr, weightH));
 		idCounter++;
 
-		//cache::debugDraw("pathStart", cache::debugIcosahedron({ start, Lapis::deltaTime * 20,0.2f }, "00ff00bb"));
-		cache::debugDraw("pathEnd", cache::debugIcosahedron({end, Lapis::deltaTime * 20, 0.2f}, "ff0000bb"));
+		cache::debugDraw("pathStart", cache::debugIcosahedron({ start, 0, radius }, "00ff00bb"));
+		cache::debugDraw("pathEnd", cache::debugIcosahedron({end, 0, radius}, "ff0000bb"));
 
 	}
 
@@ -70,28 +68,21 @@ namespace Astar
 		{
 		case findBestOpenNode:
 		{
-			currentNode = openNodes.RemoveFirst();
-			
-			if (currentNode == nullptr)
+			if ((currentNode = openNodes.RemoveFirst()) == nullptr)
 			{
 				todo = invalid;
 				break;
 			}
 
-			float endDist = v3::Distance(currentNode->pos, this->end);
-			if ((endDist < stepLength && !UnityEngine::Physics::AutoCast(currentNode->pos, this->end, layerMask, endDist, this->radius))
+			float endDist = v3::Distance(currentNode->pos, end);
+			if (((endDist < stepLength + radius) && !UnityEngine::Physics::AutoCast(currentNode->pos, end, layerMask, endDist, radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
-				for (auto& node : this->closedNodes)
-					if (node != nullptr)
-						if (node->id == currentNode->id)
-							currentNode = node;
-
 				todo = backtracing;
 				break;
 			}
 
-			this->closedNodes.push_back(currentNode);
+			closedNodes.push_back(currentNode);
 			
 			todo = processFoundNode;
 			if (!processSameStep)
@@ -103,14 +94,13 @@ namespace Astar
 			if (!currentNode->inAir)
 			{
 				const float segmentTheta = (float)(M_PI * 2) / rayCount;
-				constexpr float segmentThetaVertical = (float)(M_PI * 2) / 12;
+				constexpr float segmentThetaVertical = (float)(M_PI * 2) / 24;
 				for (int i = 0; i < rayCount; i++)
 				{
-					for (int vertical = 0; vertical < (disableVertical ? 1 : 3); vertical++)
+					for (int vertical = 0; vertical < (disableVertical ? 1 : 5); vertical++)
 					{
-						int choice = preferFlight ? 1 : -1;
 
-						float pitch = segmentThetaVertical * (vertical < 1 ? 0 : vertical < 2 ? choice : -choice);
+						float pitch = (disableVertical ? 0 : -(segmentThetaVertical*2) + segmentThetaVertical * vertical);
 
 						auto yaw = (segmentTheta * i) + yawFix;
 
@@ -144,12 +134,21 @@ namespace Astar
 						bool nextInAir = false;
 						if (!allowFlight)
 						{
-
-							if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, inAirHeight - radius), radius / 2))
+							RaycastHit inAirHitInfo;
+							if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius))
 							{
-								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, maxFallHeight - radius), radius / 2))
+								RaycastHit fallHitInfo;
+								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, fallHitInfo,layerMask, max(0, maxFallHeight), radius))
 									continue;
+								if (fallHitInfo.m_Normal.y < 0.5 || fallHitInfo.m_Point.y < -0.8)
+									continue;
+
 								nextInAir = true;
+							}
+							else
+							{
+								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
+									continue;
 							}
 
 
@@ -162,16 +161,16 @@ namespace Astar
 							openNodes.Add(newNode);
 							idCounter++;
 						}
+						break;
 					}
-					break;
 				}
 			}
 			else
 			{
 				RaycastHit hitInfo;
-				if (UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, max(0, maxFallHeight - radius), radius / 2))
+				if (UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, max(0, maxFallHeight - radius), radius))
 				{
-					auto finalPos = hitInfo.m_Point + hitInfo.m_Normal * (radius / 2);
+					auto finalPos = Vector3(0, 0.1, 0) + hitInfo.m_Point + hitInfo.m_Normal * radius;
 					std::shared_ptr<Node> nearbyOpenNode = nullptr;
 					if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
 					{
