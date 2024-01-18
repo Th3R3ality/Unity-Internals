@@ -6,6 +6,12 @@
 
 namespace UnityEngine
 {
+	bool Physics::AutoCast(Vector3 origin, Vector3 direction, int layerMask, float maxDistance, float radius, Vector3 capsuleTop)
+	{
+		RaycastHit hitInfo;
+		Physics::AutoCast(origin, direction, hitInfo, layerMask, maxDistance, radius, capsuleTop);
+	}
+
 	bool Physics::AutoCast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, int layerMask, float maxDistance, float radius, Vector3 capsuleTop)
 	{
 		if (radius == 0)

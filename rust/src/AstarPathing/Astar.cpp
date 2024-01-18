@@ -78,8 +78,7 @@ namespace Astar
 			}
 
 			float endDist = v3::Distance(currentNode->pos, this->end);
-			static RaycastHit hitInfo{};
-			if ((endDist < stepLength && !UnityEngine::Physics::AutoCast(currentNode->pos, this->end, hitInfo, layerMask, endDist, this->radius))
+			if ((endDist < stepLength && !UnityEngine::Physics::AutoCast(currentNode->pos, this->end, layerMask, endDist, this->radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
 				for (auto& node : this->closedNodes)
@@ -126,8 +125,7 @@ namespace Astar
 						if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 						{
 							float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
-							static RaycastHit hitInfo{};
-							if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), hitInfo, layerMask, dist, this->radius))
+							if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, this->radius))
 							{
 								currentNode->parent = nearbyClosedNode;
 								currentNode->depth = nearbyClosedNode->depth + 1;
@@ -137,8 +135,7 @@ namespace Astar
 						continue;
 					}
 
-					static RaycastHit hitInfo;
-					if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius) || (!allowFlight && (!UnityEngine::Physics::AutoCast(pos, {0,-1,0}, hitInfo, layerMask, max(0, flightCheckHeight - radius), radius/2))))
+					if (UnityEngine::Physics::AutoCast(pos, dir, layerMask, stepLength, radius) || (!allowFlight && (!UnityEngine::Physics::AutoCast(pos, {0,-1,0}, layerMask, max(0, flightCheckHeight - radius), radius/2))))
 						continue;
 
 
@@ -195,7 +192,7 @@ namespace Astar
 
 	void AstarPath::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{
-		if (debugLevel < 1)
+		if (debugLevel < 1 && !onlyRemove)
 			return;
 		if (currentNode == nullptr)
 			return;
@@ -208,7 +205,7 @@ namespace Astar
 			cache::removeDraw("path_" + std::to_string(depth));
 			depth--;
 		}
-		if (onlyRemove)
+		if (debugLevel < 1 || onlyRemove)
 			return;
 
 		while (_currentNode->parent != nullptr)

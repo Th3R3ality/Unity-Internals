@@ -7,6 +7,7 @@ namespace UnityEngine
 	class Physics
 	{
 	public:
+		static bool AutoCast(Vector3 origin, Vector3 direction, int layerMask, float maxDistance = INFINITY, float radius = 0, Vector3 capsuleTop = 0);
 		static bool AutoCast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, int layerMask, float maxDistance = INFINITY, float radius = 0, Vector3 height = 0);
 		static bool Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask);
 		static bool Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance);
