@@ -19,6 +19,7 @@ namespace Astar
 		v3 pos{};
 		std::shared_ptr<Node> parent;
 		unsigned int depth = 0;
+		bool inAir = false;
 		float G = 0, H = 0;
 		union
 		{

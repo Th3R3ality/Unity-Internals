@@ -62,14 +62,15 @@ namespace Astar
 
 	}
 
-#pragma warning disable 26819 // switch fallthrough warning
+#pragma warning(push)
+#pragma warning(disable: 26819) // switch fallthrough warning
 	bool AstarPath::Step(bool processSameStep)
 	{
 		switch (todo)
 		{
 		case findBestOpenNode:
 		{
-			currentNode = this->openNodes.RemoveFirst();
+			currentNode = openNodes.RemoveFirst();
 			
 			if (currentNode == nullptr)
 			{
@@ -99,51 +100,84 @@ namespace Astar
 		case processFoundNode:
 		{
 			v3 pos = currentNode->pos;
-			const float segmentTheta = (float)(M_PI * 2) / rayCount;
-			constexpr float segmentThetaVertical = (float)(M_PI * 2) / 12;
-			for (int i = 0; i < rayCount; i++)
+			if (!currentNode->inAir)
 			{
-				for (int vertical = 0; vertical < (disableVertical ? 1 : 3); vertical++)
+				const float segmentTheta = (float)(M_PI * 2) / rayCount;
+				constexpr float segmentThetaVertical = (float)(M_PI * 2) / 12;
+				for (int i = 0; i < rayCount; i++)
 				{
-
-					int choice = preferFlight ? 1 : -1;
-
-					float pitch = segmentThetaVertical * (vertical < 1 ? 0 : vertical < 2 ? choice : -choice);
-
-					auto yaw = (segmentTheta * i) + yawFix;
-
-					v3 dir = v3(
-						cosf(yaw) * cosf(pitch),
-						sinf(pitch), 
-						sinf(yaw) * cosf(pitch));
-
-					auto step = dir * stepLength;
-
-					std::shared_ptr<Node> nearbyClosedNode = nullptr;
-					if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
+					for (int vertical = 0; vertical < (disableVertical ? 1 : 3); vertical++)
 					{
-						if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
+						int choice = preferFlight ? 1 : -1;
+
+						float pitch = segmentThetaVertical * (vertical < 1 ? 0 : vertical < 2 ? choice : -choice);
+
+						auto yaw = (segmentTheta * i) + yawFix;
+
+						v3 dir = v3(
+							cosf(yaw) * cosf(pitch),
+							sinf(pitch),
+							sinf(yaw) * cosf(pitch));
+
+						auto step = dir * stepLength;
+						auto finalPos = pos + step;
+
+						std::shared_ptr<Node> nearbyClosedNode = nullptr;
+						if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
 						{
-							float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
-							if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, this->radius))
+							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
-								currentNode->parent = nearbyClosedNode;
-								currentNode->depth = nearbyClosedNode->depth + 1;
-								currentNode->G = nearbyClosedNode->G + v3::Distance(currentNode->pos, nearbyClosedNode->pos);
+								float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
+								if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, this->radius))
+								{
+									currentNode->parent = nearbyClosedNode;
+									currentNode->depth = nearbyClosedNode->depth + 1;
+									currentNode->G = nearbyClosedNode->G + v3::Distance(currentNode->pos, nearbyClosedNode->pos);
+								}
 							}
+							continue;
 						}
-						continue;
+
+						if (UnityEngine::Physics::AutoCast(pos, dir, layerMask, stepLength, radius))
+							continue;
+
+						bool nextInAir = false;
+						if (!allowFlight)
+						{
+
+							if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, inAirHeight - radius), radius / 2))
+							{
+								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, maxFallHeight - radius), radius / 2))
+									continue;
+								nextInAir = true;
+							}
+
+
+						}
+						std::shared_ptr<Node> nearbyOpenNode = nullptr;
+						if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
+						{
+							auto newNode = std::make_shared<Node>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH);
+							newNode->inAir = nextInAir;
+							openNodes.Add(newNode);
+							idCounter++;
+						}
 					}
-
-					if (UnityEngine::Physics::AutoCast(pos, dir, layerMask, stepLength, radius) || (!allowFlight && (!UnityEngine::Physics::AutoCast(pos, {0,-1,0}, layerMask, max(0, flightCheckHeight - radius), radius/2))))
-						continue;
-
-
+					break;
+				}
+			}
+			else
+			{
+				RaycastHit hitInfo;
+				if (UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, max(0, maxFallHeight - radius), radius / 2))
+				{
+					auto finalPos = hitInfo.m_Point + hitInfo.m_Normal * (radius / 2);
 					std::shared_ptr<Node> nearbyOpenNode = nullptr;
-					if (!IsOpenNode(pos + step, 1, &nearbyOpenNode))
+					if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
 					{
-						auto newNode = std::make_shared<Node>(std::to_string(idCounter), pos + step, this->start, this->end, currentNode, weightH);
-						this->openNodes.Add(newNode);
+						auto newNode = std::make_shared<Node>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH);
+						newNode->inAir = false;
+						openNodes.Add(newNode);
 						idCounter++;
 					}
 				}
@@ -188,7 +222,7 @@ namespace Astar
 		UpdateRender();
 		return true;
 	}
-#pragma warning restore 26819
+#pragma warning(pop)
 
 	void AstarPath::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{

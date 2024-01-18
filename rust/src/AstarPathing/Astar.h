@@ -45,7 +45,8 @@ namespace Astar
 		
 		// settings
 		float stepLength = 1;
-		float flightCheckHeight = 1;
+		float inAirHeight = 1;
+		float maxFallHeight = 5;
 		int rayCount = 6;
 		float weightH = 5;
 		bool allowFlight = false;
@@ -67,7 +68,8 @@ namespace Astar
 		/// <param name="distanceCheckY"> - whether or not to account for y in distance checks (useful for goto: x,z)</param>
 		/// <param name="maxPathDepth"> - max amount of nodes away from start (if reached path is set to complete)</param>
 		/// <param name="allowFlight"> - allow the path to step on air</param>
-		/// <param name="flightCheckHeight"> - distance check to see if the path is grounded</param>
+		/// <param name="inAirHeight"> - max height the path can go above the ground before being marked inAir</param>
+		/// <param name="maxFallHeight"> - max height the path is allowed to go down if in air</param>
 		/// <param name="rayCount"> - how many raycasts each node should send (horizontal count, vertical rays multiply this by 3)</param>
 		/// <param name="weightH"> - weight that gets multiplied on the H value (distance from start), higher means more commitment to a path</param>
 		/// <param name="maxNodeCount"> - the max amount of nodes allowed to spawn</param>
@@ -81,7 +83,8 @@ namespace Astar
 			bool distanceCheckY = true,
 			unsigned int maxPathDepth = 0,
 			bool allowFlight = false,
-			float flightCheckHeight = 1,
+			float inAirHeight = 1,
+			float maxFallHeight = 5,
 			int rayCount = 6,
 			float weightH = 5,
 			unsigned int maxNodeCount = 2000,
@@ -94,7 +97,8 @@ namespace Astar
 			distanceCheckY(distanceCheckY),
 			maxPathDepth(maxPathDepth),
 			allowFlight(allowFlight),
-			flightCheckHeight(flightCheckHeight),
+			inAirHeight(inAirHeight),
+			maxFallHeight(maxFallHeight),
 			rayCount(rayCount),
 			weightH(weightH),
 			maxNodeCount(maxNodeCount),
