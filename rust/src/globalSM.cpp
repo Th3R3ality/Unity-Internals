@@ -2,4 +2,3 @@
 #define GSMDEF(x) x = {};
 
 #include "globalSM.h"
-
