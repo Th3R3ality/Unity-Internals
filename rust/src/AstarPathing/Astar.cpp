@@ -135,23 +135,24 @@ namespace Astar
 						if (!allowFlight)
 						{
 							RaycastHit inAirHitInfo;
-							if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius))
+							bool hitGroundedCheck = UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
+							if (hitGroundedCheck)
+							{
+								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
+									continue;
+								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, inAirHeight + radius)))
+									continue;
+							}
+							else
 							{
 								RaycastHit fallHitInfo;
 								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, fallHitInfo,layerMask, max(0, maxFallHeight), radius))
 									continue;
-								if (fallHitInfo.m_Normal.y < 0.5 || fallHitInfo.m_Point.y < -0.8)
+								if (fallHitInfo.m_Normal.y < 0.6 || fallHitInfo.m_Point.y < -0.8)
 									continue;
 
 								nextInAir = true;
 							}
-							else
-							{
-								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
-									continue;
-							}
-
-
 						}
 						std::shared_ptr<Node> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
