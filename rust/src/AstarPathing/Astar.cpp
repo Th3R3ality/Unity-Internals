@@ -22,7 +22,7 @@ namespace Astar
 				continue;
 			cache::removeDraw(node->id);
 		}
-		for (auto partition : closedNodePartitioner.GetAllPartitions())
+		for (auto partition : closedNodePartitioner->GetAllPartitions())
 		{
 			for (auto node : partition->items)
 			{
@@ -47,7 +47,7 @@ namespace Astar
 		todo = findBestOpenNode;
 
 		this->openNodes.items.clear();
-		closedNodePartitioner.Clear();
+		closedNodePartitioner->Clear();
 		this->foundPath.clear();
 
 		this->start = start;
@@ -91,7 +91,7 @@ namespace Astar
 				break;
 			}
 
-			closedNodePartitioner.Add(currentNode);
+			closedNodePartitioner->Add(currentNode);
 			
 			todo = processFoundNode;
 			if (!processSameStep)
@@ -283,7 +283,7 @@ namespace Astar
 		if (debugLevel < 2)
 			return;
 		
-		for (auto partition : closedNodePartitioner.GetAllPartitions())
+		for (auto partition : closedNodePartitioner->GetAllPartitions())
 			for (auto node : partition->items)
 				if (node != nullptr)
 					cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), partition->color));
@@ -300,7 +300,7 @@ namespace Astar
 
 	bool AstarPath::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
 	{
-		for (auto partition : closedNodePartitioner.GetNearbyPartitions(nodePos))
+		for (auto partition : closedNodePartitioner->GetNearbyPartitions(nodePos))
 		{
 			for (auto node : partition->items)
 			{

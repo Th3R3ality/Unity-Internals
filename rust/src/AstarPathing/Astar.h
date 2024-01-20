@@ -36,7 +36,7 @@ namespace Astar
 		NodeHeap openNodes;
 		//std::vector<std::shared_ptr<Node>> openNodes;
 
-		SpacePartitioner closedNodePartitioner = SpacePartitioner(2);
+		std::unique_ptr<SpacePartitioner> closedNodePartitioner = nullptr;
 		//std::vector<std::shared_ptr<Node>> closedNodes;
 
 		std::vector<std::shared_ptr<Node>> foundPath;
@@ -111,7 +111,9 @@ namespace Astar
 			debugLevel(debugLevel),
 			preferFlight(preferFlight),
 			disableVertical(disableVertical)
-		{}
+		{
+			closedNodePartitioner = std::make_unique<SpacePartitioner>(this->stepLength);
+		}
 
 		void New(v3 start, v3 end);
 		bool Step(bool processSameStep = false);
