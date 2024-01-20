@@ -129,7 +129,7 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 
 
 		if (GetAsyncKeyState('O') & 0x1) {
-			sexbool = !sexbool;
+			//sexbool = !sexbool;
 		}
 		if (sexbool) {
 			Draw::D2::Circle(Vec2(30,30), 10, "fff33399");

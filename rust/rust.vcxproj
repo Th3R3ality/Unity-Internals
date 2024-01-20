@@ -230,6 +230,7 @@
     <ClInclude Include="src\UnityEngine\YieldInstruction\YieldInstruction.hpp" />
     <ClInclude Include="src\Util\color-console.h" />
     <ClInclude Include="src\Util\fast_crc32.h" />
+    <ClInclude Include="src\Util\math_util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AstarPathing\Astar.cpp" />

@@ -267,7 +267,7 @@ namespace Astar
 		if (debugLevel < 1)
 			return;
 
-		////////// visualise path
+		////////// visualize path
 		for (auto node : this->foundPath)
 		{
 			if (node != nullptr)

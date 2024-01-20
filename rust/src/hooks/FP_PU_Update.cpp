@@ -10,6 +10,8 @@
 #include "config.hpp"
 #include "cache.hpp"
 
+#include "Util/math_util.h"
+
 #include "globalSM.h"
 
 #include "UnityEngine/Physics/Physics.hpp"
@@ -23,8 +25,11 @@
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
+bool autoRepath = true;
+bool finishedWalking = false;
+
 constexpr float pathRadius = 0.4f;
-Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 256u, false, .5f, 8.f, 8, 3.f, 4000u, 1, false, false);
+Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 256u, false, .5f, 3.0f, 8, 8.f, 5000u, 1, false, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -76,6 +81,12 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			if (GetAsyncKeyState('P') & 0x1)
 				pathfinder.debugLevel++; pathfinder.debugLevel %= 3;
 
+			if (GetAsyncKeyState('O') & 0x1)
+			{
+				autoRepath = !autoRepath;
+				std::cout << "autoRepath : " << autoRepath << "\n";
+			}
+
 			///////////////////////////////// WALKER
 			static int walkPathIdx = 0;
 			static bool hasWalkPoints = false;
@@ -93,7 +104,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					auto deltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
 					if (deltaPos.y > 0.6) StateMachine::doJump = true;
 					deltaPos.y = 0;
-					auto targetMove = UnityEngine::Vector3::Normalize(deltaPos) * 2.7f;
+					auto targetMove = deltaPos * 5.5f; //2.7 walk bruh
 
 					cache::debugDraw("targetMove", cache::debugLine3d(
 						localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0),
@@ -106,12 +117,33 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 						walkPathIdx++;
 					}
 				}
+				else
+				{
+					finishedWalking = true;
+				}
 			}
 
 			///////////////////////////////// PATH GEN
 			static bool pathing = false;
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
+
+			if (autoRepath && finishedWalking)
+			{
+				std::cout << "repathing\n";
+				float direction = static_cast<float>(fastrand() % 360);
+
+				startPos = walkPoints.at(walkPoints.size() - 1);
+				endPos = Vector3(cosf(direction * M_PI / 180) * 10000, startPos.y, sinf(direction * M_PI / 180) * 10000);
+				
+				pathfinder.New(startPos, endPos);
+
+				newPath = true;
+				pathing = false;
+				hasWalkPoints = false;
+				finishedWalking = false;
+			}
+
 			if (GetAsyncKeyState(VK_XBUTTON1) & 0x1) {
 				auto cameraTransform = mainCam->transform();
 
