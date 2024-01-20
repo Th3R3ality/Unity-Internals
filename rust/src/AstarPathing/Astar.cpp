@@ -77,6 +77,12 @@ namespace Astar
 				break;
 			}
 
+			if (bestFoundNode != nullptr)
+			{
+				if (currentNode->F() < bestFoundNode->F())
+					bestFoundNode = currentNode;
+			}
+
 			float endDist = v3::Distance(currentNode->pos, end);
 			if (((endDist < stepLength + radius) && !UnityEngine::Physics::AutoCast(currentNode->pos, end, layerMask, endDist, radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
@@ -194,7 +200,8 @@ namespace Astar
 			if (idCounter > maxNodeCount)
 			{
 				std::cout << "Astar ; reached maximum node count [/]\n";
-				this->todo = invalid;
+				this->todo = backtracing;
+				currentNode = bestFoundNode;
 			}
 			break;
 		}

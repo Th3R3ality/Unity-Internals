@@ -41,6 +41,7 @@ namespace Astar
 
 		std::vector<std::shared_ptr<Node>> foundPath;
 
+		std::shared_ptr<Node> bestFoundNode = nullptr;
 		std::shared_ptr<Node> currentNode = nullptr;
 		nextAction todo = findBestOpenNode;
 		float yawFix = 0;
@@ -122,6 +123,4 @@ namespace Astar
 		void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
 		void UpdateRender();
 	};
-
-	bool Raycast(v3 from, v3 dir, float maxDist, int layerMask);
 }
