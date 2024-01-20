@@ -44,6 +44,7 @@ namespace Astar
 
 		idCounter = 0;
 		currentNode = nullptr;
+		bestFoundNode = nullptr;
 		todo = findBestOpenNode;
 
 		this->openNodes.items.clear();
@@ -52,7 +53,6 @@ namespace Astar
 
 		this->start = start;
 		this->end = end;
-		
 		this->yawFix = atan2f(end.z - start.z, end.x - start.x);
 
 		this->openNodes.Add( std::make_shared<Node>(std::to_string(idCounter), this->start, this->start, this->end, nullptr, weightH));
@@ -73,11 +73,22 @@ namespace Astar
 		{
 			if ((currentNode = openNodes.RemoveFirst()) == nullptr)
 			{
+				std::cout << "Astar ; Exhausted all open nodes [-]\n";
+				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+				{
+					std::cout << "Astar ; Resorting best found path [+]\n";
+					currentNode = bestFoundNode;
+					todo = backtracing;
+					break;
+				}
+
 				todo = invalid;
 				break;
 			}
 
-			if (bestFoundNode != nullptr)
+			if (bestFoundNode.get() == nullptr)
+				bestFoundNode = currentNode;
+			else
 			{
 				if (currentNode->F() < bestFoundNode->F())
 					bestFoundNode = currentNode;
@@ -147,7 +158,7 @@ namespace Astar
 							bool hitGroundedCheck = UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
 							if (hitGroundedCheck)
 							{
-								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
+								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -1)
 									continue;
 								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, layerMask, max(0, inAirHeight + radius)))
 									continue;
@@ -157,7 +168,9 @@ namespace Astar
 								RaycastHit fallHitInfo;
 								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo,layerMask, max(0, maxFallHeight), radius))
 									continue;
-								if (fallHitInfo.m_Normal.y < 0.6 || fallHitInfo.m_Point.y < -0.8)
+								if (fallHitInfo.m_Normal.y < 0.6 || fallHitInfo.m_Point.y < -1)
+									continue;
+								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, layerMask, max(0, maxFallHeight + radius)))
 									continue;
 								if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius))
 									continue;
@@ -199,16 +212,23 @@ namespace Astar
 
 			if (idCounter > maxNodeCount)
 			{
-				std::cout << "Astar ; reached maximum node count [/]\n";
-				this->todo = backtracing;
-				currentNode = bestFoundNode;
+				std::cout << "Astar ; Reached maximum node count [/]\n";
+				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+				{
+					std::cout << "Astar ; Resorting best found path [+]\n";
+					currentNode = bestFoundNode;
+					todo = backtracing;
+					break;
+				}
+				todo = invalid;
 			}
 			break;
 		}
 		case backtracing:
 			if (currentNode != nullptr)
 			{
-				this->foundPath.push_back(currentNode);
+				if (!currentNode->inAir)
+					foundPath.push_back(currentNode);
 				currentNode = currentNode->parent;
 				UpdateRender();
 				break;
