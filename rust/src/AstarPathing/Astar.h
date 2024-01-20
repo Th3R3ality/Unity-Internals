@@ -10,11 +10,14 @@
 
 #include "Node.h"
 #include "NodeHeap.h"
+#include "SpacePartitioner.h"
 
 using namespace UnityEngine;
 
 namespace Astar
 {
+	using v3 = UnityEngine::Vector3;
+
 	enum nextAction
 	{
 		findBestOpenNode,
@@ -24,7 +27,6 @@ namespace Astar
 		invalid
 	};
 
-	using v3 = UnityEngine::Vector3;
 
 	class AstarPath
 	{
@@ -33,7 +35,10 @@ namespace Astar
 
 		NodeHeap openNodes;
 		//std::vector<std::shared_ptr<Node>> openNodes;
-		std::vector<std::shared_ptr<Node>> closedNodes;
+
+		SpacePartitioner closedNodePartitioner = SpacePartitioner(2);
+		//std::vector<std::shared_ptr<Node>> closedNodes;
+
 		std::vector<std::shared_ptr<Node>> foundPath;
 
 		std::shared_ptr<Node> currentNode = nullptr;

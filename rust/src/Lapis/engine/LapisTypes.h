@@ -61,6 +61,8 @@ namespace Lapis
 		operator DXGI_RGBA();
 
 		static Color hex2rgba(const char* hex);
+
+		static Color Random(float alpha = 1);
 	};
 	//using Color = DXGI_RGBA;
 

@@ -56,6 +56,33 @@ namespace Lapis
 		return res;
 	}
 
+	float RandomColorValue()
+	{
+		static int state = 1; state++;
+		state ^= (state << 1);
+		state ^= (state >> 17);
+		state ^= (state << 5);
+		//std::cout << "RandomColorValue > state : " << state << "\n";
+		return (float)(state % 0xFF) / 0xFF;
+	}
+
+	Color Color::Random(float alpha)
+	{
+		float r = RandomColorValue();
+		float g = RandomColorValue();
+		float b = RandomColorValue();
+
+		constexpr float minCol = (float)0x20 / 0xFF;
+		while (r < minCol && g < minCol && b < minCol)
+		{
+			r = RandomColorValue();
+			g = RandomColorValue();
+			b = RandomColorValue();
+		}
+
+		return Color(r, g, b, alpha);
+	}
+
 	////////////////////// Vec2
 
 	Vec2 Lapis::Vec2::operator-() const

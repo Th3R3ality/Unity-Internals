@@ -22,11 +22,14 @@ namespace Astar
 				continue;
 			cache::removeDraw(node->id);
 		}
-		for (auto node : this->closedNodes)
+		for (auto partition : closedNodePartitioner.GetAllPartitions())
 		{
-			if (node == nullptr)
-				continue;
-			cache::removeDraw(node->id);
+			for (auto node : partition->items)
+			{
+				if (node == nullptr)
+					continue;
+				cache::removeDraw(node->id);
+			}
 		}
 
 		for (auto node : this->foundPath)
@@ -44,7 +47,7 @@ namespace Astar
 		todo = findBestOpenNode;
 
 		this->openNodes.items.clear();
-		this->closedNodes.clear();
+		closedNodePartitioner.Clear();
 		this->foundPath.clear();
 
 		this->start = start;
@@ -82,7 +85,7 @@ namespace Astar
 				break;
 			}
 
-			closedNodes.push_back(currentNode);
+			closedNodePartitioner.Add(currentNode);
 			
 			todo = processFoundNode;
 			if (!processSameStep)
@@ -135,20 +138,22 @@ namespace Astar
 						if (!allowFlight)
 						{
 							RaycastHit inAirHitInfo;
-							bool hitGroundedCheck = UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
+							bool hitGroundedCheck = UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
 							if (hitGroundedCheck)
 							{
 								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
 									continue;
-								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, layerMask, max(0, inAirHeight + radius)))
+								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, layerMask, max(0, inAirHeight + radius)))
 									continue;
 							}
 							else
 							{
 								RaycastHit fallHitInfo;
-								if (!UnityEngine::Physics::AutoCast(pos + step, { 0,-1,0 }, fallHitInfo,layerMask, max(0, maxFallHeight), radius))
+								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo,layerMask, max(0, maxFallHeight), radius))
 									continue;
 								if (fallHitInfo.m_Normal.y < 0.6 || fallHitInfo.m_Point.y < -0.8)
+									continue;
+								if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius))
 									continue;
 
 								nextInAir = true;
@@ -169,9 +174,9 @@ namespace Astar
 			else
 			{
 				RaycastHit hitInfo;
-				if (UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, max(0, maxFallHeight - radius), radius))
+				if (UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, max(0, maxFallHeight), radius))
 				{
-					auto finalPos = Vector3(0, 0.1, 0) + hitInfo.m_Point + hitInfo.m_Normal * radius;
+					auto finalPos = Vector3(0, 0.1f, 0) + hitInfo.m_Point + hitInfo.m_Normal * radius;
 					std::shared_ptr<Node> nearbyOpenNode = nullptr;
 					if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
 					{
@@ -271,9 +276,10 @@ namespace Astar
 		if (debugLevel < 2)
 			return;
 		
-		for (auto node : this->closedNodes)
-			if (node != nullptr)
-				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "00000099"));
+		for (auto partition : closedNodePartitioner.GetAllPartitions())
+			for (auto node : partition->items)
+				if (node != nullptr)
+					cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), partition->color));
 
 		for (auto node : this->openNodes.items)
 			if (node != nullptr)
@@ -287,15 +293,18 @@ namespace Astar
 
 	bool AstarPath::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
 	{
-		for (auto node : this->closedNodes)
+		for (auto partition : closedNodePartitioner.GetNearbyPartitions(nodePos))
 		{
-			if (node == nullptr)
-				continue;
-			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.5 * leniency))
+			for (auto node : partition->items)
 			{
-				if (nearbyClosedNode != nullptr)
-					*nearbyClosedNode = node;
-				return true;
+				if (node == nullptr)
+					continue;
+				if (v3::Distance(node->pos, nodePos) < (stepLength * 0.5 * leniency))
+				{
+					if (nearbyClosedNode != nullptr)
+						*nearbyClosedNode = node;
+					return true;
+				}
 			}
 		}
 		return false;

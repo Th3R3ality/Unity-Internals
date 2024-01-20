@@ -9,6 +9,7 @@
 
 namespace Astar
 {
+
     class NodeHeap
     {
     public:
