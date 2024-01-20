@@ -28,8 +28,8 @@ BuildingManager::Building* selectedBuilding = nullptr;
 bool autoRepath = true;
 bool finishedWalking = false;
 
-constexpr float pathRadius = 0.4f;
-Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 256u, false, .5f, 3.0f, 8, 8.f, 5000u, 1, false, false);
+constexpr float pathRadius = 0.5f;
+Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 512u, false, .5f, 3.5f, 8, 8.f, 5000u, 1, false, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -79,7 +79,9 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 		if (config::PathFinding) {
 			if (GetAsyncKeyState('P') & 0x1)
+			{
 				pathfinder.debugLevel++; pathfinder.debugLevel %= 3;
+			}
 
 			if (GetAsyncKeyState('O') & 0x1)
 			{
@@ -101,10 +103,12 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			{
 				if (walkPathIdx < walkPoints.size())
 				{
-					auto deltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
-					if (deltaPos.y > 0.6) StateMachine::doJump = true;
-					deltaPos.y = 0;
-					auto targetMove = deltaPos * 5.5f; //2.7 walk bruh
+					float distanceToNext = UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
+					auto unitDeltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
+					if (unitDeltaPos.y > 0.6) StateMachine::doJump = true;
+					unitDeltaPos.y = 0;
+
+					auto targetMove = unitDeltaPos * std::clamp(distanceToNext * distanceToNext * 5.5f, 0.f, 5.5f); //2.7 walk bruh
 
 					cache::debugDraw("targetMove", cache::debugLine3d(
 						localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0),
@@ -112,7 +116,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 					movement->TargetMovement(targetMove);
 
-					if (UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0,pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx)) < pathRadius*1.75)
+					if (distanceToNext < pathRadius*1.75)
 					{
 						walkPathIdx++;
 					}
@@ -128,13 +132,13 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
 
-			if (autoRepath && finishedWalking)
+			if (autoRepath && finishedWalking && walkPoints.size() > 0)
 			{
 				std::cout << "repathing\n";
 				float direction = static_cast<float>(fastrand() % 360);
 
 				startPos = walkPoints.at(walkPoints.size() - 1);
-				endPos = Vector3(cosf(direction * M_PI / 180) * 10000, startPos.y, sinf(direction * M_PI / 180) * 10000);
+				endPos = startPos + Vector3(cosf(direction * M_PI / 180) * 200, 0, sinf(direction * M_PI / 180) * 200);
 				
 				pathfinder.New(startPos, endPos);
 
