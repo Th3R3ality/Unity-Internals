@@ -58,6 +58,17 @@ namespace cache
 		}
 	};
 
+	struct debugArrow3d : public debugDrawable
+	{
+		debugArrow3d(Lapis::Vec3 f, Lapis::Vec3 dir, Lapis::Color c, float magnitude = 1)
+		{
+			shape = Lapis::Shape::Line3d;
+			from = f;
+			to = from + dir * magnitude;
+			color = c;
+		}
+	};
+
 	class CachedPlayer {
 	public:
 		BasePlayer* pBasePlayer = nullptr;

@@ -29,7 +29,7 @@ bool autoRepath = true;
 bool finishedWalking = false;
 
 constexpr float pathRadius = 0.5f;
-Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 512u, false, .5f, 3.5f, 8, 8.f, 5000u, 1, false, false);
+Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 512u, false, .5f, 5.f, 8, 8.f, 5000u, 1, false, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -103,20 +103,38 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			{
 				if (walkPathIdx < walkPoints.size())
 				{
-					float distanceToNext = UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
+					float totalDistance = UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
+					float horizontalDistance = UnityEngine::Vector3::Distance2D(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
+					float verticalDistance = std::abs(totalDistance - horizontalDistance);
 					auto unitDeltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
 					if (unitDeltaPos.y > 0.6) StateMachine::doJump = true;
 					unitDeltaPos.y = 0;
+					UnityEngine::Vector3::Normalize(unitDeltaPos);
 
-					auto targetMove = unitDeltaPos * std::clamp(distanceToNext * distanceToNext * 5.5f, 0.f, 5.5f); //2.7 walk bruh
+					float speedModifier = 1;
 
-					cache::debugDraw("targetMove", cache::debugLine3d(
-						localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0),
-						localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0) + targetMove * 0.25, "00ffff"));
+					if (verticalDistance > pathfinder.inAirHeight)
+					{
+						speedModifier = std::clamp(horizontalDistance/2, 0.1f, 1.f);
+					}
+
+					constexpr float moveSpeed = 5.5; // 5.5 run // 2.7 walk
+					auto targetMove = unitDeltaPos * std::clamp(speedModifier * moveSpeed, 0.f, moveSpeed);
+
+					cache::debugDraw("walkTargetPos", cache::debugCube(Lapis::Transform(walkPoints.at(walkPathIdx),0,0.1), "00ffff"));
+
+					cache::debugDraw("walkTargetBeacon", cache::debugArrow3d(
+						walkPoints.at(walkPathIdx),
+						Lapis::Vec3(0,1,0), "00ffff"));
+					
+					//cache::debugDraw("targetMove", cache::debugLine3d(
+					//	localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0),
+					//	localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0) + targetMove * 0.25, "00ffff"));
+
 
 					movement->TargetMovement(targetMove);
 
-					if (distanceToNext < pathRadius*1.75)
+					if (totalDistance < pathRadius)
 					{
 						walkPathIdx++;
 					}
@@ -124,6 +142,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				else
 				{
 					finishedWalking = true;
+					cache::removeDraw("walkTargetPos");
+					cache::removeDraw("walkTargetBeacon");
 				}
 			}
 
