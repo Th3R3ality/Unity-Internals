@@ -117,9 +117,8 @@ namespace UnityEngine
 		}
 		static float Distance2D(Vector3 a, Vector3 b)
 		{
-			Vector3 _a = a; _a.y = 0;
-			Vector3 _b = a; _b.y = 0;
-			return Distance(_a, _b);
+			a.y = 0; b.y = 0;
+			return Distance(a, b);
 		}
 	};
 }
