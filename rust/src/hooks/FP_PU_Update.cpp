@@ -20,12 +20,14 @@
 #include "rust/classes/ClientBuildingManager/ClientBuildingManager.hpp"
 #include "rust/classes/BuildingManager/BuildingManager.hpp"
 #include "rust/classes/BuildingBlock/BuildingBlock.hpp"
+#include "rust/classes/PlayerInput/PlayerInput.hpp"
+#include "rust/classes/PlayerEyes/PlayerEyes.hpp"
 
 #include "AstarPathing/Astar.h"
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
-bool autoRepath = true;
+bool autoRepath = false;
 bool finishedWalking = false;
 
 constexpr float pathRadius = 0.5f;
@@ -86,7 +88,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			if (GetAsyncKeyState('O') & 0x1)
 			{
 				autoRepath = !autoRepath;
+
+				pathfinder.maxPathDepth = autoRepath ? 64u : 512u;
 				std::cout << "autoRepath : " << autoRepath << "\n";
+				std::cout << "maxPathDepth : " << pathfinder.maxPathDepth << "\n";
 			}
 
 			///////////////////////////////// WALKER
@@ -94,6 +99,9 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool hasWalkPoints = false;
 			static std::vector<UnityEngine::Vector3> walkPoints;
 			static BaseMovement* movement = localPlayer->movement();
+			auto eyes = localPlayer->eyes();
+			auto input = localPlayer->input();
+
 			if (!hasWalkPoints)
 			{
 				walkPathIdx = 0;
@@ -107,30 +115,44 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					float horizontalDistance = UnityEngine::Vector3::Distance2D(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
 					float verticalDistance = std::abs(totalDistance - horizontalDistance);
 					auto unitDeltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
-					if (unitDeltaPos.y > 0.6) StateMachine::doJump = true;
+					if (unitDeltaPos.y > 0.7) StateMachine::doJump = true;
+					
 					unitDeltaPos.y = 0;
 					UnityEngine::Vector3::Normalize(unitDeltaPos);
-
 					float speedModifier = 1;
 
 					if (verticalDistance > pathfinder.inAirHeight)
 					{
-						speedModifier = std::clamp(horizontalDistance/2, 0.1f, 1.f);
+						speedModifier = std::clamp(horizontalDistance, 0.1f, 1.f);
 					}
 
 					constexpr float moveSpeed = 5.5; // 5.5 run // 2.7 walk
 					auto targetMove = unitDeltaPos * std::clamp(speedModifier * moveSpeed, 0.f, moveSpeed);
 
-					cache::debugDraw("walkTargetPos", cache::debugCube(Lapis::Transform(walkPoints.at(walkPathIdx),0,0.1), "00ffff"));
+					cache::debugDraw("walkTargetPos", cache::debugCube(Lapis::Transform(Lapis::Vec3(walkPoints.at(walkPathIdx)) + Lapis::Vec3(0, 0.3, 0),0,0.05), "00ffff"));
 
 					cache::debugDraw("walkTargetBeacon", cache::debugArrow3d(
 						walkPoints.at(walkPathIdx),
-						Lapis::Vec3(0,1,0), "00ffff"));
+						Lapis::Vec3(0,0.3,0), "00ffff"));
 					
-					//cache::debugDraw("targetMove", cache::debugLine3d(
-					//	localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0),
-					//	localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0) + targetMove * 0.25, "00ffff"));
+					cache::debugDraw("targetMove", cache::debugLine3d(
+						localPlayer->transform()->position(),
+						localPlayer->transform()->position() + UnityEngine::Vector3::Normalize(targetMove) * speedModifier, "#ee4030"));
 
+					cache::debugDraw("targetMoveBall", cache::debugIcosahedron(Lapis::Transform(
+						localPlayer->transform()->position() + UnityEngine::Vector3::Normalize(targetMove) * speedModifier, 0, 0.05f), "#ee403099"));
+
+					auto headPos = localPlayer->transform()->position() + UnityEngine::Vector3(0, 1.8f, 0);
+					auto lookPos = localPlayer->transform()->position() + UnityEngine::Vector3::Normalize(targetMove) * speedModifier + UnityEngine::Vector3(0, 0.4f, 0);
+					auto deltaPos = UnityEngine::Vector3::Normalize(lookPos - headPos);
+					constexpr float rad2deg = static_cast<float>(180.f / M_PI);
+					float yaw = std::clamp(atan2(deltaPos.x, deltaPos.z) * rad2deg, -360.f, 360.f);
+					float pitch = (asin(-deltaPos.y) * rad2deg);
+
+					//auto oldAngles = input->bodyAngles();
+					input->bodyAngles(UnityEngine::Vector3(pitch, yaw, 0));
+					eyes->bodyRotation(UnityEngine::Vector3(pitch, yaw, 0));
+					
 
 					movement->TargetMovement(targetMove);
 
@@ -144,6 +166,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					finishedWalking = true;
 					cache::removeDraw("walkTargetPos");
 					cache::removeDraw("walkTargetBeacon");
+					cache::removeDraw("targetMove");
+					cache::removeDraw("targetMoveBall");
 				}
 			}
 

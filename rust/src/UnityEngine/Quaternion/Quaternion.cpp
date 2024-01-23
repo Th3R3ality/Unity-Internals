@@ -10,5 +10,14 @@ namespace UnityEngine
 		return fn();
 	}
 
+	Quaternion Quaternion::Euler(Vector3 euler)
+	{
+		static auto fn = (Quaternion(*)(Vector3))Il2cppLib::method_from_signature("UnityEngine::Quaternion.Euler(Vector3)");
+		if (fn)
+			return fn(euler);
+
+		return {};
+	}
+
 
 }

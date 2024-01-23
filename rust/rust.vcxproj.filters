@@ -384,6 +384,12 @@
     <ClInclude Include="src\Util\math_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\rust\classes\PlayerInput\PlayerInput.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\rust\classes\PlayerEyes\PlayerEyes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -687,6 +693,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\AstarPathing\SpacePartitioner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\PlayerInput\PlayerInput.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\rust\classes\PlayerEyes\PlayerEyes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

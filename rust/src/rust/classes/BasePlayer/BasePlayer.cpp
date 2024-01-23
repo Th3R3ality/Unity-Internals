@@ -42,6 +42,24 @@ BaseMovement* BasePlayer::movement()
 	return nullptr;
 }
 
+PlayerEyes* BasePlayer::eyes()
+{
+	static auto offset = Il2cppLib::field_offset_from_signature("BasePlayer.eyes");
+	if (offset)
+		return *(PlayerEyes**)((std::uintptr_t)this + offset);
+
+	return nullptr;
+}
+
+PlayerInput* BasePlayer::input()
+{
+	static auto offset = Il2cppLib::field_offset_from_signature("BasePlayer.input");
+	if (offset)
+		return *(PlayerInput**)((std::uintptr_t)this + offset);
+
+	return nullptr;
+}
+
 BufferList<BasePlayer*>* BasePlayer::visiblePlayerList()
 {
 	static auto fn = (BufferList<BasePlayer*>*(*)())Il2cppLib::method_from_signature("BasePlayer.get_VisiblePlayerList()");

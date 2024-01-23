@@ -135,6 +135,8 @@
     <ClInclude Include="src\rust\classes\ItemDefinition\ItemDefinition.hpp" />
     <ClInclude Include="src\rust\classes\ListDictionary\ListDictionary.hpp" />
     <ClInclude Include="src\rust\classes\ListHashSet\ListHashSet.hpp" />
+    <ClInclude Include="src\rust\classes\PlayerEyes\PlayerEyes.hpp" />
+    <ClInclude Include="src\rust\classes\PlayerInput\PlayerInput.hpp" />
     <ClInclude Include="src\rust\classes\Projectile\Projectile.hpp" />
     <ClInclude Include="src\rust\classes\StabilityEntity\StabilityEntity.hpp" />
     <ClInclude Include="src\global.h" />
@@ -253,6 +255,8 @@
     <ClCompile Include="src\rust\classes\ClientBuildingManager\ClientBuildingManager.cpp" />
     <ClCompile Include="src\rust\classes\DecayEntity\DecayEntity.cpp" />
     <ClCompile Include="src\rust\classes\Door\Door.cpp" />
+    <ClCompile Include="src\rust\classes\PlayerEyes\PlayerEyes.cpp" />
+    <ClCompile Include="src\rust\classes\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="src\rust\classes\Projectile\Projectile.cpp" />
     <ClCompile Include="src\rust\Render\Building.cpp" />
     <ClCompile Include="src\rust\Render\Pathing.cpp" />

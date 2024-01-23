@@ -1,13 +1,15 @@
 #pragma once
+#include "mscorlib/System/String/String.hpp"
+#include "mscorlib/System/Array/Array.hpp"
+#include "mscorlib/System/Byte/Byte.hpp"
+using namespace mscorlib;
+
 #include "rust/classes/BaseCombatEntity/BaseCombatEntity.hpp"
 #include "rust/classes/PlayerModel/PlayerModel.hpp"
 #include "rust/classes/BaseMovement/BaseMovement.hpp"
 
-#include "mscorlib/System/String/String.hpp"
-#include "mscorlib/System/Array/Array.hpp"
-#include "mscorlib/System/Byte/Byte.hpp"
-
-using namespace mscorlib;
+class PlayerEyes;
+class PlayerInput;
 
 class BasePlayer : public BaseCombatEntity
 {
@@ -28,6 +30,8 @@ public:
 
 	PlayerModel* playerModel();
 	BaseMovement* movement();
+	PlayerEyes* eyes();
+	PlayerInput* input();
 
 	static BufferList<BasePlayer*>* visiblePlayerList();
 
