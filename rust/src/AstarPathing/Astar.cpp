@@ -151,37 +151,36 @@ namespace Astar
 						if (UnityEngine::Physics::AutoCast(pos, dir, layerMask, stepLength, radius))
 							continue;
 
-						bool nextInAir = false;
-						if (!allowFlight)
-						{
-							RaycastHit inAirHitInfo;
-							bool hitGroundedCheck = UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
-							if (hitGroundedCheck)
-							{
-								if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
-									continue;
-								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight + radius)))
-									continue;
-								if (inAirHitInfo.m_Normal.y < 0.5)
-									continue;
-							}
-							else
-							{
-								RaycastHit fallHitInfo;
-								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight), radius))
-									continue;
-								if (fallHitInfo.m_Normal.y < 0.5 || fallHitInfo.m_Point.y < -0.8)
-									continue;
-								if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight + radius)))
-									continue;
-								if (fallHitInfo.m_Normal.y < 0.6)
-									continue;
-								if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius))
-									continue;
 
-								nextInAir = true;
-							}
+						bool nextInAir = false;
+						RaycastHit inAirHitInfo;
+						bool hitGroundedCheck = UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
+						if (hitGroundedCheck)
+						{
+							if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
+								continue;
+							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight + radius)))
+								continue;
+							if (inAirHitInfo.m_Normal.y < 0.5)
+								continue;
 						}
+						else
+						{
+							RaycastHit fallHitInfo;
+							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight), radius))
+								continue;
+							if (fallHitInfo.m_Normal.y < 0.5 || fallHitInfo.m_Point.y < -0.8)
+								continue;
+							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight + radius)))
+								continue;
+							if (fallHitInfo.m_Normal.y < 0.6)
+								continue;
+							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius))
+								continue;
+
+							nextInAir = true;
+						}
+						
 						std::shared_ptr<Node> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
 						{

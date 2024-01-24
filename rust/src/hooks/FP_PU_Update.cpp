@@ -30,8 +30,7 @@ BuildingManager::Building* selectedBuilding = nullptr;
 bool autoRepath = false;
 bool finishedWalking = false;
 
-constexpr float pathRadius = 0.5f;
-Astar::AstarPath pathfinder(1.f, pathRadius, -5, true, 512u, false, .5f, 5.f, 8, 8.f, 5000u, 1, false, false);
+Astar::AstarPath pathfinder(1.f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -95,26 +94,26 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			}
 
 			///////////////////////////////// WALKER
-			static int walkPathIdx = 0;
-			static bool hasWalkPoints = false;
-			static std::vector<UnityEngine::Vector3> walkPoints;
+			static int walkNodeIdx = 0;
+			static bool hasWalkNodes = false;
+			static std::vector<UnityEngine::Vector3> walkNodes;
 			static BaseMovement* movement = localPlayer->movement();
 			auto eyes = localPlayer->eyes();
 			auto input = localPlayer->input();
 
-			if (!hasWalkPoints)
+			if (!hasWalkNodes)
 			{
-				walkPathIdx = 0;
-				hasWalkPoints = pathfinder.GrabPath(walkPoints);
+				walkNodeIdx = 0;
+				hasWalkNodes = pathfinder.GrabPath(walkNodes);
 			}
 			else
 			{
-				if (walkPathIdx < walkPoints.size())
+				if (walkNodeIdx < walkNodes.size())
 				{
-					float totalDistance = UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
-					float horizontalDistance = UnityEngine::Vector3::Distance2D(localPlayer->transform()->position() + Vector3(0, pathRadius + 0.1f, 0), walkPoints.at(walkPathIdx));
+					float totalDistance = UnityEngine::Vector3::Distance(localPlayer->transform()->position() + Vector3(0, pathfinder.radius + 0.1f, 0), walkNodes.at(walkNodeIdx));
+					float horizontalDistance = UnityEngine::Vector3::Distance2D(localPlayer->transform()->position() + Vector3(0, pathfinder.radius + 0.1f, 0), walkNodes.at(walkNodeIdx));
 					float verticalDistance = std::abs(totalDistance - horizontalDistance);
-					auto unitDeltaPos = UnityEngine::Vector3::Normalize(walkPoints.at(walkPathIdx) - (localPlayer->transform()->position() + Vector3(0,pathfinder.radius + 0.1f,0)));
+					auto unitDeltaPos = UnityEngine::Vector3::Normalize(walkNodes.at(walkNodeIdx) - (localPlayer->transform()->position() + Vector3(0, pathfinder.radius + 0.1f ,0)));
 					if (unitDeltaPos.y > 0.7) StateMachine::doJump = true;
 					
 					unitDeltaPos.y = 0;
@@ -129,10 +128,10 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					constexpr float moveSpeed = 5.5; // 5.5 run // 2.7 walk
 					auto targetMove = unitDeltaPos * std::clamp(speedModifier * moveSpeed, 0.f, moveSpeed);
 
-					cache::debugDraw("walkTargetPos", cache::debugCube(Lapis::Transform(Lapis::Vec3(walkPoints.at(walkPathIdx)) + Lapis::Vec3(0, 0.3, 0),0,0.05), "00ffff"));
+					cache::debugDraw("walkTargetPos", cache::debugCube(Lapis::Transform(Lapis::Vec3(walkNodes.at(walkNodeIdx)) + Lapis::Vec3(0, 0.3, 0),0,0.05), "00ffff"));
 
 					cache::debugDraw("walkTargetBeacon", cache::debugArrow3d(
-						walkPoints.at(walkPathIdx),
+						walkNodes.at(walkNodeIdx),
 						Lapis::Vec3(0,0.3,0), "00ffff"));
 					
 					cache::debugDraw("targetMove", cache::debugLine3d(
@@ -156,9 +155,9 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 
 					movement->TargetMovement(targetMove);
 
-					if (totalDistance < pathRadius)
+					if (totalDistance < pathfinder.radius)
 					{
-						walkPathIdx++;
+						walkNodeIdx++;
 					}
 				}
 				else
@@ -176,19 +175,19 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			static bool newPath = true;
 			static UnityEngine::Vector3 startPos, endPos;
 
-			if (autoRepath && finishedWalking && walkPoints.size() > 0)
+			if (autoRepath && finishedWalking && walkNodes.size() > 0)
 			{
 				std::cout << "repathing\n";
 				float direction = static_cast<float>(fastrand() % 360);
 
-				startPos = walkPoints.at(walkPoints.size() - 1);
+				startPos = walkNodes.at(walkNodes.size() - 1);
 				endPos = startPos + Vector3(cosf(direction * M_PI / 180) * 200, 0, sinf(direction * M_PI / 180) * 200);
 				
 				pathfinder.New(startPos, endPos);
 
 				newPath = true;
 				pathing = false;
-				hasWalkPoints = false;
+				hasWalkNodes = false;
 				finishedWalking = false;
 			}
 
@@ -196,18 +195,18 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
+				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathfinder.radius))
 				{
-					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathRadius;
-					hitPoint -= mainCam->transform()->forward() * (pathRadius+0.1f);
+					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathfinder.radius;
+					hitPoint -= mainCam->transform()->forward() * (pathfinder.radius +0.1f);
 					startPos = hitPoint;
 					std::cout << "start >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathRadius) }, "00ff0066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathfinder.radius) }, "00ff0066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
 					pathing = false;
-					hasWalkPoints = false;
+					hasWalkNodes = false;
 				}
 			}
 
@@ -216,21 +215,21 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				auto cameraTransform = mainCam->transform();
 
 				UnityEngine::RaycastHit hitInfo;
-				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathRadius))
+				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathfinder.radius))
 				{
-					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathRadius;
+					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathfinder.radius;
 					hitPoint -= mainCam->transform()->forward() * 0.1f;
 
-					startPos = localPlayer->transform()->position() + Vector3(0, (pathRadius + 0.1f), 0);
+					startPos = localPlayer->transform()->position() + Vector3(0, (pathfinder.radius + 0.1f), 0);
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathRadius) }, "00ff0066"));
-					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathRadius) }, "ff000066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathfinder.radius) }, "00ff0066"));
+					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathfinder.radius) }, "ff000066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
 					pathing = false;
-					hasWalkPoints = false;
+					hasWalkNodes = false;
 				}
 			}
 
