@@ -148,8 +148,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					float yaw = std::clamp(atan2(deltaPos.x, deltaPos.z) * rad2deg, -360.f, 360.f);
 					float pitch = (asin(-deltaPos.y) * rad2deg);
 
-					//auto oldAngles = input->bodyAngles();
-					input->bodyAngles(UnityEngine::Vector3(pitch, yaw, 0));
+					auto oldAngles = input->bodyAngles();
+					//input->bodyAngles(UnityEngine::Vector3(oldAngles.x, yaw, 0));
 					eyes->bodyRotation(UnityEngine::Vector3(pitch, yaw, 0));
 					
 
