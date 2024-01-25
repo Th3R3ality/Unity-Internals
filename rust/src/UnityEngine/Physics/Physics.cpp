@@ -3,23 +3,29 @@
 #include "Il2cppLib.h"
 
 #include <iostream>
+#include <format>
 
 namespace UnityEngine
 {
-	bool Physics::AutoCast(Vector3 origin, Vector3 direction, int layerMask, float maxDistance, float radius, Vector3 capsuleTop)
+	bool Physics::AutoCast(Vector3 origin, Vector3 direction, int layerMask, float maxDistance, float radius, Vector3 capsuleTopOffset)
 	{
 		RaycastHit hitInfo;
-		return Physics::AutoCast(origin, direction, hitInfo, layerMask, maxDistance, radius, capsuleTop);
+		return Physics::AutoCast(origin, direction, hitInfo, layerMask, maxDistance, radius, capsuleTopOffset);
 	}
 
-	bool Physics::AutoCast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, int layerMask, float maxDistance, float radius, Vector3 capsuleTop)
+	bool Physics::AutoCast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, int layerMask, float maxDistance, float radius, Vector3 capsuleTopOffset)
 	{
 		if (radius == 0)
+		{
 			return Physics::Raycast(origin, direction, hitInfo, maxDistance, layerMask);
-		if (capsuleTop == 0)
+		}
+		if (capsuleTopOffset == Vector3(0.f))
+		{
 			return Physics::SphereCast(origin, radius, direction, hitInfo, maxDistance, layerMask);
+		}
 
-		return Physics::CapsuleCast(origin, capsuleTop, radius, direction, hitInfo, maxDistance, layerMask);
+		std::cout << origin << " : " << origin + capsuleTopOffset << "\n";
+		return Physics::CapsuleCast(origin, capsuleTopOffset, radius, direction, hitInfo, maxDistance, layerMask);
 	}
 	bool UnityEngine::Physics::Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
 	{
@@ -81,7 +87,7 @@ namespace UnityEngine
 	}
 	bool UnityEngine::Physics::CapsuleCast(Vector3 point1, Vector3 point2, float radius, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
 	{
-		static auto fn = (bool(*)(Vector3, Vector3, float, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.SphereCast(Vector3, float, Vector3, UnityEngine.RaycastHit&, float, int)");
+		static auto fn = (bool(*)(Vector3, Vector3, float, Vector3, RaycastHit&, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.CapsuleCast(Vector3, Vector3, float, Vector3, UnityEngine.RaycastHit&, float, int)");
 		if (fn)
 		{
 			return fn(point1, point2, radius, direction, hitInfo, maxDistance, layerMask);
