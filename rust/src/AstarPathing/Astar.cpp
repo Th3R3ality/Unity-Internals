@@ -133,7 +133,7 @@ namespace Astar
 						auto finalPos = pos + step;
 
 						std::shared_ptr<Node> nearbyClosedNode = nullptr;
-						if (IsClosedNode(pos + step, segmentDistance, &nearbyClosedNode))
+						if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
 						{
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
@@ -179,7 +179,7 @@ namespace Astar
 								continue;
 							if (fallHitInfo.m_Normal.y < 0.6)
 								continue;
-							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius, segmentDistance))
+							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius, 1))
 								continue;
 
 							nextInAir = true;
