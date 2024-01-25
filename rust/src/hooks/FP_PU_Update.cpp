@@ -82,6 +82,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 			if (GetAsyncKeyState('P') & 0x1)
 			{
 				pathfinder.debugLevel++; pathfinder.debugLevel %= 3;
+				std::cout << "debugLevel : " << pathfinder.debugLevel << "\n";
 			}
 
 			if (GetAsyncKeyState('O') & 0x1)

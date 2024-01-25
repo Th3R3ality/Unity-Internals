@@ -5,12 +5,11 @@
 #include <iostream>
 #include <format>
 #include <algorithm>
+#include <array>
 
 #include "Lapis/engine/LapisEngine.h"
 
 #include "UnityEngine/Physics/Physics.hpp"
-#include <array>
-
 
 namespace Astar
 {
@@ -119,7 +118,6 @@ namespace Astar
 				{
 					for (int vertical = 0; vertical < (disableVertical ? 1 : 5); vertical++)
 					{
-
 						float pitch = (disableVertical ? 0 : -(segmentThetaVertical*2) + segmentThetaVertical * vertical);
 
 						auto yaw = (segmentTheta * i) + yawFix;
@@ -127,8 +125,8 @@ namespace Astar
 						v3 dir = v3(
 							cosf(yaw) * cosf(pitch),
 							sinf(pitch),
-							sinf(yaw) * cosf(pitch));
-
+							sinf(yaw) * cosf(pitch)
+						);
 						auto step = dir * stepLength;
 						auto finalPos = pos + step;
 
@@ -138,7 +136,7 @@ namespace Astar
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
 								float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
-								if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, this->radius))
+								if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, radius, capsuleTopOffset))
 								{
 									currentNode->parent = nearbyClosedNode;
 									currentNode->depth = nearbyClosedNode->depth + 1;
@@ -148,9 +146,13 @@ namespace Astar
 							continue;
 						}
 
-						if (UnityEngine::Physics::AutoCast(pos, dir, layerMask, stepLength, radius))
-							continue;
-
+						{
+							RaycastHit hitInfo;
+							if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleTopOffset))
+							{
+								continue;
+							}
+						}
 
 						bool nextInAir = false;
 						RaycastHit inAirHitInfo;
@@ -180,7 +182,7 @@ namespace Astar
 
 							nextInAir = true;
 						}
-						
+
 						std::shared_ptr<Node> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
 						{

@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include <functional>
+#include <iostream>
 
 #include "UnityEngine/Vector3/Vector3.hpp"
 #include "UnityEngine/RaycastHit/RaycastHit.hpp"

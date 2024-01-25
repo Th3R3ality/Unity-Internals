@@ -23,9 +23,7 @@ namespace UnityEngine
 		{
 			return Physics::SphereCast(origin, radius, direction, hitInfo, maxDistance, layerMask);
 		}
-
-		std::cout << origin << " : " << origin + capsuleTopOffset << "\n";
-		return Physics::CapsuleCast(origin, capsuleTopOffset, radius, direction, hitInfo, maxDistance, layerMask);
+		return Physics::CapsuleCast(origin, origin + capsuleTopOffset, radius, direction, hitInfo, maxDistance, layerMask);
 	}
 	bool UnityEngine::Physics::Raycast(Vector3 origin, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask)
 	{
