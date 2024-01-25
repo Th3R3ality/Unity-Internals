@@ -135,7 +135,7 @@ namespace Astar
 						std::shared_ptr<Node> nearbyClosedNode = nullptr;
 						if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
 						{
-							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
+							if (currentNode->parent != nullptr && !nearbyClosedNode->inAir && nearbyClosedNode->G < currentNode->parent->G)
 							{
 								float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
 								if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, radius, capsuleTopOffset))
@@ -161,11 +161,11 @@ namespace Astar
 						bool hitGroundedCheck = UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight), radius);
 						if (hitGroundedCheck)
 						{
-							if (inAirHitInfo.m_Normal.y < 0.4 || inAirHitInfo.m_Point.y < -0.8)
+							if (inAirHitInfo.m_Normal.y < 0.3 || inAirHitInfo.m_Point.y < -0.8)
 								continue;
-							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, max(0, inAirHeight + radius)))
+							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, inAirHitInfo, layerMask, inAirHitInfo.m_Distance + radius * 1.5))
 								continue;
-							if (inAirHitInfo.m_Normal.y < 0.5)
+							if (inAirHitInfo.m_Normal.y < 0.3)
 								continue;
 						}
 						else
@@ -173,11 +173,11 @@ namespace Astar
 							RaycastHit fallHitInfo;
 							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight), radius))
 								continue;
-							if (fallHitInfo.m_Normal.y < 0.5 || fallHitInfo.m_Point.y < -0.8)
+							if (fallHitInfo.m_Normal.y < 0.4 || fallHitInfo.m_Point.y < -0.8)
 								continue;
-							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, max(0, maxFallHeight + radius)))
+							if (!UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, fallHitInfo, layerMask, fallHitInfo.m_Distance + radius * 1.5))
 								continue;
-							if (fallHitInfo.m_Normal.y < 0.6)
+							if (fallHitInfo.m_Normal.y < 0.4)
 								continue;
 							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius, 1))
 								continue;
@@ -297,7 +297,7 @@ namespace Astar
 		////////// visualize path
 		for (auto node : this->foundPath)
 		{
-			if (node != nullptr)
+			if (node != nullptr && node->inAir != true)
 			{
 				if (node->parent != nullptr)
 				{
@@ -307,18 +307,13 @@ namespace Astar
 						if (node->parent->parent != nullptr)
 						{
 							parentPos = node->parent->parent->pos;
-							cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
 						}
 					}
-					else
-					{
-						cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
-					}
+					cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, parentPos, "00aa00"));
 				}
 				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.04f), "00aa0099"));
 			}
 		}
-		
 
 		////////// Verbose debugging
 		if (debugLevel < 2)
