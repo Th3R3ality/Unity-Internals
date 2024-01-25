@@ -113,7 +113,9 @@ namespace Astar
 			if (!currentNode->inAir)
 			{
 				const float segmentTheta = (float)(M_PI * 2) / rayCount;
+				const float segmentDistance = sinf(segmentTheta / 2) * 2;
 				constexpr float segmentThetaVertical = (float)(M_PI * 2) / 24;
+
 				for (int i = 0; i < rayCount; i++)
 				{
 					for (int vertical = 0; vertical < (disableVertical ? 1 : 5); vertical++)
@@ -131,7 +133,7 @@ namespace Astar
 						auto finalPos = pos + step;
 
 						std::shared_ptr<Node> nearbyClosedNode = nullptr;
-						if (IsClosedNode(pos + step, 1, &nearbyClosedNode))
+						if (IsClosedNode(pos + step, segmentDistance, &nearbyClosedNode))
 						{
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
@@ -177,14 +179,14 @@ namespace Astar
 								continue;
 							if (fallHitInfo.m_Normal.y < 0.6)
 								continue;
-							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius))
+							if (IsClosedNode(fallHitInfo.m_Point + fallHitInfo.m_Normal * radius, segmentDistance))
 								continue;
 
 							nextInAir = true;
 						}
 
 						std::shared_ptr<Node> nearbyOpenNode = nullptr;
-						if (!IsOpenNode(finalPos, 1, &nearbyOpenNode))
+						if (!IsOpenNode(finalPos, segmentDistance, &nearbyOpenNode))
 						{
 							auto newNode = std::make_shared<Node>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH);
 							newNode->inAir = nextInAir;
@@ -298,7 +300,21 @@ namespace Astar
 			if (node != nullptr)
 			{
 				if (node->parent != nullptr)
-					cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
+				{
+					auto parentPos = node->parent->pos;
+					if (node->parent->inAir)
+					{
+						if (node->parent->parent != nullptr)
+						{
+							parentPos = node->parent->parent->pos;
+							cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
+						}
+					}
+					else
+					{
+						cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
+					}
+				}
 				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.04f), "00aa0099"));
 			}
 		}
@@ -331,7 +347,7 @@ namespace Astar
 			{
 				if (node == nullptr)
 					continue;
-				if (v3::Distance(node->pos, nodePos) < (stepLength * 0.5 * leniency))
+				if (v3::Distance(node->pos, nodePos) < (stepLength * 0.8 * leniency))
 				{
 					if (nearbyClosedNode != nullptr)
 						*nearbyClosedNode = node;
@@ -348,7 +364,7 @@ namespace Astar
 		{
 			if (node == nullptr)
 				continue;
-			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.5 * leniency))
+			if (v3::Distance(node->pos, nodePos) < (stepLength * 0.95 * leniency))
 			{
 				if (nearbyOpenNode != nullptr)
 					*nearbyOpenNode = node;
