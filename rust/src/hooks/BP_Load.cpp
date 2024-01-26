@@ -83,15 +83,17 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	std::string modelPaths[] = {
 		"C:\\Users\\reality\\Desktop\\peter.bundle",
 		"C:\\Users\\reality\\Desktop\\monke.bundle",
-		"C:\\Users\\reality\\Desktop\\modelchange.bundle"
+		"C:\\Users\\reality\\Desktop\\modelchange.bundle",
+		"C:\\Users\\reality\\Desktop\\gooning.bundle"
 	};
 	std::string prefabPaths[] = {
 		"assets\\peter\\peter.prefab",
 		"assets\\rust monke.prefab",
-		"assets\\cxtgirl\\catgxrl_modelchange.prefab"
+		"assets\\cxtgirl\\catgxrl_modelchange.prefab",
+		"assets\\gooning.prefab"
 	};
 
-	int model = 0;
+	int model = 3;
 
 	static auto bundle = cheat::load_assetbundle(modelPaths[model]);
 	static UnityEngine::Object* monkePrefab = nullptr;
