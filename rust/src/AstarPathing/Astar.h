@@ -32,27 +32,9 @@ namespace Astar
 	class AstarPath
 	{
 	public:
-		v3 start, end;
-
-		NodeHeap openNodes;
-		//std::vector<std::shared_ptr<Node>> openNodes;
-
-		std::unique_ptr<SpacePartitioner> closedNodePartitioner = nullptr;
-		//std::vector<std::shared_ptr<Node>> closedNodes;
-
-		std::vector<std::shared_ptr<Node>> foundPath;
-
-		std::shared_ptr<Node> bestFoundNode = nullptr;
-		std::shared_ptr<Node> currentNode = nullptr;
-		nextAction todo = findBestOpenNode;
-		float yawFix = 0;
-
-		unsigned int idCounter = 0;
-
-		
 		// settings
 		float stepLength = 1;
-		float inAirHeight = 1;
+		float groundedHeight = 1;
 		float maxFallHeight = 5;
 		int rayCount = 6;
 		float weightH = 5;
@@ -75,7 +57,7 @@ namespace Astar
 		/// <param name="layerMask"> - what layers to check collisions on</param>
 		/// <param name="distanceCheckY"> - whether or not to account for y in distance checks (useful for goto: x,z)</param>
 		/// <param name="maxPathDepth"> - max amount of nodes away from start (if reached path is set to complete)</param>
-		/// <param name="inAirHeight"> - max height the path can go above the ground before being marked inAir</param>
+		/// <param name="groundedHeight"> - max height the path can go above the ground before being marked inAir</param>
 		/// <param name="maxFallHeight"> - max height the path is allowed to go down if in air</param>
 		/// <param name="rayCount"> - how many raycasts each node should send (horizontal count, vertical rays multiply this by 3)</param>
 		/// <param name="weightH"> - weight that gets multiplied on the H value (distance from start), higher means more commitment to a path</param>
@@ -89,7 +71,7 @@ namespace Astar
 			int layerMask = -5,
 			bool distanceCheckY = true,
 			unsigned int maxPathDepth = 0,
-			float inAirHeight = 1,
+			float groundedHeight = 1,
 			float maxFallHeight = 5,
 			int rayCount = 8,
 			float weightH = 5,
@@ -102,7 +84,7 @@ namespace Astar
 			layerMask(layerMask),
 			distanceCheckY(distanceCheckY),
 			maxPathDepth(maxPathDepth),
-			inAirHeight(inAirHeight),
+			groundedHeight(groundedHeight),
 			maxFallHeight(maxFallHeight),
 			rayCount(rayCount),
 			weightH(weightH),
@@ -119,9 +101,31 @@ namespace Astar
 		bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyClosedNode = nullptr);
 		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyOpenNode = nullptr);
 		
+
 		bool GrabPath(std::vector<v3>& points);
 
 		void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
 		void UpdateRender();
+
+	private:
+
+		v3 start, end;
+
+		NodeHeap openNodes;
+		//std::vector<std::shared_ptr<Node>> openNodes;
+
+		std::unique_ptr<SpacePartitioner> closedNodePartitioner = nullptr;
+		//std::vector<std::shared_ptr<Node>> closedNodes;
+
+		std::vector<std::shared_ptr<Node>> foundPath;
+
+		std::shared_ptr<Node> bestFoundNode = nullptr;
+		std::shared_ptr<Node> currentNode = nullptr;
+		nextAction todo = findBestOpenNode;
+		float yawFix = 0;
+
+		unsigned int idCounter = 0;
+
+		bool Grounded(v3 pos, float length, RaycastHit& hitInfo);
 	};
 }

@@ -30,7 +30,7 @@ BuildingManager::Building* selectedBuilding = nullptr;
 bool autoRepath = false;
 bool finishedWalking = false;
 
-Astar::AstarPath pathfinder(1.f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
+Astar::AstarPath pathfinder(1.5f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -121,7 +121,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					UnityEngine::Vector3::Normalize(unitDeltaPos);
 					float speedModifier = 1;
 
-					if (verticalDistance > pathfinder.inAirHeight)
+					if (verticalDistance > pathfinder.groundedHeight)
 					{
 						speedModifier = std::clamp(horizontalDistance, 0.1f, 1.f);
 					}
