@@ -3,11 +3,11 @@
 #include <algorithm>
 #include <concepts>
 
-#include "Node.h"
+#include "PathNode.h"
 
 //#define func std::cout << __func__ << "\n"
 
-namespace Astar
+namespace RustBot
 {
 
     class NodeHeap

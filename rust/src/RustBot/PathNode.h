@@ -4,7 +4,7 @@
 #include <string>
 #include <format>
 
-namespace Astar
+namespace RustBot
 {
 	using v3 = UnityEngine::Vector3;
 

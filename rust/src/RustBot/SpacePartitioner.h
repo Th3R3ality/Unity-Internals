@@ -3,11 +3,11 @@
 #include <memory>
 #include <vector>
 
-#include "Node.h"
+#include "PathNode.h"
 #include "Lapis/engine/LapisTypes.h"
 #include "UnityEngine/Vector3/Vector3.hpp"
 
-namespace Astar
+namespace RustBot
 {
 	using Color = Lapis::Color;
 	using v_3 = UnityEngine::Vector3;

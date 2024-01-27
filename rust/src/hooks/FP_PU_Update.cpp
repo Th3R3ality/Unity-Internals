@@ -23,14 +23,14 @@
 #include "rust/classes/PlayerInput/PlayerInput.hpp"
 #include "rust/classes/PlayerEyes/PlayerEyes.hpp"
 
-#include "AstarPathing/Astar.h"
+#include "RustBot/Pathing.h"
 
 BuildingManager::Building* selectedBuilding = nullptr;
 
 bool autoRepath = false;
 bool finishedWalking = false;
 
-Astar::AstarPath pathfinder(1.5f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
+RustBot::Pather pathfinder(1.5f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {

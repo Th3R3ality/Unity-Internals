@@ -124,7 +124,6 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 
 			Render::Building();
 
-			Render::Pathing();
 		}
 
 

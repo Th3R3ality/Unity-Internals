@@ -363,13 +363,13 @@
     <ClInclude Include="src\rust\classes\Door\Door.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AstarPathing\Astar.h">
+    <ClInclude Include="src\RustBot\Pathing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AstarPathing\NodeHeap.h">
+    <ClInclude Include="src\RustBot\NodeHeap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AstarPathing\Node.h">
+    <ClInclude Include="src\RustBot\PathNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\UnityEngine\LayerMask\LayerMask.hpp">
@@ -378,7 +378,7 @@
     <ClInclude Include="src\globalSM.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\AstarPathing\SpacePartitioner.h">
+    <ClInclude Include="src\RustBot\SpacePartitioner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Util\math_util.h">
@@ -680,10 +680,7 @@
     <ClCompile Include="src\rust\classes\Door\Door.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\rust\Render\Pathing.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AstarPathing\Astar.cpp">
+    <ClCompile Include="src\RustBot\Pathing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UnityEngine\LayerMask\LayerMask.cpp">
@@ -692,7 +689,7 @@
     <ClCompile Include="src\globalSM.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\AstarPathing\SpacePartitioner.cpp">
+    <ClCompile Include="src\RustBot\SpacePartitioner.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\PlayerInput\PlayerInput.cpp">

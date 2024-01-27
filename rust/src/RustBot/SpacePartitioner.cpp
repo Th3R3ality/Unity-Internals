@@ -1,7 +1,7 @@
 #include "SpacePartitioner.h"
 #include <iostream>
 
-namespace Astar
+namespace RustBot
 {
     void Partition::AddItem(std::shared_ptr<Node> item)
     {

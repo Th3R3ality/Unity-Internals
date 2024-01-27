@@ -108,10 +108,10 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\AstarPathing\Astar.h" />
-    <ClInclude Include="src\AstarPathing\NodeHeap.h" />
-    <ClInclude Include="src\AstarPathing\Node.h" />
-    <ClInclude Include="src\AstarPathing\SpacePartitioner.h" />
+    <ClInclude Include="src\RustBot\Pathing.h" />
+    <ClInclude Include="src\RustBot\NodeHeap.h" />
+    <ClInclude Include="src\RustBot\PathNode.h" />
+    <ClInclude Include="src\RustBot\SpacePartitioner.h" />
     <ClInclude Include="src\cache.hpp" />
     <ClInclude Include="src\cheat.hpp" />
     <ClInclude Include="src\config.hpp" />
@@ -235,8 +235,8 @@
     <ClInclude Include="src\Util\math_util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\AstarPathing\Astar.cpp" />
-    <ClCompile Include="src\AstarPathing\SpacePartitioner.cpp" />
+    <ClCompile Include="src\RustBot\Pathing.cpp" />
+    <ClCompile Include="src\RustBot\SpacePartitioner.cpp" />
     <ClCompile Include="src\cache.cpp" />
     <ClCompile Include="src\cheat.cpp" />
     <ClCompile Include="src\config.cpp" />
@@ -259,7 +259,6 @@
     <ClCompile Include="src\rust\classes\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="src\rust\classes\Projectile\Projectile.cpp" />
     <ClCompile Include="src\rust\Render\Building.cpp" />
-    <ClCompile Include="src\rust\Render\Pathing.cpp" />
     <ClCompile Include="src\rust\Render\Players.cpp" />
     <ClCompile Include="src\hooks\BP_Load.cpp" />
     <ClCompile Include="src\hooks\BP_OnLand.cpp" />

@@ -74,6 +74,7 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 	}
 	
 	return; // dont do model changer
+	int model = 0;
 
 	std::wcout << "--- MODEL : " << pModel->name() << " ---\n";
 	for (int i = 0; i < pModel->transform()->childCount(); i++) {
@@ -93,7 +94,6 @@ void hk__BP_Load(BasePlayer* instance, BaseNetworkable::LoadInfo info)
 		"assets\\gooning.prefab"
 	};
 
-	int model = 3;
 
 	static auto bundle = cheat::load_assetbundle(modelPaths[model]);
 	static UnityEngine::Object* monkePrefab = nullptr;

@@ -1,4 +1,4 @@
-#include "Astar.h"
+#include "Pathing.h"
 
 #define _USE_MATH_DEFINES
 #include <math.h>
@@ -11,9 +11,9 @@
 
 #include "UnityEngine/Physics/Physics.hpp"
 
-namespace Astar
+namespace RustBot
 {
-	void AstarPath::New(v3 start, v3 end)
+	void Pather::New(v3 start, v3 end)
 	{
 		for (auto node : this->openNodes.items)
 		{
@@ -64,7 +64,7 @@ namespace Astar
 
 #pragma warning(push)
 #pragma warning(disable: 26819) // switch fallthrough warning
-	bool AstarPath::Step(bool processSameStep)
+	bool Pather::Step(bool processSameStep)
 	{
 		switch (todo)
 		{
@@ -72,10 +72,10 @@ namespace Astar
 		{
 			if ((currentNode = openNodes.RemoveFirst()) == nullptr)
 			{
-				std::cout << "Astar ; Exhausted all open nodes [-]\n";
+				std::cout << "RustBot ; Exhausted all open nodes [-]\n";
 				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
 				{
-					std::cout << "Astar ; Resorting best found path [+]\n";
+					std::cout << "RustBot ; Resorting best found path [+]\n";
 					currentNode = bestFoundNode;
 					todo = backtracing;
 					break;
@@ -223,10 +223,10 @@ namespace Astar
 
 			if (idCounter > maxNodeCount)
 			{
-				std::cout << "Astar ; Reached maximum node count [/]\n";
+				std::cout << "RustBot ; Reached maximum node count [/]\n";
 				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
 				{
-					std::cout << "Astar ; Resorting best found path [+]\n";
+					std::cout << "RustBot ; Resorting best found path [+]\n";
 					currentNode = bestFoundNode;
 					todo = backtracing;
 					break;
@@ -247,13 +247,13 @@ namespace Astar
 				todo = completed;
 		case completed:
 		{
-			std::cout << "Astar ; Path Complete [+++]\n";
+			std::cout << "RustBot ; Path Complete [+++]\n";
 			UpdateRender();
 			return false;
 		}
 		break;
 		case invalid:
-			std::cout << "Astar ; Couldn't Find Path [XXX]\n";
+			std::cout << "RustBot ; Couldn't Find Path [XXX]\n";
 			UpdateRenderPath("000000");
 			return false;
 		}
@@ -266,7 +266,7 @@ namespace Astar
 	}
 #pragma warning(pop)
 
-	bool AstarPath::Grounded(v3 pos, float length, RaycastHit& hitInfo)
+	bool Pather::Grounded(v3 pos, float length, RaycastHit& hitInfo)
 	{
 		bool grounded = false;
 		if (!UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, length, radius, 0))
@@ -280,7 +280,7 @@ namespace Astar
 
 	}
 
-	void AstarPath::UpdateRenderPath(std::string hexCol, bool onlyRemove)
+	void Pather::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{
 		if (debugLevel < 1 && !onlyRemove)
 			return;
@@ -306,7 +306,7 @@ namespace Astar
 		}
 	}
 
-	void AstarPath::UpdateRender()
+	void Pather::UpdateRender()
 	{
 		if (debugLevel < 1)
 			return;
@@ -343,7 +343,7 @@ namespace Astar
 		
 	}
 
-	bool AstarPath::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
+	bool Pather::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
 	{
 		for (auto partition : closedNodePartitioner->GetNearbyPartitions(nodePos))
 		{
@@ -365,7 +365,7 @@ namespace Astar
 		return false;
 	}
 
-	bool AstarPath::IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyOpenNode)
+	bool Pather::IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyOpenNode)
 	{
 		for (auto node : this->openNodes.items)
 		{
@@ -382,7 +382,7 @@ namespace Astar
 	}
 
 
-	bool AstarPath::GrabPath(std::vector<v3>& points)
+	bool Pather::GrabPath(std::vector<v3>& points)
 	{
 		if (todo != completed && todo != invalid)
 			return false;

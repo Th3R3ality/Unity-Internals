@@ -9,13 +9,13 @@
 #include "UnityEngine/RaycastHit/RaycastHit.hpp"
 #include "cache.hpp"
 
-#include "Node.h"
+#include "PathNode.h"
 #include "NodeHeap.h"
 #include "SpacePartitioner.h"
 
 using namespace UnityEngine;
 
-namespace Astar
+namespace RustBot
 {
 	using v3 = UnityEngine::Vector3;
 
@@ -29,7 +29,7 @@ namespace Astar
 	};
 
 
-	class AstarPath
+	class Pather
 	{
 	public:
 		// settings
@@ -64,7 +64,7 @@ namespace Astar
 		/// <param name="maxNodeCount"> - the max amount of nodes allowed to spawn</param>
 		/// <param name="debugLevel"> - level of debug drawing, 0 = none, 1 = simple, 2 = verbose</param>
 		/// <param name="disableVertical"> - disables the paths ability to go vertical</param>
-		AstarPath(
+		Pather(
 			float stepLength = 1,
 			float radius = 0,
 			float capsuleHeight = 0,
