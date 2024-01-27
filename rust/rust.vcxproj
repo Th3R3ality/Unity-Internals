@@ -111,6 +111,7 @@
     <ClInclude Include="src\RustBot\Pathing.h" />
     <ClInclude Include="src\RustBot\NodeHeap.h" />
     <ClInclude Include="src\RustBot\PathNode.h" />
+    <ClInclude Include="src\RustBot\RustBot.h" />
     <ClInclude Include="src\RustBot\SpacePartitioner.h" />
     <ClInclude Include="src\cache.hpp" />
     <ClInclude Include="src\cheat.hpp" />
@@ -236,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RustBot\Pathing.cpp" />
+    <ClCompile Include="src\RustBot\RustBot.cpp" />
     <ClCompile Include="src\RustBot\SpacePartitioner.cpp" />
     <ClCompile Include="src\cache.cpp" />
     <ClCompile Include="src\cheat.cpp" />

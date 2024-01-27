@@ -8,7 +8,7 @@ namespace RustBot
 {
 	using v3 = UnityEngine::Vector3;
 
-	class Node
+	class PathNode
 	{
 	private:
 		int heapIndex = 0;
@@ -17,9 +17,12 @@ namespace RustBot
 	public:
 		std::string id;
 		v3 pos{};
-		std::shared_ptr<Node> parent;
+		bool jump = false;
+		bool duck = false;
+		std::shared_ptr<PathNode> parent;
 		unsigned int depth = 0;
 		float G = 0, H = 0;
+		
 		union
 		{
 			bool closed = false;
@@ -31,7 +34,7 @@ namespace RustBot
 			return H + G;
 		}
 
-		Node(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<Node> parent, float weightH) :
+		PathNode(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<PathNode> parent, float weightH) :
 			id(id), pos(nodePos), parent(parent), weightH(weightH)
 		{
 			if (parent != nullptr)
@@ -52,7 +55,7 @@ namespace RustBot
 			heapIndex = index;
 		}
 
-		float CompareTo(std::shared_ptr<Node> node)
+		float CompareTo(std::shared_ptr<PathNode> node)
 		{
 			float compare = node->F() - F();
 
@@ -62,7 +65,7 @@ namespace RustBot
 			return compare;
 		}
 
-		bool Equals(std::shared_ptr<Node> node)
+		bool Equals(std::shared_ptr<PathNode> node)
 		{
 			return (this->pos == node->pos);
 		}

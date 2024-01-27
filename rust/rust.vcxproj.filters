@@ -390,6 +390,9 @@
     <ClInclude Include="src\rust\classes\PlayerEyes\PlayerEyes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\RustBot\RustBot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -696,6 +699,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\rust\classes\PlayerEyes\PlayerEyes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RustBot\RustBot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

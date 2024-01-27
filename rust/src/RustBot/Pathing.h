@@ -46,7 +46,9 @@ namespace RustBot
 		bool disableVertical = false;
 		bool distanceCheckY = true;
 		float capsuleHeight = 0;
+		float capsuleCrouchHeight = 1.1f;
 		v3 capsuleTopOffset;
+		v3 capsuleCrouchTopOffset;
 
 		/// <summary>
 		/// Constructor With Pather Settings
@@ -94,12 +96,13 @@ namespace RustBot
 		{
 			closedNodePartitioner = std::make_unique<SpacePartitioner>(this->stepLength);
 			capsuleTopOffset = v3(0, capsuleHeight - (radius * 2 < capsuleHeight ? radius * 2 : 0), 0);
+			capsuleCrouchTopOffset = v3(0, 1.1f - (radius * 2 < capsuleCrouchHeight ? radius * 2 : 0), 0);
 		}
 
 		void New(v3 start, v3 end);
 		bool Step(bool processSameStep = false);
-		bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyClosedNode = nullptr);
-		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<Node>* nearbyOpenNode = nullptr);
+		bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyClosedNode = nullptr);
+		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyOpenNode = nullptr);
 		
 
 		bool GrabPath(std::vector<v3>& points);
@@ -112,15 +115,15 @@ namespace RustBot
 		v3 start, end;
 
 		NodeHeap openNodes;
-		//std::vector<std::shared_ptr<Node>> openNodes;
+		//std::vector<std::shared_ptr<PathNode>> openNodes;
 
 		std::unique_ptr<SpacePartitioner> closedNodePartitioner = nullptr;
-		//std::vector<std::shared_ptr<Node>> closedNodes;
+		//std::vector<std::shared_ptr<PathNode>> closedNodes;
 
-		std::vector<std::shared_ptr<Node>> foundPath;
+		std::vector<std::shared_ptr<PathNode>> foundPath;
 
-		std::shared_ptr<Node> bestFoundNode = nullptr;
-		std::shared_ptr<Node> currentNode = nullptr;
+		std::shared_ptr<PathNode> bestFoundNode = nullptr;
+		std::shared_ptr<PathNode> currentNode = nullptr;
 		nextAction todo = findBestOpenNode;
 		float yawFix = 0;
 

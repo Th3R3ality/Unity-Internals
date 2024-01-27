@@ -13,18 +13,18 @@ namespace RustBot
     class NodeHeap
     {
     public:
-        std::vector<std::shared_ptr<Node>> items;
+        std::vector<std::shared_ptr<PathNode>> items;
 
         NodeHeap() = default;
 
-        void Add(std::shared_ptr<Node> item)
+        void Add(std::shared_ptr<PathNode> item)
         {
             items.push_back(item);
             item->SetHeapIndex(items.size() - 1);
             SortUp(item);
         }
 
-        std::shared_ptr<Node> RemoveFirst()
+        std::shared_ptr<PathNode> RemoveFirst()
         {
             if (items.size() == 0)
                 return nullptr;
@@ -43,7 +43,7 @@ namespace RustBot
             return firstItem;
         }
 
-        void UpdateItem(std::shared_ptr<Node> item)
+        void UpdateItem(std::shared_ptr<PathNode> item)
         {
             SortUp(item);
         }
@@ -53,12 +53,12 @@ namespace RustBot
             return items.size();
         }
 
-        bool Contains(std::shared_ptr<Node> item)
+        bool Contains(std::shared_ptr<PathNode> item)
         {
             return items[item->GetHeapIndex()]->Equals(item);
         }
 
-        void SortDown(std::shared_ptr<Node> item)
+        void SortDown(std::shared_ptr<PathNode> item)
         {
             while (true)
             {
@@ -87,7 +87,7 @@ namespace RustBot
             }
         }
 
-        void SortUp(std::shared_ptr<Node> item)
+        void SortUp(std::shared_ptr<PathNode> item)
         {
             int parentIndex = (item->GetHeapIndex() - 1) / 2;
             if (parentIndex < 0 || item->GetHeapIndex() == 0)
@@ -98,7 +98,7 @@ namespace RustBot
                 if (GetAsyncKeyState(VK_DELETE))
                     break;
 
-                std::shared_ptr<Node> parentItem = items.at(parentIndex);
+                std::shared_ptr<PathNode> parentItem = items.at(parentIndex);
                 if (item->CompareTo(parentItem) > 0) // over 0 means arg has higher value, i.e. parent is worse than item;
                 {
                     Swap(item, parentItem);
@@ -110,7 +110,7 @@ namespace RustBot
             }
         }
 
-        void Swap(std::shared_ptr<Node> itemA, std::shared_ptr<Node> itemB)
+        void Swap(std::shared_ptr<PathNode> itemA, std::shared_ptr<PathNode> itemB)
         {
             items[itemA->GetHeapIndex()] = itemB;
             items[itemB->GetHeapIndex()] = itemA;

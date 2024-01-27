@@ -30,14 +30,14 @@ namespace RustBot
 	{
 	public:
 		Color color;
-		std::vector<std::shared_ptr<Node>> items{};
+		std::vector<std::shared_ptr<PathNode>> items{};
 
 		Partition()
 		{
 			color = Color::Random(0.5);
 		}
 
-		void AddItem(std::shared_ptr<Node> item);
+		void AddItem(std::shared_ptr<PathNode> item);
 	};
 
 	class SpacePartitioner
@@ -49,7 +49,7 @@ namespace RustBot
 		}
 
 		void Clear();
-		void Add(std::shared_ptr<Node> item);
+		void Add(std::shared_ptr<PathNode> item);
 		std::vector<std::shared_ptr<Partition>> GetNearbyPartitions(v_3 location);
 		std::vector<std::shared_ptr<Partition>> GetAllPartitions();
 

@@ -3,7 +3,7 @@
 
 namespace RustBot
 {
-    void Partition::AddItem(std::shared_ptr<Node> item)
+    void Partition::AddItem(std::shared_ptr<PathNode> item)
     {
         items.push_back(item);
     }
@@ -13,7 +13,7 @@ namespace RustBot
         partitions.clear();
     }
 
-    void SpacePartitioner::Add(std::shared_ptr<Node> item)
+    void SpacePartitioner::Add(std::shared_ptr<PathNode> item)
     {
         int xCoord = static_cast<int>(item->pos.x / unitSize);
         int zCoord = static_cast<int>(item->pos.z / unitSize);

@@ -54,7 +54,7 @@ namespace RustBot
 		this->end = end;
 		this->yawFix = atan2f(end.z - start.z, end.x - start.x);
 
-		this->openNodes.Add(std::make_shared<Node>(std::to_string(idCounter), this->start, this->start, this->end, nullptr, weightH));
+		this->openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), this->start, this->start, this->end, nullptr, weightH));
 		idCounter++;
 
 		cache::debugDraw("pathStart", cache::debugIcosahedron({ start, 0, radius }, "00ff00bb"));
@@ -119,7 +119,6 @@ namespace RustBot
 				for (int vertical = 0; vertical < (disableVertical ? 1 : 5); vertical++)
 				{
 					float pitch = (disableVertical ? 0 : -(segmentThetaVertical * 2) + segmentThetaVertical * vertical);
-
 					auto yaw = (segmentTheta * i) + yawFix;
 
 					v3 dir = v3(
@@ -129,6 +128,9 @@ namespace RustBot
 					);
 					auto step = dir * stepLength;
 					auto finalPos = pos + step;
+
+					bool jump = false;
+					bool duck = false;
 
 					bool contin = false;
 					int maxSubs = 5;
@@ -145,17 +147,36 @@ namespace RustBot
 					
 
 						bool overrideClosedCheck = false;
-						RaycastHit hitInfo;
-						if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleTopOffset))
+						if (j == 0)
 						{
-							if (hitInfo.m_Distance < stepLength/5 || pitch < 0.f)
-								continue;
-							finalPos = pos + dir * (hitInfo.m_Distance - 0.05);
-							contin = true;
-							overrideClosedCheck = true;
+							RaycastHit hitInfo;
+							if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleTopOffset))
+							{
+								if (hitInfo.m_Distance < stepLength / 5 || pitch < 0.f)
+								{
+									UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleCrouchTopOffset);
+
+									{
+										if (UnityEngine::Physics::AutoCast(pos, { 0,1,0 }, layerMask, capsuleHeight - radius, radius, capsuleTopOffset))
+											continue;
+										UnityEngine::Physics::AutoCast(pos + v3(0, capsuleHeight - radius, 0), dir, hitInfo, layerMask, capsuleHeight - radius, radius, capsuleTopOffset);
+										if (hitInfo.m_Distance < 0.4f)
+											continue;
+										finalPos = pos + v3(0, capsuleHeight - radius, 0) + dir * (hitInfo.m_Distance - 0.05);
+										jump = true;
+										contin = true;
+									}
+								}
+								else
+								{
+									finalPos = pos + dir * (hitInfo.m_Distance - 0.05);
+									contin = true;
+									overrideClosedCheck = true;
+								}
+							}
 						}
 
-						std::shared_ptr<Node> nearbyClosedNode = nullptr;
+						std::shared_ptr<PathNode> nearbyClosedNode = nullptr;
 						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.1f : 1.1f, &nearbyClosedNode))
 						{
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
@@ -201,10 +222,10 @@ namespace RustBot
 								continue;
 						}
 
-						std::shared_ptr<Node> nearbyOpenNode = nullptr;
+						std::shared_ptr<PathNode> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, segmentDistance * jmod, &nearbyOpenNode))
 						{
-							auto newNode = std::make_shared<Node>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH);
+							auto newNode = std::make_shared<PathNode>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH);
 							openNodes.Add(newNode);
 							idCounter++;
 						}
@@ -343,7 +364,7 @@ namespace RustBot
 		
 	}
 
-	bool Pather::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyClosedNode)
+	bool Pather::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<PathNode>* nearbyClosedNode)
 	{
 		for (auto partition : closedNodePartitioner->GetNearbyPartitions(nodePos))
 		{
@@ -365,7 +386,7 @@ namespace RustBot
 		return false;
 	}
 
-	bool Pather::IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<Node>* nearbyOpenNode)
+	bool Pather::IsOpenNode(v3 nodePos, float leniency, std::shared_ptr<PathNode>* nearbyOpenNode)
 	{
 		for (auto node : this->openNodes.items)
 		{
