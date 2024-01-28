@@ -34,7 +34,7 @@ namespace RustBot
 	public:
 		// settings
 		float stepLength = 1;
-		float groundedHeight = 1;
+		float groundedHeight = 0.5f;
 		float maxFallHeight = 5;
 		int rayCount = 6;
 		float weightH = 5;

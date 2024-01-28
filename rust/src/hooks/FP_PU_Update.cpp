@@ -199,7 +199,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				if (UnityEngine::Physics::AutoCast(cameraTransform->position(), cameraTransform->forward(), hitInfo, layerMask, 999.9f, pathfinder.radius))
 				{
 					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathfinder.radius;
-					hitPoint -= mainCam->transform()->forward() * (pathfinder.radius +0.1f);
+					hitPoint -= mainCam->transform()->forward() * (pathfinder.radius + 0.1f);
 					startPos = hitPoint;
 					std::cout << "start >" << hitPoint << "\n";
 					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathfinder.radius) }, "00ff0066"));
@@ -221,7 +221,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathfinder.radius;
 					hitPoint -= mainCam->transform()->forward() * 0.1f;
 
-					startPos = localPlayer->transform()->position() + Vector3(0, (pathfinder.radius + 0.1f), 0);
+					startPos = localPlayer->transform()->position() + Vector3(0, (pathfinder.radius + 0.2f), 0);
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
 					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathfinder.radius) }, "00ff0066"));

@@ -19,6 +19,7 @@ namespace RustBot
 		v3 pos{};
 		bool jump = false;
 		bool duck = false;
+		bool fall = false;
 		std::shared_ptr<PathNode> parent;
 		unsigned int depth = 0;
 		float G = 0, H = 0;
@@ -34,8 +35,8 @@ namespace RustBot
 			return H + G;
 		}
 
-		PathNode(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<PathNode> parent, float weightH) :
-			id(id), pos(nodePos), parent(parent), weightH(weightH)
+		PathNode(std::string id, v3 nodePos, v3 startPos, v3 endPos, std::shared_ptr<PathNode> parent, float weightH, bool jump = false, bool duck = false, bool fall = false) :
+			id(id), pos(nodePos), parent(parent), weightH(weightH), jump(jump), duck(duck), fall(fall)
 		{
 			if (parent != nullptr)
 			{
