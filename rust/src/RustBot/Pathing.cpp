@@ -176,7 +176,9 @@ namespace RustBot
 						{
 							if (subDiv != 0)
 								continue;
-
+							
+							if (hitInfo.m_Normal.y > 0.8f)
+								continue;
 							//check duck first since its less computations
 							float distToGround = 0.f;
 							RaycastHit distToGroundHit;
@@ -186,13 +188,15 @@ namespace RustBot
 							if (!CapsuleCast(nodePos, capsuleCrouchHeight - distToGround, radius, dir, moddedStepLen, nullptr, isInitialNode)
 								&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleCrouchTopOffset, radius, layerMask))
 							{
-								if (pitch > 0)
+								if (pitch > 1.1f * segmentThetaVertical)
 									continue;
 								duck = true;
 							}
+							if (!duck && pitch != 0)
+								continue;
+
 							const float jumpHeight = capsuleHeight -0.2f - distToGround;
-							if (pitch == 0
-								&& !duck
+							if (!duck
 								&& !CapsuleCast(nodePos, capsuleHeight, radius, {0,1,0}, jumpHeight, nullptr, isInitialNode))
 								//up check ^^
 							{
@@ -249,28 +253,28 @@ namespace RustBot
 
 
 						RaycastHit groundedHit;
-						if (Grounded(finalPos, jump ? groundedHeight * 1.25 : groundedHeight, groundedHit))
+						if (Grounded(finalPos, jump ? groundedHeight * 1.25f : groundedHeight, groundedHit))
 						{
-							if (groundedHit.m_Point.y < -0.8)
+							if (groundedHit.m_Point.y < -0.8f)
 								continue;
 
 							if (finalPos.y > currentNode->pos.y)
 							{
 								if (jump)
 								{
-									if (groundedHit.m_Normal.y < 0.15)
+									if (groundedHit.m_Normal.y < 0.05f)
 										continue;
 								}
 								else
 								{
-									if (groundedHit.m_Normal.y < 0.4)
+									if (groundedHit.m_Normal.y < 0.4f)
 										continue;
 								}
 
 							}
 							else
 							{
-								if (groundedHit.m_Normal.y < 0.08)
+								if (groundedHit.m_Normal.y < 0.08f)
 									continue;
 							}
 						}
