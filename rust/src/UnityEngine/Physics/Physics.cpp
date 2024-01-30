@@ -92,4 +92,13 @@ namespace UnityEngine
 		}
 		return false;
 	}
+	bool Physics::CheckCapsule(Vector3 start, Vector3 end, float radius, int layerMask)
+	{
+		static auto fn = (bool(*)(Vector3, Vector3, float, int))Il2cppLib::method_from_signature("UnityEngine::Physics.CheckCapsule(Vector3, Vector3, float, int)");
+		if (fn)
+		{
+			return fn(start, end, radius, layerMask);
+		}
+		return false;
+	}
 }

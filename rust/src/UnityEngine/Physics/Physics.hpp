@@ -18,6 +18,7 @@ namespace UnityEngine
 		static bool Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo, int layerMask);
 		static bool SphereCast(Vector3 origin, float radius, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask);
 		static bool CapsuleCast(Vector3 point1, Vector3 point2, float radius, Vector3 direction, RaycastHit& hitInfo, float maxDistance, int layerMask);
+		static bool CheckCapsule(Vector3 start, Vector3 end, float radius, int layerMask);
 	};
 
 }
