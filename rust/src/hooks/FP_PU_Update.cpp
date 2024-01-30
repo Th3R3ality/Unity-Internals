@@ -202,7 +202,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					hitPoint -= mainCam->transform()->forward() * (pathfinder.radius + 0.1f);
 					startPos = hitPoint;
 					std::cout << "start >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathfinder.radius) }, "00ff0066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathfinder.radius / 2) }, "00ff0066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
@@ -221,11 +221,11 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					auto hitPoint = hitInfo.m_Point + hitInfo.m_Normal * pathfinder.radius;
 					hitPoint -= mainCam->transform()->forward() * 0.1f;
 
-					startPos = localPlayer->transform()->position() + Vector3(0, (pathfinder.radius + 0.2f), 0);
+					startPos = localPlayer->transform()->position() + Vector3(0, pathfinder.radius, 0);
 					endPos = hitPoint;
 					std::cout << "end >" << hitPoint << "\n";
-					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathfinder.radius) }, "00ff0066"));
-					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathfinder.radius) }, "ff000066"));
+					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathfinder.radius / 2) }, "00ff0066"));
+					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathfinder.radius / 2) }, "ff000066"));
 
 					pathfinder.New(startPos, endPos);
 					newPath = true;
