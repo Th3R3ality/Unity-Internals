@@ -51,19 +51,10 @@ namespace UnityEngine
 		}
 		return false;
 	}
-	bool Physics::Linecast(Vector3 start, Vector3 end)
-	{
-		RaycastHit hitInfo;
-		return Physics::Linecast(start, end, hitInfo, -5);
-	}
 	bool UnityEngine::Physics::Linecast(Vector3 start, Vector3 end, int layerMask)
 	{
 		RaycastHit hitInfo;
 		return Physics::Linecast(start, end, hitInfo, layerMask);
-	}
-	bool Physics::Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo)
-	{
-		return Physics::Linecast(start, end, hitInfo, -5);
 	}
 	bool Physics::Linecast(Vector3 start, Vector3 end, RaycastHit& hitInfo, int layerMask)
 	{
