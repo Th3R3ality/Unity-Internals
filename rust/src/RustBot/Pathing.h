@@ -128,7 +128,9 @@ namespace RustBot
 		float yawFix = 0;
 
 		unsigned int idCounter = 0;
+		bool isInitialNode = false;
 
 		bool Grounded(v3 pos, float length, RaycastHit& hitInfo);
+		bool CapsuleCast(Vector3 base, float height, float radius, Vector3 direction, float maxDistance, RaycastHit* hitInfo = nullptr, bool firstPass = false);
 	};
 }

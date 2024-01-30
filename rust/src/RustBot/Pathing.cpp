@@ -11,6 +11,12 @@
 
 #include "UnityEngine/Physics/Physics.hpp"
 
+int dbg = 0;
+int dbg3 = 0;
+int dbg4 = 0;
+int dbgj = 0;
+int dbgd = 0;
+
 namespace RustBot
 {
 	void Pather::New(v3 start, v3 end)
@@ -56,12 +62,12 @@ namespace RustBot
 		this->end = end;
 		this->yawFix = atan2f(end.z - start.z, end.x - start.x);
 
-		this->openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), this->start, this->start, this->end, nullptr, weightH));
+		this->openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), this->start + v3(0,0.1f,0), this->start, this->end, nullptr, weightH));
 		idCounter++;
 
-		cache::debugDraw("pathStart", cache::debugIcosahedron({ start, 0, radius }, "00ff00bb"));
-		cache::debugDraw("pathEnd", cache::debugIcosahedron({ end, 0, radius }, "ff0000bb"));
-
+		//cache::debugDraw("pathStart", cache::debugIcosahedron({ start, 0, radius }, "00ff00bb"));
+		//cache::debugDraw("pathEnd", cache::debugIcosahedron({ end, 0, radius }, "ff0000bb"));
+		isInitialNode = true;
 	}
 
 #pragma warning(push)
@@ -104,23 +110,38 @@ namespace RustBot
 			}
 
 			//closedNodePartitioner->Add(currentNode);
-
 			todo = processFoundNode;
 			if (!processSameStep)
 				break;
 		}
 		case processFoundNode:
 		{
-			v3 pos = currentNode->pos;
+			while (dbg > 0)
+			{
+				dbg--;
+				cache::removeDraw("dbg" + std::to_string(dbg));
+			}
+			while (dbg4 > 0)
+			{
+				dbg4--;
+				cache::removeDraw("dbg4" + std::to_string(dbg4));
+			}
+			while (dbg3 > 0)
+			{
+				dbg3--;
+				cache::removeDraw("dbg3" + std::to_string(dbg3));
+			}
+
+			v3 nodePos = currentNode->pos;
 			const float segmentTheta = (float)(M_PI * 2) / rayCount;
 			const float segmentDistance = sinf(segmentTheta / 2) * 2;
 			constexpr float segmentThetaVertical = (float)(M_PI * 2) / 24;
 
 			for (int i = 0; i < rayCount; i++)
 			{
-				for (int vertical = 0; vertical < (disableVertical ? 1 : 5); vertical++)
+				for (int vertical = 0; vertical < 5; vertical++)
 				{
-					float pitch = (disableVertical ? 0 : -(segmentThetaVertical * 2) + segmentThetaVertical * vertical);
+					float pitch = -(segmentThetaVertical * 2) + segmentThetaVertical * vertical;
 					auto yaw = (segmentTheta * i) + yawFix;
 
 					v3 dir = v3(
@@ -128,76 +149,92 @@ namespace RustBot
 						sinf(pitch),
 						sinf(yaw) * cosf(pitch)
 					);
-					auto step = (dir * stepLength);
-					auto finalPos = pos + step;
 
-					bool jump = false;
-					bool duck = false;
-					bool fall = false;
-
-					bool contin = false;
-					int maxSubs = 5;
-					for (int j = 0; j < maxSubs; j++)
+					bool foundValidPos = false;
+					int subDivisions = 3;
+					for (int subDiv = 0; subDiv < subDivisions; subDiv++)
 					{
-						if (j == maxSubs - 1)
-						{
-							contin = true;
-							break;
-						}
-						float jmod = 1.f - ((1.f / (maxSubs + 1)) * j);
-						step = dir * (stepLength * jmod);
-						finalPos = pos + step;
-					
+
+						float subStepMod = 1.f - ((1.f / (subDivisions)) * subDiv);
+						if (subStepMod == 0.f) std::cout << "[bad] subStepMod == 0\n";
+
+						const float moddedStepLen = stepLength * subStepMod;
+						const auto moddedStep = dir * moddedStepLen;
+						auto finalPos = nodePos + moddedStep;
+
+						bool jump = false;
+						bool duck = false;
+						bool fall = false;
+
+						//cache::debugDraw("dbg3" + std::to_string(dbg3), cache::debugArrow3d(currentNode->pos, dir, "#eb7a34", moddedStepLen)); dbg3 += 1;
+						//cache::debugDraw("dbg" + std::to_string(dbg), cache::debugCube(Lapis::Transform(finalPos, 0, 0.04f), "ff000099")); dbg += 1;
 
 						bool overrideClosedCheck = false;
-
 						RaycastHit hitInfo;
-						if (UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleTopOffset))
+						if (CapsuleCast(nodePos, capsuleHeight, radius, dir, moddedStepLen, &hitInfo, isInitialNode)
+							|| UnityEngine::Physics::Linecast(nodePos, nodePos + moddedStep, layerMask))
 						{
-							if (j != 0)
+							if (subDiv != 0)
 								continue;
 
-							if (hitInfo.m_Distance < stepLength / 5)
+							//check duck first since its less computations
+							float distToGround = 0.f;
+							RaycastHit distToGroundHit;
+							if (UnityEngine::Physics::Linecast(nodePos, nodePos - v3(0, -1, 0), distToGroundHit, layerMask))
+								distToGround = distToGroundHit.m_Distance - 0.01f;
+
+							if (!CapsuleCast(nodePos, capsuleCrouchHeight - distToGround, radius, dir, moddedStepLen, nullptr, isInitialNode)
+								&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleCrouchTopOffset, radius, layerMask))
 							{
-								if (!UnityEngine::Physics::AutoCast(pos, dir, hitInfo, layerMask, stepLength, radius, capsuleCrouchTopOffset))
-								{
-									if (pitch > 0)
-										continue;
-									duck = true;
-									//contin = true;
-								}
-								else
-								{
-									if (UnityEngine::Physics::AutoCast(pos, { 0,1,0 }, layerMask, capsuleHeight - radius, radius, capsuleTopOffset))
-										continue;
-									UnityEngine::Physics::AutoCast(pos + v3(0, capsuleHeight - radius, 0), dir, hitInfo, layerMask, stepLength, radius, capsuleTopOffset);
-									if (hitInfo.m_Distance < 0.2f)
-										continue;
-									finalPos = pos + v3(0, capsuleHeight - radius, 0) + dir * (hitInfo.m_Distance - 0.1f);
-									jump = true;
-									//contin = true;
-								}
+								if (pitch > 0)
+									continue;
+								duck = true;
 							}
-							else
+							const float jumpHeight = capsuleHeight -0.2f - distToGround;
+							if (pitch == 0
+								&& !duck
+								&& !CapsuleCast(nodePos, capsuleHeight, radius, {0,1,0}, jumpHeight, nullptr, isInitialNode))
+								//up check ^^
 							{
-								finalPos = pos + dir * (hitInfo.m_Distance - 0.1f);
-								//contin = true;
+								//direction check VV
+								RaycastHit jumpForwardHitInfo;
+								bool hit = CapsuleCast(nodePos + Vector3(0, jumpHeight, 0), capsuleHeight, radius, dir, stepLength, &jumpForwardHitInfo, isInitialNode);			
+								
+								const float jumpForwardDist = hit ? jumpForwardHitInfo.m_Distance - 0.01f : stepLength;
+								if (jumpForwardDist < 0.1f)
+									continue;
+
+								const auto jumpFinalPos = (nodePos + Vector3(0, jumpHeight, 0) + dir * jumpForwardDist);
+
+								finalPos = jumpFinalPos;
+								jump = true;
 								overrideClosedCheck = true;
 							}
+
+							if (!duck && !jump)
+							{
+								if (hitInfo.m_Distance > 0.11f)
+								{
+									if (UnityEngine::Physics::CheckCapsule(nodePos + dir * (hitInfo.m_Distance - 0.1f), nodePos + dir * (hitInfo.m_Distance - 0.1f) + capsuleTopOffset, radius, layerMask))
+										continue;
+									finalPos = nodePos + dir * (hitInfo.m_Distance - 0.1f);
+									overrideClosedCheck = true;
+								}
+								else
+									continue;
+							}
 						}
-						else
-						{
-							finalPos = pos + dir * stepLength;
-						}
-						
+						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#fc520399"));
+
+
 
 						std::shared_ptr<PathNode> nearbyClosedNode = nullptr;
-						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.2f : 1.1f, &nearbyClosedNode))
+						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.3f : 1.1f, &nearbyClosedNode))
 						{
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
 								float dist = v3::Distance(currentNode->pos, nearbyClosedNode->pos);
-								if (!UnityEngine::Physics::AutoCast(currentNode->pos, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), layerMask, dist, radius, capsuleTopOffset))
+								if (!CapsuleCast(currentNode->pos, capsuleHeight, radius, v3::Normalize(nearbyClosedNode->pos - currentNode->pos), dist, nullptr, isInitialNode))
 								{
 									currentNode->parent = nearbyClosedNode;
 									currentNode->depth = nearbyClosedNode->depth + 1;
@@ -207,23 +244,26 @@ namespace RustBot
 							continue;
 						}
 
+						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#fcd70399"));
+
+
 
 						RaycastHit groundedHit;
-						if (Grounded(finalPos, jump ? groundedHeight * 1.5f : groundedHeight, groundedHit))
+						if (Grounded(finalPos, jump ? groundedHeight * 1.25 : groundedHeight, groundedHit))
 						{
 							if (groundedHit.m_Point.y < -0.8)
 								continue;
 
 							if (finalPos.y > currentNode->pos.y)
 							{
-								if (!jump)
+								if (jump)
 								{
-									if (groundedHit.m_Normal.y < 0.4)
+									if (groundedHit.m_Normal.y < 0.15)
 										continue;
 								}
 								else
 								{
-									if (groundedHit.m_Normal.y < 0.1)
+									if (groundedHit.m_Normal.y < 0.4)
 										continue;
 								}
 
@@ -236,34 +276,41 @@ namespace RustBot
 						}
 						else
 						{
-							if (!Grounded(finalPos, maxFallHeight, groundedHit))
+							if (jump)
 								continue;
-							if (groundedHit.m_Normal.y < 0.4 || groundedHit.m_Point.y < -0.8)
+							RaycastHit FallHit;
+							if (!Grounded(finalPos, maxFallHeight, FallHit))
 								continue;
-							if (UnityEngine::Physics::AutoCast(finalPos, { 0,-1,0 }, layerMask, (groundedHit.m_Distance - 0.02f), radius))
+							if (FallHit.m_Normal.y < 0.4 || FallHit.m_Point.y < -0.8)
 								continue;
-							finalPos = (groundedHit.m_Point + groundedHit.m_Normal * radius) + Vector3(0,0.5,0);
+							if (CapsuleCast(finalPos, capsuleHeight, radius, { 0,-1,0 }, FallHit.m_Distance - 0.01f, nullptr, isInitialNode))
+								continue;
+							finalPos = finalPos + Vector3(0, -(FallHit.m_Distance - 0.02f), 0);
 							fall = true;
-							if (IsClosedNode(finalPos, 1.f * jmod))
+							if (IsClosedNode(finalPos))
 								continue;
 						}
 
+						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#bafc0399"));
+
+
 						std::shared_ptr<PathNode> nearbyOpenNode = nullptr;
-						if (!IsOpenNode(finalPos, segmentDistance * jmod, &nearbyOpenNode))
+						if (!IsOpenNode(finalPos, segmentDistance, &nearbyOpenNode))
 						{
 							auto newNode = std::make_shared<PathNode>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH, jump, duck, fall);
 							openNodes.Add(newNode);
 							idCounter++;
+							//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), fall ? "0000ff99" : jump ? "00ffff99" : duck ? "ff00ff99" : "00ff0099"));
+							foundValidPos = true;
+							break; // break subStep
 						}
-						break;
 					}
-					if (contin)
-						continue;
-					break;
+					if (foundValidPos)
+						break; // break verticals
 				}
 			}
 
-
+			isInitialNode = false;
 			closedNodePartitioner->Add(currentNode);
 			currentNode = nullptr;
 			todo = findBestOpenNode;
@@ -283,6 +330,7 @@ namespace RustBot
 			break;
 		}
 		case backtracing:
+		{
 			if (currentNode != nullptr)
 			{
 				foundPath.push_back(currentNode);
@@ -292,18 +340,22 @@ namespace RustBot
 			}
 			else
 				todo = completed;
+		}
 		case completed:
 		{
 			std::cout << "RustBot ; Path Complete [+++]\n";
 			UpdateRender();
 			return false;
+			break;
 		}
-		break;
 		case invalid:
+		{
 			std::cout << "RustBot ; Couldn't Find Path [XXX]\n";
 			UpdateRenderPath("000000");
 			return false;
 		}
+		}
+		// end of todo switch
 
 		if (currentNode != nullptr)
 			UpdateRenderPath("0000aa");
@@ -312,20 +364,9 @@ namespace RustBot
 		return true;
 	}
 #pragma warning(pop)
-
-	bool Pather::Grounded(v3 pos, float length, RaycastHit& hitInfo)
-	{
-		bool grounded = false;
-		if (!UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, length, radius, 0))
-			return false;
-
-		RaycastHit hit2;
-		if (!UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hit2, layerMask, hitInfo.m_Distance + radius * 1.5))
-			return false;
-
-		return true;
-
-	}
+		
+	
+#pragma warning(pop)
 
 	void Pather::UpdateRenderPath(std::string hexCol, bool onlyRemove)
 	{
@@ -454,5 +495,28 @@ namespace RustBot
 		return true;
 	}
 
+	bool Pather::Grounded(v3 pos, float length, RaycastHit& hitInfo)
+	{
+		bool grounded = false;
+		if (!UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hitInfo, layerMask, length, radius, 0))
+			return false;
 
+		RaycastHit hit2;
+		if (!UnityEngine::Physics::AutoCast(pos, { 0,-1,0 }, hit2, layerMask, hitInfo.m_Distance + radius * 1.5))
+			return false;
+
+		return true;
+
+	}
+
+	bool Pather::CapsuleCast(Vector3 base, float height, float radius, Vector3 direction, float maxDistance, RaycastHit* hitInfo, bool firstPass)
+	{
+		RaycastHit unused;
+		bool didHit = UnityEngine::Physics::CapsuleCast(base, base + Vector3(0,height - radius*2,0), firstPass ? radius - 0.01f : radius, direction, (hitInfo == nullptr) ? unused : *hitInfo, maxDistance, layerMask);
+		if (firstPass && !didHit)
+		{
+			UnityEngine::Physics::CheckCapsule(base + Vector3(0, height / 2 - radius, 0), base + Vector3(0, height / 2 + radius, 0), radius, layerMask);
+		}
+		return didHit;
+	}
 }
