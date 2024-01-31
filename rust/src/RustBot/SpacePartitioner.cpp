@@ -30,7 +30,7 @@ namespace RustBot
         }
     }
 
-    std::vector<std::shared_ptr<Partition>> SpacePartitioner::GetNearbyPartitions(v_3 location)
+    std::vector<std::shared_ptr<Partition>> SpacePartitioner::GetNearbyPartitions(v3 location)
     {
         std::vector<std::shared_ptr<Partition>> outPartitions = {};
 

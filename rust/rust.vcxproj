@@ -108,6 +108,8 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\RustBot\Alias.h" />
+    <ClInclude Include="src\RustBot\Goal.h" />
     <ClInclude Include="src\RustBot\Pathing.h" />
     <ClInclude Include="src\RustBot\NodeHeap.h" />
     <ClInclude Include="src\RustBot\PathNode.h" />
@@ -236,6 +238,7 @@
     <ClInclude Include="src\Util\math_util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\RustBot\Goal.cpp" />
     <ClCompile Include="src\RustBot\Pathing.cpp" />
     <ClCompile Include="src\RustBot\RustBot.cpp" />
     <ClCompile Include="src\RustBot\SpacePartitioner.cpp" />

@@ -3,14 +3,12 @@
 #include <memory>
 #include <vector>
 
+#include "Alias.h"
 #include "PathNode.h"
-#include "Lapis/engine/LapisTypes.h"
-#include "UnityEngine/Vector3/Vector3.hpp"
+
 
 namespace RustBot
 {
-	using Color = Lapis::Color;
-	using v_3 = UnityEngine::Vector3;
 
 	struct pair_hash
 	{
@@ -50,7 +48,7 @@ namespace RustBot
 
 		void Clear();
 		void Add(std::shared_ptr<PathNode> item);
-		std::vector<std::shared_ptr<Partition>> GetNearbyPartitions(v_3 location);
+		std::vector<std::shared_ptr<Partition>> GetNearbyPartitions(v3 location);
 		std::vector<std::shared_ptr<Partition>> GetAllPartitions();
 
 	private:

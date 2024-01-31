@@ -9,6 +9,8 @@
 #include "UnityEngine/RaycastHit/RaycastHit.hpp"
 #include "cache.hpp"
 
+#include "Alias.h"
+#include "Goal.h"
 #include "PathNode.h"
 #include "NodeHeap.h"
 #include "SpacePartitioner.h"
@@ -17,7 +19,6 @@ using namespace UnityEngine;
 
 namespace RustBot
 {
-	using v3 = UnityEngine::Vector3;
 
 	enum nextAction
 	{
@@ -49,6 +50,8 @@ namespace RustBot
 		float capsuleCrouchHeight = 1.1f;
 		v3 capsuleTopOffset;
 		v3 capsuleCrouchTopOffset;
+
+		Goal goal = Goal(GoalType::none, 0);
 
 		/// <summary>
 		/// Constructor With Pather Settings
@@ -99,7 +102,7 @@ namespace RustBot
 			capsuleCrouchTopOffset = v3(0, 1.1f - (radius * 2 < capsuleCrouchHeight ? radius * 2 : 0), 0);
 		}
 
-		void New(v3 start, v3 end);
+		void New(v3 startPos, v3 endPos, GoalType goalType);
 		bool Step(bool processSameStep = false);
 		bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyClosedNode = nullptr);
 		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyOpenNode = nullptr);
@@ -112,7 +115,7 @@ namespace RustBot
 
 	private:
 
-		v3 start, end;
+		v3 start;
 
 		NodeHeap openNodes;
 		//std::vector<std::shared_ptr<PathNode>> openNodes;

@@ -19,7 +19,7 @@ int dbgd = 0;
 
 namespace RustBot
 {
-	void Pather::New(v3 start, v3 end)
+	void Pather::New(v3 startPos, v3 goalPos, GoalType goalType)
 	{
 		for (auto node : this->openNodes.items)
 		{
@@ -54,19 +54,20 @@ namespace RustBot
 		bestFoundNode = nullptr;
 		todo = findBestOpenNode;
 
-		this->openNodes.items.clear();
+		openNodes.items.clear();
 		closedNodePartitioner->Clear();
-		this->foundPath.clear();
+		foundPath.clear();
 
-		this->start = start;
-		this->end = end;
-		this->yawFix = atan2f(end.z - start.z, end.x - start.x);
+		start = startPos;
+		goal = Goal(goalType, goalPos);
 
-		this->openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), this->start + v3(0,0.1f,0), this->start, this->end, nullptr, weightH));
+		yawFix = atan2f(goalPos.z - startPos.z, goalPos.x - startPos.x);
+
+		openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), start + v3(0,0.1f,0), goal, nullptr, weightH));
 		idCounter++;
 
-		//cache::debugDraw("pathStart", cache::debugIcosahedron({ start, 0, radius }, "00ff00bb"));
-		//cache::debugDraw("pathEnd", cache::debugIcosahedron({ end, 0, radius }, "ff0000bb"));
+		//cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, radius }, "00ff00bb"));
+		//cache::debugDraw("pathEnd", cache::debugIcosahedron({ goalPos, 0, radius }, "ff0000bb"));
 		isInitialNode = true;
 	}
 
@@ -101,8 +102,8 @@ namespace RustBot
 					bestFoundNode = currentNode;
 			}
 
-			float endDist = v3::Distance(currentNode->pos, end);
-			if (((endDist < stepLength + radius) && !UnityEngine::Physics::AutoCast(currentNode->pos, end, layerMask, endDist, radius))
+			float endDist = v3::Distance(currentNode->pos, goal.Position(currentNode->pos));
+			if (((endDist < stepLength + radius) && !UnityEngine::Physics::AutoCast(currentNode->pos, goal.Position(currentNode->pos), layerMask, endDist, radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
 				todo = backtracing;
@@ -176,25 +177,30 @@ namespace RustBot
 						{
 							if (subDiv != 0)
 								continue;
-							
 							if (hitInfo.m_Normal.y > 0.8f)
 								continue;
-							//check duck first since its less computations
+
 							float distToGround = 0.f;
 							RaycastHit distToGroundHit;
 							if (UnityEngine::Physics::Linecast(nodePos, nodePos - v3(0, -1, 0), distToGroundHit, layerMask))
 								distToGround = distToGroundHit.m_Distance - 0.01f;
 
-							if (!CapsuleCast(nodePos, capsuleCrouchHeight - distToGround, radius, dir, moddedStepLen, nullptr, isInitialNode)
-								&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleCrouchTopOffset, radius, layerMask))
+
+							//check duck first since its less computations
+							if (pitch <= 0)
 							{
-								if (pitch > 1.1f * segmentThetaVertical)
-									continue;
-								duck = true;
+								if (!CapsuleCast(nodePos, capsuleCrouchHeight - distToGround, radius, dir, moddedStepLen, nullptr, isInitialNode)
+									&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleCrouchTopOffset, radius, layerMask))
+								{
+									//if (pitch > 0) //1.1f * segmentThetaVertical)
+									//	continue;
+									duck = true;
+								}
 							}
+
 							if (!duck && pitch != 0)
 								continue;
-
+							
 							const float jumpHeight = capsuleHeight -0.2f - distToGround;
 							if (!duck
 								&& !CapsuleCast(nodePos, capsuleHeight, radius, {0,1,0}, jumpHeight, nullptr, isInitialNode))
@@ -231,7 +237,6 @@ namespace RustBot
 						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#fc520399"));
 
 
-
 						std::shared_ptr<PathNode> nearbyClosedNode = nullptr;
 						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.3f : 1.1f, &nearbyClosedNode))
 						{
@@ -249,7 +254,6 @@ namespace RustBot
 						}
 
 						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#fcd70399"));
-
 
 
 						RaycastHit groundedHit;
@@ -301,7 +305,7 @@ namespace RustBot
 						std::shared_ptr<PathNode> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, segmentDistance, &nearbyOpenNode))
 						{
-							auto newNode = std::make_shared<PathNode>(std::to_string(idCounter), finalPos, this->start, this->end, currentNode, weightH, jump, duck, fall);
+							auto newNode = std::make_shared<PathNode>(std::to_string(idCounter), finalPos, goal, currentNode, weightH, jump, duck, fall);
 							openNodes.Add(newNode);
 							idCounter++;
 							//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), fall ? "0000ff99" : jump ? "00ffff99" : duck ? "ff00ff99" : "00ff0099"));
@@ -495,7 +499,7 @@ namespace RustBot
 		}
 
 		std::reverse(points.begin(), points.end());
-		//points.push_back(this->end);
+		//points.push_back(this->goalPos);
 		return true;
 	}
 
