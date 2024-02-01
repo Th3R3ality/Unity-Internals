@@ -51,6 +51,9 @@ namespace RustBot
 		v3 capsuleTopOffset;
 		v3 capsuleCrouchTopOffset;
 
+		bool allowResortUponExhaust = false;
+		bool allowResortUponMaxNodes = false;
+
 		Goal goal = Goal(GoalType::none, 0);
 
 		/// <summary>

@@ -82,12 +82,15 @@ namespace RustBot
 			if ((currentNode = openNodes.RemoveFirst()) == nullptr)
 			{
 				std::cout << "RustBot ; Exhausted all open nodes [-]\n";
-				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+				if (allowResortUponExhaust)
 				{
-					std::cout << "RustBot ; Resorting best found path [+]\n";
-					currentNode = bestFoundNode;
-					todo = backtracing;
-					break;
+					if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+					{
+						std::cout << "RustBot ; Resorting best found path [+]\n";
+						currentNode = bestFoundNode;
+						todo = backtracing;
+						break;
+					}
 				}
 
 				todo = invalid;
@@ -190,7 +193,7 @@ namespace RustBot
 							if (pitch <= 0)
 							{
 								if (!CapsuleCast(nodePos, capsuleCrouchHeight - distToGround, radius, dir, moddedStepLen, nullptr, isInitialNode)
-									&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleCrouchTopOffset, radius, layerMask))
+									&& !UnityEngine::Physics::CheckCapsule(finalPos, finalPos + capsuleTopOffset, radius, layerMask)) //capsuleTopCrouchOffset to make multiple crouch nodes possible
 								{
 									//if (pitch > 0) //1.1f * segmentThetaVertical)
 									//	continue;
@@ -238,7 +241,7 @@ namespace RustBot
 
 
 						std::shared_ptr<PathNode> nearbyClosedNode = nullptr;
-						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.3f : 1.1f, &nearbyClosedNode))
+						if (IsClosedNode(finalPos, overrideClosedCheck ? 0.15f : 1.1f, &nearbyClosedNode))
 						{
 							if (currentNode->parent != nullptr && nearbyClosedNode->G < currentNode->parent->G)
 							{
@@ -301,7 +304,6 @@ namespace RustBot
 
 						//cache::debugDraw("dbg" + std::to_string(dbg - 1), cache::debugCube(Lapis::Transform(finalPos, 0, 0.05f), "#bafc0399"));
 
-
 						std::shared_ptr<PathNode> nearbyOpenNode = nullptr;
 						if (!IsOpenNode(finalPos, segmentDistance, &nearbyOpenNode))
 						{
@@ -326,12 +328,15 @@ namespace RustBot
 			if (idCounter > maxNodeCount)
 			{
 				std::cout << "RustBot ; Reached maximum node count [/]\n";
-				if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+				if (allowResortUponMaxNodes)
 				{
-					std::cout << "RustBot ; Resorting best found path [+]\n";
-					currentNode = bestFoundNode;
-					todo = backtracing;
-					break;
+					if (bestFoundNode != nullptr && bestFoundNode->parent != nullptr)
+					{
+						std::cout << "RustBot ; Resorting best found path [+]\n";
+						currentNode = bestFoundNode;
+						todo = backtracing;
+						break;
+					}
 				}
 				todo = invalid;
 			}
