@@ -51,15 +51,15 @@ namespace RustBot
 
 	float Goal::HeuristicExact(v3 nodePos)
 	{
-		v3::Distance(pos, nodePos);
+		return v3::Distance(pos, nodePos);
 	}
 	float Goal::HeuristicHorizontal(v3 nodePos)
 	{
-		assert(false && "HeuristicHorizontal not implements");
+		return v3::Distance(v3(pos.x, nodePos.y, pos.z), nodePos);
 	}
 	float Goal::HeuristicVertical(v3 nodePos)
 	{
-		assert(false && "HeuristicVertical not implements");
+		return v3::Distance(v3(nodePos.x, pos.y, nodePos.z), nodePos);
 	}
 	float Goal::HeuristicExactInverted(v3 nodePos)
 	{
