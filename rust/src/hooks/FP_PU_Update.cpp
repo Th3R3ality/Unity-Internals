@@ -31,6 +31,7 @@ bool autoRepath = false;
 bool finishedWalking = false;
 
 RustBot::Pather pathfinder(1.5f, 0.5f, 1.8f, -5, true, 512u, .5f, 5.f, 8, 5.f, 5000u, 1, false);
+RustBot::GoalType goalType = RustBot::GoalType::exact;
 
 void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 {
@@ -79,6 +80,12 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 		pathfinder.layerMask = layerMask;
 
 		if (config::PathFinding) {
+			if (GetAsyncKeyState('H') & 0x1)
+			{
+				StateMachine::wantsWalkPath = !StateMachine::wantsWalkPath;
+				std::cout << "wantsWalkPath : " << StateMachine::wantsWalkPath << "\n";
+			}
+
 			if (GetAsyncKeyState('P') & 0x1)
 			{
 				pathfinder.debugLevel++; pathfinder.debugLevel %= 3;
@@ -154,7 +161,8 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					eyes->bodyRotation(UnityEngine::Vector3(pitch, yaw, 0));
 					
 
-					movement->TargetMovement(targetMove);
+					if (StateMachine::wantsWalkPath)
+						movement->TargetMovement(targetMove);
 
 					if (totalDistance < pathfinder.radius)
 					{
@@ -184,7 +192,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 				startPos = walkNodes.at(walkNodes.size() - 1);
 				endPos = startPos + Vector3(cosf(direction * M_PI / 180) * 200, 0, sinf(direction * M_PI / 180) * 200);
 				
-				pathfinder.New(startPos, endPos);
+				pathfinder.New(startPos, endPos, goalType);
 
 				newPath = true;
 				pathing = false;
@@ -204,7 +212,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					std::cout << "start >" << hitPoint << "\n";
 					cache::debugDraw("pathStart", cache::debugIcosahedron({ hitPoint, 0, (pathfinder.radius / 2) }, "00ff0066"));
 
-					pathfinder.New(startPos, endPos);
+					pathfinder.New(startPos, endPos, goalType);
 					newPath = true;
 					pathing = false;
 					hasWalkNodes = false;
@@ -227,7 +235,7 @@ void hk__FP_PU_Update(Facepunch::PerformanceUI* instance)
 					cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, (pathfinder.radius / 2) }, "00ff0066"));
 					cache::debugDraw("pathEnd", cache::debugIcosahedron({ endPos, 0, (pathfinder.radius / 2) }, "ff000066"));
 
-					pathfinder.New(startPos, endPos);
+					pathfinder.New(startPos, endPos, goalType);
 					newPath = true;
 					pathing = false;
 					hasWalkNodes = false;

@@ -8,4 +8,5 @@
 namespace StateMachine
 {
 	GSMDEF(bool doJump);
+	GSMDEF(bool wantsWalkPath);
 }

@@ -99,7 +99,6 @@ HRESULT hkPresent(IDXGISwapChain* _this, UINT SyncInterval, UINT Flags)
 				Lapis::PushProjectionMatrix(projMat);
 			}
 
-			Draw::D3::Icosahedron(Transform(25, 0, 5), "FF0050");
 
 			Render::Players();
 
