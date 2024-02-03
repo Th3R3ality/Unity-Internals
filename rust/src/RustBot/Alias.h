@@ -7,5 +7,4 @@ namespace RustBot
 {
 	using v3 = UnityEngine::Vector3;
 	using Color = Lapis::Color;
-
 }
