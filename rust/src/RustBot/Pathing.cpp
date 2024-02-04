@@ -491,6 +491,17 @@ namespace RustBot
 	}
 
 
+	std::vector<v3> Pather::CurrentPath()
+	{
+		std::vector<v3> points = {};
+		while (currentNode != nullptr)
+		{
+			points.push_back(currentNode->pos);
+			currentNode = currentNode->parent;
+		}
+		return points;
+	}
+
 	bool Pather::GrabPath(std::vector<v3>& points)
 	{
 		if (todo != completed && todo != invalid)

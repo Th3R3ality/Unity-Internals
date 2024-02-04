@@ -111,6 +111,7 @@ namespace RustBot
 		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyOpenNode = nullptr);
 		
 
+		std::vector<v3> CurrentPath();
 		bool GrabPath(std::vector<v3>& points);
 
 		void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
