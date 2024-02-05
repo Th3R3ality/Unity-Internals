@@ -11,64 +11,75 @@
 
 #include "UnityEngine/Physics/Physics.hpp"
 
-int dbg = 0;
-int dbg3 = 0;
-int dbg4 = 0;
-int dbgj = 0;
-int dbgd = 0;
+//int dbg = 0;
+//int dbg3 = 0;
+//int dbg4 = 0;
+//int dbgj = 0;
+//int dbgd = 0;
 
 namespace RustBot
 {
 	void Pather::New(v3 startPos, v3 goalPos, GoalType goalType)
 	{
-		for (auto node : this->openNodes.items)
+		//for (auto node : this->openNodes.items)
+		//{
+		//	if (node == nullptr)
+		//		continue;
+		//	cache::removeDraw(node->id);
+		//}
+		//for (auto partition : closedNodePartitioner->GetAllPartitions())
+		//{
+		//	for (auto node : partition->items)
+		//	{
+		//		if (node == nullptr)
+		//			continue;
+		//		cache::removeDraw(node->id);
+		//	}
+		//}
+
+		//for (auto node : this->foundPath)
+		//{
+		//	if (node == nullptr)
+		//		continue;
+		//	cache::removeDraw(node->id);
+		//	cache::removeDraw("final_path_" + node->id);
+		//	cache::removeDraw("jump_" + node->id);
+		//	cache::removeDraw("duck_" + node->id);
+		//}
+
+		//UpdateRenderPath("000000", true);
+
+		if (idCounter == 0)
+			start = startPos;
+	
+		goal = Goal(goalType, goalPos);
+
+		yawFix = atan2f(goalPos.z - start.z, goalPos.x - start.x);
+
+		if (idCounter == 0)
 		{
-			if (node == nullptr)
-				continue;
-			cache::removeDraw(node->id);
-		}
-		for (auto partition : closedNodePartitioner->GetAllPartitions())
-		{
-			for (auto node : partition->items)
-			{
-				if (node == nullptr)
-					continue;
-				cache::removeDraw(node->id);
-			}
+			openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), start, goal, nullptr, weightH));
+			idCounter++;
 		}
 
-		for (auto node : this->foundPath)
-		{
-			if (node == nullptr)
-				continue;
-			cache::removeDraw(node->id);
-			cache::removeDraw("final_path_" + node->id);
-			cache::removeDraw("jump_" + node->id);
-			cache::removeDraw("duck_" + node->id);
-		}
+		//cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, radius }, "00ff00bb"));
+		//cache::debugDraw("pathEnd", cache::debugIcosahedron({ goalPos, 0, radius }, "ff0000bb"));
+		
+		isInitialNode = true;
+		todo = PatherAction::findBestOpenNode;
+	}
 
-		UpdateRenderPath("000000", true);
-
+	void Pather::Clean()
+	{
 		idCounter = 0;
 		currentNode = nullptr;
 		bestFoundNode = nullptr;
-		todo = findBestOpenNode;
 
 		openNodes.items.clear();
 		closedNodePartitioner->Clear();
 		foundPath.clear();
 
-		start = startPos;
-		goal = Goal(goalType, goalPos);
-
-		yawFix = atan2f(goalPos.z - startPos.z, goalPos.x - startPos.x);
-
-		openNodes.Add(std::make_shared<PathNode>(std::to_string(idCounter), start + v3(0,0.1f,0), goal, nullptr, weightH));
-		idCounter++;
-
-		//cache::debugDraw("pathStart", cache::debugIcosahedron({ startPos, 0, radius }, "00ff00bb"));
-		//cache::debugDraw("pathEnd", cache::debugIcosahedron({ goalPos, 0, radius }, "ff0000bb"));
-		isInitialNode = true;
+		todo = PatherAction::idle;
 	}
 
 #pragma warning(push)
@@ -77,7 +88,7 @@ namespace RustBot
 	{
 		switch (todo)
 		{
-		case findBestOpenNode:
+		case PatherAction::findBestOpenNode:
 		{
 			if ((currentNode = openNodes.RemoveFirst()) == nullptr)
 			{
@@ -88,12 +99,12 @@ namespace RustBot
 					{
 						std::cout << "RustBot ; Resorting best found path [+]\n";
 						currentNode = bestFoundNode;
-						todo = backtracing;
+						todo = PatherAction::backtracing;
 						break;
 					}
 				}
 
-				todo = invalid;
+				todo = PatherAction::invalid;
 				break;
 			}
 
@@ -109,18 +120,18 @@ namespace RustBot
 			if (((endDist < stepLength + radius) && !UnityEngine::Physics::AutoCast(currentNode->pos, goal.Position(currentNode->pos), layerMask, endDist, radius))
 				|| (maxPathDepth != 0 && currentNode->depth >= maxPathDepth))
 			{
-				todo = backtracing;
+				todo = PatherAction::backtracing;
 				break;
 			}
 
 			//closedNodePartitioner->Add(currentNode);
-			todo = processFoundNode;
+			todo = PatherAction::processFoundNode;
 			if (!processSameStep)
 				break;
 		}
-		case processFoundNode:
+		case PatherAction::processFoundNode:
 		{
-			while (dbg > 0)
+			/*while (dbg > 0)
 			{
 				dbg--;
 				cache::removeDraw("dbg" + std::to_string(dbg));
@@ -134,7 +145,7 @@ namespace RustBot
 			{
 				dbg3--;
 				cache::removeDraw("dbg3" + std::to_string(dbg3));
-			}
+			}*/
 
 			v3 nodePos = currentNode->pos;
 			const float segmentTheta = (float)(M_PI * 2) / rayCount;
@@ -323,7 +334,7 @@ namespace RustBot
 			isInitialNode = false;
 			closedNodePartitioner->Add(currentNode);
 			currentNode = nullptr;
-			todo = findBestOpenNode;
+			todo = PatherAction::findBestOpenNode;
 
 			if (idCounter > maxNodeCount)
 			{
@@ -334,123 +345,120 @@ namespace RustBot
 					{
 						std::cout << "RustBot ; Resorting best found path [+]\n";
 						currentNode = bestFoundNode;
-						todo = backtracing;
+						todo = PatherAction::backtracing;
 						break;
 					}
 				}
-				todo = invalid;
+				todo = PatherAction::invalid;
 			}
 			break;
 		}
-		case backtracing:
+		case PatherAction::backtracing:
 		{
 			if (currentNode != nullptr)
 			{
 				foundPath.push_back(currentNode);
 				currentNode = currentNode->parent;
-				UpdateRender();
+				//UpdateRender();
 				break;
 			}
 			else
-				todo = completed;
+				todo = PatherAction::completed;
 		}
-		case completed:
+		case PatherAction::completed:
 		{
 			std::cout << "RustBot ; Path Complete [+++]\n";
-			UpdateRender();
+			//UpdateRender();
 			return false;
 			break;
 		}
-		case invalid:
+		case PatherAction::invalid:
 		{
 			std::cout << "RustBot ; Couldn't Find Path [XXX]\n";
-			UpdateRenderPath("000000");
+			//UpdateRenderPath("000000");
 			return false;
 		}
 		}
 		// end of todo switch
 
-		if (currentNode != nullptr)
-			UpdateRenderPath("0000aa");
+		//if (currentNode != nullptr)
+		//	UpdateRenderPath("0000aa");
 
-		UpdateRender();
+		//UpdateRender();
 		return true;
 	}
 #pragma warning(pop)
-		
-	
-#pragma warning(pop)
 
-	void Pather::UpdateRenderPath(std::string hexCol, bool onlyRemove)
-	{
-		if (debugLevel < 1 && !onlyRemove)
-			return;
-		if (currentNode == nullptr)
-			return;
-	
-		auto _currentNode = currentNode;
-		static int depth = 0;
+	//void Pather::UpdateRenderPath(std::string hexCol, bool onlyRemove)
+	//{
+	//	if (debugLevel < 1 && !onlyRemove)
+	//		return;
+	//	if (currentNode == nullptr)
+	//		return;
+	//
+	//	auto _currentNode = currentNode;
+	//	static int depth = 0;
 
-		while (depth > 0)
-		{
-			cache::removeDraw("path_" + std::to_string(depth));
-			depth--;
-		}
-		if (debugLevel < 1 || onlyRemove)
-			return;
+	//	while (depth > 0)
+	//	{
+	//		cache::removeDraw("path_" + std::to_string(depth));
+	//		depth--;
+	//	}
+	//	if (debugLevel < 1 || onlyRemove)
+	//		return;
 
-		while (_currentNode->parent != nullptr)
-		{
-			depth++;
-			cache::debugDraw("path_" + std::to_string(depth), cache::debugLine3d(_currentNode->pos, _currentNode->parent->pos, hexCol.c_str()));
-			_currentNode = _currentNode->parent;
-		}
-	}
+	//	while (_currentNode->parent != nullptr)
+	//	{
+	//		depth++;
+	//		cache::debugDraw("path_" + std::to_string(depth), cache::debugLine3d(_currentNode->pos, _currentNode->parent->pos, hexCol.c_str()));
+	//		_currentNode = _currentNode->parent;
+	//	}
+	//}
 
-	void Pather::UpdateRender()
-	{
-		if (debugLevel < 1)
-			return;
+	//void Pather::UpdateRender()
+	//{
+	//	if (debugLevel < 1)
+	//		return;
 
-		////////// visualize path
-		for (auto node : this->foundPath)
-		{
-			if (node != nullptr)
-			{
-				if (node->parent != nullptr)
-				{
-					cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
-				}
-				if (node->jump)
-				{
-					cache::debugDraw("jump_" + node->id, cache::debugArrow3d(node->pos, Lapis::Vec3::up, "aa00aa"));
-				}
-				if (node->duck)
-				{
-					cache::debugDraw("duck_" + node->id, cache::debugArrow3d(node->pos, -Lapis::Vec3::up, "aa00aa"));
-				}
-				cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.04f), "00aa0099"));
-			}
-		}
+	//	////////// visualize path
+	//	for (auto node : this->foundPath)
+	//	{
+	//		if (node != nullptr)
+	//		{
+	//			if (node->parent != nullptr)
+	//			{
+	//				cache::debugDraw("final_path_" + node->id, cache::debugLine3d(node->pos, node->parent->pos, "00aa00"));
+	//			}
+	//			if (node->jump)
+	//			{
+	//				cache::debugDraw("jump_" + node->id, cache::debugArrow3d(node->pos, Lapis::Vec3::up, "aa00aa"));
+	//			}
+	//			if (node->duck)
+	//			{
+	//				cache::debugDraw("duck_" + node->id, cache::debugArrow3d(node->pos, -Lapis::Vec3::up, "aa00aa"));
+	//			}
+	//			cache::debugDraw(node->id, cache::debugIcosahedron(Lapis::Transform(node->pos, 0, 0.04f), "00aa0099"));
+	//		}
+	//	}
 
-		////////// Verbose debugging
-		if (debugLevel < 2)
-			return;
-		
-		for (auto partition : closedNodePartitioner->GetAllPartitions())
-			for (auto node : partition->items)
-				if (node != nullptr)
-					cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), partition->color));
+	//	////////// Verbose debugging
+	//	if (debugLevel < 2)
+	//		return;
+	//	
+	//	for (auto partition : closedNodePartitioner->GetAllPartitions())
+	//		for (auto node : partition->items)
+	//			if (node != nullptr)
+	//				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), partition->color));
 
-		for (auto node : this->openNodes.items)
-			if (node != nullptr)
-				cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
+	//	for (auto node : this->openNodes.items)
+	//		if (node != nullptr)
+	//			cache::debugDraw(node->id, cache::debugCube(Lapis::Transform(node->pos, 0, 0.09f), "ffff0099"));
 
-		if (currentNode != nullptr)
-			cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
-		
-		
-	}
+	//	if (currentNode != nullptr)
+	//		cache::debugDraw(currentNode->id, cache::debugCube(Lapis::Transform(currentNode->pos, 0, 0.17f), "00aa0099"));
+	//	
+	//	
+	//}
 
 	bool Pather::IsClosedNode(v3 nodePos, float leniency, std::shared_ptr<PathNode>* nearbyClosedNode)
 	{
@@ -491,9 +499,16 @@ namespace RustBot
 	}
 
 
-	std::vector<v3> Pather::CurrentPath()
+	std::vector<v3> Pather::GetPathPoints()
 	{
 		std::vector<v3> points = {};
+		if (todo == PatherAction::completed)
+		{
+			for (auto node : foundPath)
+			{
+				points.push_back(node->pos);
+			}
+		}
 		while (currentNode != nullptr)
 		{
 			points.push_back(currentNode->pos);
@@ -504,7 +519,7 @@ namespace RustBot
 
 	bool Pather::GrabPath(std::vector<v3>& points)
 	{
-		if (todo != completed && todo != invalid)
+		if (todo != PatherAction::completed && todo != PatherAction::invalid)
 			return false;
 
 		points.clear();

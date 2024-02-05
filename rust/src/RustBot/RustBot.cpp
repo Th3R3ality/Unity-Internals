@@ -5,8 +5,9 @@
 
 namespace RustBot
 {
-	GoalType goalType;
-	v3 goalPos;
+	int drawPathId = 0;
+	GoalType goalType = GoalType::none;
+	v3 goalPos = 0;
 	
 	BotState state;
 	Pather pather;
@@ -49,7 +50,6 @@ namespace RustBot
 
 	void SetGoal(float x, float z)
 	{
-
 		goalType = GoalType::horizontal;
 		goalPos = v3(x, 0, z);
 		Stop();
@@ -96,16 +96,40 @@ namespace RustBot
 		default:
 			break;
 		}
+
+		if (state != BotState::idle)
+		{
+			Cancel();
+			Go();
+		}
 	}
 
 	void Cancel()
 	{
+		drawPathId = 0;
+		pather.Clean();
 		state = BotState::idle;
+	}
+
+	void DrawPath()
+	{
+		auto points = pather.GetPathPoints();
+
+		v3 lastPoint = 0;
+		for (v3 point : points)
+		{
+			if (lastPoint != 0)
+			{
+				cache::debugDraw("path" + std::to_string(drawPathId), cache::debugLine3d(lastPoint, point, (state == BotState::walking) ? "00aa00" : "0000aa"));
+			}
+			lastPoint = point;
+		}
 	}
 
 	void Gather(int resourceMask)
 	{
 
 	}
+
 
 }

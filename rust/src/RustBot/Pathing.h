@@ -20,13 +20,14 @@ using namespace UnityEngine;
 namespace RustBot
 {
 
-	enum nextAction
+	enum class PatherAction
 	{
 		findBestOpenNode,
 		processFoundNode,
 		backtracing,
 		completed,
-		invalid
+		invalid,
+		idle
 	};
 
 
@@ -106,16 +107,17 @@ namespace RustBot
 		}
 
 		void New(v3 startPos, v3 endPos, GoalType goalType);
+		void Clean();
 		bool Step(bool processSameStep = false);
 		bool IsClosedNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyClosedNode = nullptr);
 		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyOpenNode = nullptr);
 		
 
-		std::vector<v3> CurrentPath();
+		std::vector<v3> GetPathPoints();
 		bool GrabPath(std::vector<v3>& points);
 
-		void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
-		void UpdateRender();
+		//void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
+		//void UpdateRender();
 
 	private:
 
@@ -131,7 +133,7 @@ namespace RustBot
 
 		std::shared_ptr<PathNode> bestFoundNode = nullptr;
 		std::shared_ptr<PathNode> currentNode = nullptr;
-		nextAction todo = findBestOpenNode;
+		PatherAction todo = PatherAction::idle;
 		float yawFix = 0;
 
 		unsigned int idCounter = 0;
