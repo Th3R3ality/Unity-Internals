@@ -9,7 +9,6 @@
 
 namespace RustBot
 {
-
 	struct pair_hash
 	{
 		template <class T1, class T2>

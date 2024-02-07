@@ -55,6 +55,7 @@ namespace RustBot
 		bool allowResortUponExhaust = false;
 		bool allowResortUponMaxNodes = false;
 
+		v3 start;
 		Goal goal = Goal(GoalType::none, 0);
 
 		/// <summary>
@@ -113,22 +114,13 @@ namespace RustBot
 		bool IsOpenNode(v3 nodePos, float leniency = 1.f, std::shared_ptr<PathNode>* nearbyOpenNode = nullptr);
 		
 
-		std::vector<v3> GetPathPoints();
-		bool GrabPath(std::vector<v3>& points);
-
-		//void UpdateRenderPath(std::string hexCol, bool onlyRemove = false);
-		//void UpdateRender();
+		std::vector<v3> GetCurrentPath();
 
 	private:
 
-		v3 start;
 
 		NodeHeap openNodes;
-		//std::vector<std::shared_ptr<PathNode>> openNodes;
-
 		std::unique_ptr<SpacePartitioner> closedNodePartitioner = nullptr;
-		//std::vector<std::shared_ptr<PathNode>> closedNodes;
-
 		std::vector<std::shared_ptr<PathNode>> foundPath;
 
 		std::shared_ptr<PathNode> bestFoundNode = nullptr;

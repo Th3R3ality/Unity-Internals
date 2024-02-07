@@ -1,5 +1,4 @@
 #include "SpacePartitioner.h"
-#include <iostream>
 
 namespace RustBot
 {
